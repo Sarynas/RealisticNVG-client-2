@@ -1,0 +1,10 @@
+C:\SPTarkov3.7.1\BepInEx\plugins\BorkelRNVG\bin\Debug\net46\BorkelRNVG.dll
+C:\SPTarkov3.7.1\BepInEx\plugins\BorkelRNVG\bin\Debug\net46\BorkelRNVG.pdb
+C:\SPTarkov3.7.1\BepInEx\plugins\BorkelRNVG\obj\Debug\net46\BorkelRNVG.csproj.AssemblyReference.cache
+C:\SPTarkov3.7.1\BepInEx\plugins\BorkelRNVG\obj\Debug\net46\PluginInfo.cs
+C:\SPTarkov3.7.1\BepInEx\plugins\BorkelRNVG\obj\Debug\net46\BorkelRNVG.GeneratedMSBuildEditorConfig.editorconfig
+C:\SPTarkov3.7.1\BepInEx\plugins\BorkelRNVG\obj\Debug\net46\BorkelRNVG.AssemblyInfoInputs.cache
+C:\SPTarkov3.7.1\BepInEx\plugins\BorkelRNVG\obj\Debug\net46\BorkelRNVG.AssemblyInfo.cs
+C:\SPTarkov3.7.1\BepInEx\plugins\BorkelRNVG\obj\Debug\net46\BorkelRNVG.csproj.CoreCompileInputs.cache
+C:\SPTarkov3.7.1\BepInEx\plugins\BorkelRNVG\obj\Debug\net46\BorkelRNVG.dll
+C:\SPTarkov3.7.1\BepInEx\plugins\BorkelRNVG\obj\Debug\net46\BorkelRNVG.pdb
