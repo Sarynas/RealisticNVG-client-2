@@ -28,7 +28,6 @@ namespace BorkelRNVG
             //directory contains string of path where the .dll is located, for me it is C:\SPTarkov3.7.1\BepInEx\plugins
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             //loading from PNGs, like Fontaine suggested
-            string bundlePath = $"{directory}\\BorkelRNVG\\realmasks";
             string anvisPath = $"{directory}\\BorkelRNVG\\PNGtextures\\mask_anvis.png";
             string binoPath = $"{directory}\\BorkelRNVG\\PNGtextures\\mask_binocular.png";
             string monoPath = $"{directory}\\BorkelRNVG\\PNGtextures\\mask_old_monocular.png";
