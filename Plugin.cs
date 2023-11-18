@@ -120,7 +120,7 @@ namespace BorkelRNVG
         }
     }
     public class SetThermalMaskPatch : ModulePatch
-    {  //this will patch the instance of the NightVision class, thanks Fontaine, Mirni, Cj, GrooveypenguinX, Choccster, kiobu-kouhai, GrakiaXYZ, kiki, Props (sorry if i forget someone)
+    {  //this will patch the instance of the ThermalVision class to edit the T-7
         protected override MethodBase GetTargetMethod()
         {
             return typeof(ThermalVision).GetMethod("SetMask", BindingFlags.Instance | BindingFlags.Public);
