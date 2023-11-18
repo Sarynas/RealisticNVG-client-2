@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\SPTarkov3.7.1\\BepInEx\\plugins\\BorkelRNVG\\BorkelRNVG.csproj": {}
+    "C:\\SPTarkov3.7.1\\BepInEx\\plugins\\BorkelRNVG-DEV\\BorkelRNVG.csproj": {}
   },
   "projects": {
-    "C:\\SPTarkov3.7.1\\BepInEx\\plugins\\BorkelRNVG\\BorkelRNVG.csproj": {
+    "C:\\SPTarkov3.7.1\\BepInEx\\plugins\\BorkelRNVG-DEV\\BorkelRNVG.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\SPTarkov3.7.1\\BepInEx\\plugins\\BorkelRNVG\\BorkelRNVG.csproj",
+        "projectUniqueName": "C:\\SPTarkov3.7.1\\BepInEx\\plugins\\BorkelRNVG-DEV\\BorkelRNVG.csproj",
         "projectName": "BorkelRNVG",
-        "projectPath": "C:\\SPTarkov3.7.1\\BepInEx\\plugins\\BorkelRNVG\\BorkelRNVG.csproj",
+        "projectPath": "C:\\SPTarkov3.7.1\\BepInEx\\plugins\\BorkelRNVG-DEV\\BorkelRNVG.csproj",
         "packagesPath": "C:\\Users\\arnau\\.nuget\\packages\\",
-        "outputPath": "C:\\SPTarkov3.7.1\\BepInEx\\plugins\\BorkelRNVG\\obj\\",
+        "outputPath": "C:\\SPTarkov3.7.1\\BepInEx\\plugins\\BorkelRNVG-DEV\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\SPTarkov3.7.1\\BepInEx\\plugins\\BorkelRNVG\\NuGet.Config",
+          "C:\\SPTarkov3.7.1\\BepInEx\\plugins\\BorkelRNVG-DEV\\NuGet.Config",
           "C:\\Users\\arnau\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
