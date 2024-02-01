@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "8hoaTp02/NHc6wY1Ut6RqjN6ps3rWCtRldhr5FPI/DqINAVyoDeCip0IP2nvxTlheyx+ql2CODghbyT7RvTERg==",
+  "dgSpecHash": "1S1NsG4nddDYwKTCPfs5C/9za8U4JYd43Yw11llpjXn32o5DLKsV7MocI9hwmvgubESBFNVsNrIsLU2bH1lxbQ==",
   "success": true,
-  "projectFilePath": "C:\\SPTarkov3.7.1\\BepInEx\\plugins\\BorkelRNVG-DEV\\BorkelRNVG.csproj",
+  "projectFilePath": "C:\\SPTarkov3.7.6\\BepInEx\\plugins\\BorkelRNVG-DEV\\BorkelRNVG.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\arnau\\.nuget\\packages\\bepinex.analyzers\\1.0.8\\bepinex.analyzers.1.0.8.nupkg.sha512",
     "C:\\Users\\arnau\\.nuget\\packages\\bepinex.baselib\\5.4.20\\bepinex.baselib.5.4.20.nupkg.sha512",

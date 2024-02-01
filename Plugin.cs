@@ -20,13 +20,15 @@ namespace BorkelRNVG
     {
         //public static Texture2D[] masks; //my modded masks will be loaded here
         //public AssetBundle bundle; //grabs the bundle with my masks
-        public static Texture2D maskAnvis; 
-        public static Texture2D maskBino; 
-        public static Texture2D maskMono; 
+        public static Texture2D maskAnvis;
+        public static Texture2D maskBino;
+        public static Texture2D maskMono;
         public static Texture2D maskThermal;
         public static Texture2D maskPixel;
         public static Shader pixelationShader; //Assets/Systems/Effects/Pixelation/Pixelation.shader
         public static string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        public static GameWorld gameWorld;
+        public static Player player;
         private void Awake()
         {
             string directory = Plugin.directory;
@@ -51,13 +53,13 @@ namespace BorkelRNVG
             Logger.LogMessage($"Texture2D 1: {maskBino}"); //mask 1: mask_binocular
             Logger.LogMessage($"Texture2D 2: {maskMono}"); //mask 2: mask_old_monocular
             Logger.LogMessage($"Texture2D 3: {maskPixel}"); //mask 3:
-            if (maskAnvis == null || maskBino == null || maskMono==null || maskThermal==null || maskPixel==null)
+            if (maskAnvis == null || maskBino == null || maskMono == null || maskThermal == null || maskPixel == null)
             {
                 Logger.LogError($"Error loading PNGs.");
                 return;
             }
             new SetMaskPatch().Enable();
-            if(pixelationShader == null)
+            if (pixelationShader == null)
             {
                 Logger.LogError($"Error loading Shader.");
                 return;
@@ -78,7 +80,7 @@ namespace BorkelRNVG
             }
             return tex;
         }
-        public static Shader LoadShader(string shaderName)
+        public static Shader LoadShader(string shaderName) //for the thermals
         {
             Shader sh = null;
             string directory = Plugin.directory;
@@ -92,7 +94,8 @@ namespace BorkelRNVG
             return sh;
         }
     }
-    public class SetMaskPatch : ModulePatch {  //this will patch the instance of the NightVision class, thanks Fontaine, Mirni, Cj, GrooveypenguinX, Choccster, kiobu-kouhai, GrakiaXYZ, kiki, Props (sorry if i forget someone)
+    public class SetMaskPatch : ModulePatch
+    {  //this will patch the instance of the NightVision class, thanks Fontaine, Mirni, Cj, GrooveypenguinX, Choccster, kiobu-kouhai, GrakiaXYZ, kiki, Props (sorry if i forget someone)
         protected override MethodBase GetTargetMethod()
         {
             return typeof(NightVision).GetMethod("SetMask", BindingFlags.Instance | BindingFlags.Public);
@@ -100,22 +103,99 @@ namespace BorkelRNVG
         [PatchPrefix]
         private static void Prefix(ref NightVision __instance)
         {
-            //code goes here
-            //just to check all the masks are what they are supposed to be
-            Logger.LogMessage($"Mask name: {__instance.Mask.name}");
-            Logger.LogMessage($"Anvismask name: {__instance.AnvisMaskTexture.name}");
-            Logger.LogMessage($"Binosmask name: {__instance.BinocularMaskTexture.name}");
-            Logger.LogMessage($"Monomask name: {__instance.OldMonocularMaskTexture.name}");
+
             //replaces the masks in the class NightVision
             __instance.AnvisMaskTexture = Plugin.maskAnvis;
             __instance.BinocularMaskTexture = Plugin.maskBino;
             __instance.OldMonocularMaskTexture = Plugin.maskMono;
             __instance.ThermalMaskTexture = Plugin.maskMono;
+            __instance.MaskSize = 1;
             Logger.LogMessage($"After Mask name: {__instance.Mask.name}");
             Logger.LogMessage($"After Anvismask name: {__instance.AnvisMaskTexture.name}");
             Logger.LogMessage($"After Binosmask name: {__instance.BinocularMaskTexture.name}");
             Logger.LogMessage($"After Monomask name: {__instance.OldMonocularMaskTexture.name}");
             //return false; //prevents original method from running, so we can fully override it //not needed
+            Plugin.gameWorld = Singleton<GameWorld>.Instance;
+            Plugin.player = Plugin.gameWorld.MainPlayer;
+            if (Plugin.gameWorld != null && Plugin.player != null)
+            {
+
+                if (Plugin.player.NightVisionObserver.Component != null && Plugin.player.NightVisionObserver.Component.Item != null &&
+                    Plugin.player.NightVisionObserver.Component.Item.TemplateId != null /*&& Plugin.player.NightVisionObserver.Component.Togglable.On*/)
+                {
+                    string nvgID = Plugin.player.NightVisionObserver.Component.Item.TemplateId;
+                    //gpnvg18 id: 5c0558060db834001b735271
+                    if (nvgID == "5c0558060db834001b735271")
+                    {
+                        //quadnod settings
+                        //vanilla intensity:2.27
+                        __instance.Intensity = 2.5F;
+                        //vanilla noiseintensity:0.02
+                        __instance.NoiseIntensity = 0.035F;
+                        //vanilla noisescale:5 smaller number means bigger noise
+                        __instance.NoiseScale = 0.95F;
+
+                        __instance.MaskSize = 0.96F;
+                        __instance.Color.r = (float)152 / 255;
+                        __instance.Color.g = (float)214 / 255;
+                        __instance.Color.b = (float)252 / 255;
+                        __instance.Color.a = (float)254 / 255;
+                    }
+                    //pvs14 id: 57235b6f24597759bf5a30f1
+                    if (nvgID == "57235b6f24597759bf5a30f1")
+                    {
+                        //vanilla intensity:2.27
+                        __instance.Intensity = 2.4F;
+                        //vanilla noiseintensity:0.02
+                        __instance.NoiseIntensity = 0.04F;
+                        //vanilla noisescale:5
+                        __instance.NoiseScale = 0.95F;
+
+                        __instance.MaskSize = 1F;
+                        __instance.Color.r = (float)95 / 255;
+                        __instance.Color.g = (float)210 / 255;
+                        __instance.Color.b = (float)255 / 255;
+                        __instance.Color.a = (float)254 / 255;
+
+                    }
+                    //n15 id: 5c066e3a0db834001b7353f0
+                    if (nvgID == "5c066e3a0db834001b7353f0")
+                    {
+                        //vanilla intensity:1.8
+                        __instance.Intensity = 2.1F;
+                        //vanilla noiseintensity:0.04
+                        __instance.NoiseIntensity = 0.05F;
+                        //vanilla noisescale:2
+                        __instance.NoiseScale = 0.85F;
+
+                        __instance.MaskSize = 1F;
+                        __instance.Color.r = (float)60 / 255;
+                        __instance.Color.g = (float)235 / 255;
+                        __instance.Color.b = (float)100 / 255;
+                        __instance.Color.a = (float)254 / 255;
+                        __instance.BinocularMaskTexture = Plugin.maskBino;
+
+                    }
+                    //pnv10t id: 5c0696830db834001d23f5da
+                    if (nvgID == "5c0696830db834001d23f5da")
+                    {
+                        //vanilla intensity:2
+                        __instance.Intensity = 1.8F;
+                        //vanilla noiseintensity:0.05
+                        __instance.NoiseIntensity = 0.07F;
+                        //vanilla noisescale:1
+                        __instance.NoiseScale = 0.8F;
+
+                        __instance.MaskSize = 1F;
+                        __instance.Color.r = (float)60 / 255;
+                        __instance.Color.g = (float)210 / 255;
+                        __instance.Color.b = (float)60 / 255;
+                        __instance.Color.a = (float)254 / 255;
+                        __instance.BinocularMaskTexture = Plugin.maskMono;
+
+                    }
+                }
+            }
 
         }
     }
@@ -128,18 +208,20 @@ namespace BorkelRNVG
         [PatchPrefix]
         private static void Prefix(ref ThermalVision __instance)
         {
-            if (__instance.IsPixelated==false)
+            if (__instance.IsPixelated == false)
             {
                 //this is all for the T7
+                //__instance.TextureMask.Size = 1f;
+                //__instance.ThermalVisionUtilities.MaskDescription.MaskSize = 1f;
                 __instance.ThermalVisionUtilities.MaskDescription.Mask = Plugin.maskThermal;
                 __instance.ThermalVisionUtilities.MaskDescription.Mask.wrapMode = TextureWrapMode.Clamp;
                 __instance.ThermalVisionUtilities.MaskDescription.OldMonocularMaskTexture = Plugin.maskThermal;
                 __instance.ThermalVisionUtilities.MaskDescription.OldMonocularMaskTexture.wrapMode = TextureWrapMode.Clamp;
                 __instance.ThermalVisionUtilities.MaskDescription.ThermalMaskTexture = Plugin.maskThermal;
                 __instance.ThermalVisionUtilities.MaskDescription.ThermalMaskTexture.wrapMode = TextureWrapMode.Clamp;
-                __instance.IsPixelated=true;
-                __instance.IsNoisy=false;
-                __instance.IsMotionBlurred=true;
+                __instance.IsPixelated = true;
+                __instance.IsNoisy = false;
+                __instance.IsMotionBlurred = true;
                 __instance.PixelationUtilities = new PixelationUtilities();
                 __instance.PixelationUtilities.Mode = 0;
                 __instance.PixelationUtilities.BlockCount = 320; //doesn't do anything really
@@ -152,5 +234,4 @@ namespace BorkelRNVG
             }
         }
     }
-
 }
