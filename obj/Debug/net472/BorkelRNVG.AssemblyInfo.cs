@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute("My first plugin")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+21141099e2ff6b4a5e6caba2966f2335165838c8")]
 [assembly: System.Reflection.AssemblyProductAttribute("BorkelRNVG")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BorkelRNVG")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

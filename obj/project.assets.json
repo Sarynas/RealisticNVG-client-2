@@ -932,20 +932,20 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\arnau\\.nuget\\packages\\": {}
+    "C:\\Users\\billv\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\SPTarkov3.7.6\\BepInEx\\plugins\\BorkelRNVG-DEV\\BorkelRNVG.csproj",
+      "projectUniqueName": "F:\\Documents\\Mod Projects\\RealisticNVG\\BorkelRNVG.csproj",
       "projectName": "BorkelRNVG",
-      "projectPath": "C:\\SPTarkov3.7.6\\BepInEx\\plugins\\BorkelRNVG-DEV\\BorkelRNVG.csproj",
-      "packagesPath": "C:\\Users\\arnau\\.nuget\\packages\\",
-      "outputPath": "C:\\SPTarkov3.7.6\\BepInEx\\plugins\\BorkelRNVG-DEV\\obj\\",
+      "projectPath": "F:\\Documents\\Mod Projects\\RealisticNVG\\BorkelRNVG.csproj",
+      "packagesPath": "C:\\Users\\billv\\.nuget\\packages\\",
+      "outputPath": "F:\\Documents\\Mod Projects\\RealisticNVG\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\SPTarkov3.7.6\\BepInEx\\plugins\\BorkelRNVG-DEV\\NuGet.Config",
-        "C:\\Users\\arnau\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "F:\\Documents\\Mod Projects\\RealisticNVG\\NuGet.Config",
+        "C:\\Users\\billv\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -996,7 +996,7 @@
             "version": "[2019.4.39, )"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.402\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101\\RuntimeIdentifierGraph.json"
       }
     }
   }
