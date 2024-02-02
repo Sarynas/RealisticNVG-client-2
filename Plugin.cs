@@ -1,17 +1,8 @@
-﻿using EFT;
-using Aki.Reflection.Patching;
-using Comfort.Common;
-using BepInEx;
-using System;
+﻿using BepInEx;
+using BorkelRNVG.Patches;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
-using BepInEx.Logging;
-using HarmonyLib;
-using System.Linq;
-using BSG.CameraEffects;
-using System.Xml.Linq;
-using EFT.InventoryLogic;
 
 namespace BorkelRNVG
 {
@@ -20,55 +11,58 @@ namespace BorkelRNVG
     {
         //public static Texture2D[] masks; //my modded masks will be loaded here
         //public AssetBundle bundle; //grabs the bundle with my masks
-        public static Texture2D maskAnvis;
-        public static Texture2D maskBino;
-        public static Texture2D maskMono;
-        public static Texture2D maskThermal;
-        public static Texture2D maskPixel;
-        public static Shader pixelationShader; //Assets/Systems/Effects/Pixelation/Pixelation.shader
-        public static string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        public static GameWorld gameWorld;
-        public static Player player;
+        private static readonly string Directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        internal static Texture2D MaskAnvis;
+        internal static Texture2D MaskBino;
+        internal static Texture2D MaskMono;
+        internal static Texture2D MaskPixel;
+        internal static Texture2D MaskThermal;
+        internal static Shader PixelationShader;
+
         private void Awake()
         {
-            string directory = Plugin.directory;
             //directory contains string of path where the .dll is located, for me it is C:\SPTarkov3.7.1\BepInEx\plugins
             //loading from PNGs, like Fontaine suggested
-            string anvisPath = $"{directory}\\BorkelRNVG\\PNGtextures\\mask_anvis.png";
-            string binoPath = $"{directory}\\BorkelRNVG\\PNGtextures\\mask_binocular.png";
-            string monoPath = $"{directory}\\BorkelRNVG\\PNGtextures\\mask_old_monocular.png";
-            string thermalPath = $"{directory}\\BorkelRNVG\\PNGtextures\\mask_thermal.png";
-            string pixelPath = $"{directory}\\BorkelRNVG\\PNGtextures\\pixel_mask1.png";
-            maskAnvis = LoadPNG(anvisPath);
-            maskBino = LoadPNG(binoPath);
-            maskMono = LoadPNG(monoPath);
-            maskPixel = LoadPNG(pixelPath);
-            maskThermal = LoadPNG(thermalPath);
-            pixelationShader = LoadShader("Assets/Systems/Effects/Pixelation/Pixelation.shader");
-            maskAnvis.wrapMode = TextureWrapMode.Clamp;
-            maskBino.wrapMode = TextureWrapMode.Clamp; //otherwise the mask will repeat itself around screen borders
-            maskMono.wrapMode = TextureWrapMode.Clamp;
-            maskThermal.wrapMode = TextureWrapMode.Clamp;
-            Logger.LogMessage($"Texture2D 0: {maskAnvis}"); //mask 0: mask_anvis
-            Logger.LogMessage($"Texture2D 1: {maskBino}"); //mask 1: mask_binocular
-            Logger.LogMessage($"Texture2D 2: {maskMono}"); //mask 2: mask_old_monocular
-            Logger.LogMessage($"Texture2D 3: {maskPixel}"); //mask 3:
-            if (maskAnvis == null || maskBino == null || maskMono == null || maskThermal == null || maskPixel == null)
-            {
-                Logger.LogError($"Error loading PNGs.");
-                return;
-            }
-            new SetMaskPatch().Enable();
-            if (pixelationShader == null)
-            {
-                Logger.LogError($"Error loading Shader.");
-                return;
-            }
-            new SetThermalMaskPatch().Enable();
-        }
-        public static Texture2D LoadPNG(string filePath)
-        {
+            string anvisPath = $"{Directory}\\BorkelRNVG\\PNGtextures\\mask_anvis.png";
+            string binoPath = $"{Directory}\\BorkelRNVG\\PNGtextures\\mask_binocular.png";
+            string monoPath = $"{Directory}\\BorkelRNVG\\PNGtextures\\mask_old_monocular.png";
+            string thermalPath = $"{Directory}\\BorkelRNVG\\PNGtextures\\mask_thermal.png";
+            string pixelPath = $"{Directory}\\BorkelRNVG\\PNGtextures\\pixel_mask1.png";
 
+            MaskAnvis = LoadPNG(anvisPath);
+            MaskBino = LoadPNG(binoPath);
+            MaskMono = LoadPNG(monoPath);
+            MaskPixel = LoadPNG(pixelPath);
+            MaskThermal = LoadPNG(thermalPath);
+            if (MaskAnvis == null || MaskBino == null || MaskMono == null || MaskThermal == null || MaskPixel == null)
+            {
+                Logger.LogError($"Error loading PNGs. Patches will be disabled.");
+                return;
+            }
+
+            MaskAnvis.wrapMode = TextureWrapMode.Clamp;
+            MaskBino.wrapMode = TextureWrapMode.Clamp; //otherwise the mask will repeat itself around screen borders
+            MaskMono.wrapMode = TextureWrapMode.Clamp;
+            MaskThermal.wrapMode = TextureWrapMode.Clamp;
+
+            Logger.LogMessage($"Texture2D 0: {MaskAnvis}"); //mask 0: mask_anvis
+            Logger.LogMessage($"Texture2D 1: {MaskBino}"); //mask 1: mask_binocular
+            Logger.LogMessage($"Texture2D 2: {MaskMono}"); //mask 2: mask_old_monocular
+            Logger.LogMessage($"Texture2D 3: {MaskPixel}"); //mask 3:
+
+            PixelationShader = LoadShader("Assets/Systems/Effects/Pixelation/Pixelation.shader");
+            if (PixelationShader == null)
+            {
+                Logger.LogError($"Error loading pixelation shader. Patches will be disabled.");
+                return;
+            }
+            
+            new NightVisionSetMaskPatch().Enable();
+            new ThermalVisionSetMaskPatch().Enable();
+        }
+
+        private static Texture2D LoadPNG(string filePath)
+        {
             Texture2D tex = null;
             byte[] fileData;
 
@@ -80,158 +74,17 @@ namespace BorkelRNVG
             }
             return tex;
         }
-        public static Shader LoadShader(string shaderName) //for the thermals
+
+        private static Shader LoadShader(string shaderName) //for the thermals
         {
-            Shader sh = null;
-            string directory = Plugin.directory;
             //string bundlePath2 = $"{directory}\\BorkelRNVG\\Shader\\shaders";
-            string parent = Directory.GetParent(directory).FullName;
-            string parent2 = Directory.GetParent(parent).FullName;
+            string parent = System.IO.Directory.GetParent(Directory).FullName;
+            string parent2 = System.IO.Directory.GetParent(parent).FullName;
             string bundlePath = $"{parent2}\\EscapeFromTarkov_Data\\StreamingAssets\\Windows\\shaders";
             AssetBundle assetBundle = AssetBundle.LoadFromFile(bundlePath);
-            sh = assetBundle.LoadAsset<Shader>(shaderName);
+            Shader sh = assetBundle.LoadAsset<Shader>(shaderName);
             assetBundle.Unload(false);
             return sh;
-        }
-    }
-    public class SetMaskPatch : ModulePatch
-    {  //this will patch the instance of the NightVision class, thanks Fontaine, Mirni, Cj, GrooveypenguinX, Choccster, kiobu-kouhai, GrakiaXYZ, kiki, Props (sorry if i forget someone)
-        protected override MethodBase GetTargetMethod()
-        {
-            return typeof(NightVision).GetMethod("SetMask", BindingFlags.Instance | BindingFlags.Public);
-        }
-        [PatchPrefix]
-        private static void Prefix(ref NightVision __instance)
-        {
-
-            //replaces the masks in the class NightVision
-            __instance.AnvisMaskTexture = Plugin.maskAnvis;
-            __instance.BinocularMaskTexture = Plugin.maskBino;
-            __instance.OldMonocularMaskTexture = Plugin.maskMono;
-            __instance.ThermalMaskTexture = Plugin.maskMono;
-            __instance.MaskSize = 1;
-            Logger.LogMessage($"After Mask name: {__instance.Mask.name}");
-            Logger.LogMessage($"After Anvismask name: {__instance.AnvisMaskTexture.name}");
-            Logger.LogMessage($"After Binosmask name: {__instance.BinocularMaskTexture.name}");
-            Logger.LogMessage($"After Monomask name: {__instance.OldMonocularMaskTexture.name}");
-            //return false; //prevents original method from running, so we can fully override it //not needed
-            Plugin.gameWorld = Singleton<GameWorld>.Instance;
-            Plugin.player = Plugin.gameWorld.MainPlayer;
-            if (Plugin.gameWorld != null && Plugin.player != null)
-            {
-
-                if (Plugin.player.NightVisionObserver.Component != null && Plugin.player.NightVisionObserver.Component.Item != null &&
-                    Plugin.player.NightVisionObserver.Component.Item.TemplateId != null /*&& Plugin.player.NightVisionObserver.Component.Togglable.On*/)
-                {
-                    string nvgID = Plugin.player.NightVisionObserver.Component.Item.TemplateId;
-                    //gpnvg18 id: 5c0558060db834001b735271
-                    if (nvgID == "5c0558060db834001b735271")
-                    {
-                        //quadnod settings
-                        //vanilla intensity:2.27
-                        __instance.Intensity = 2.5F;
-                        //vanilla noiseintensity:0.02
-                        __instance.NoiseIntensity = 0.035F;
-                        //vanilla noisescale:5 smaller number means bigger noise
-                        __instance.NoiseScale = 0.95F;
-
-                        __instance.MaskSize = 0.96F;
-                        __instance.Color.r = (float)152 / 255;
-                        __instance.Color.g = (float)214 / 255;
-                        __instance.Color.b = (float)252 / 255;
-                        __instance.Color.a = (float)254 / 255;
-                    }
-                    //pvs14 id: 57235b6f24597759bf5a30f1
-                    if (nvgID == "57235b6f24597759bf5a30f1")
-                    {
-                        //vanilla intensity:2.27
-                        __instance.Intensity = 2.4F;
-                        //vanilla noiseintensity:0.02
-                        __instance.NoiseIntensity = 0.04F;
-                        //vanilla noisescale:5
-                        __instance.NoiseScale = 0.95F;
-
-                        __instance.MaskSize = 1F;
-                        __instance.Color.r = (float)95 / 255;
-                        __instance.Color.g = (float)210 / 255;
-                        __instance.Color.b = (float)255 / 255;
-                        __instance.Color.a = (float)254 / 255;
-
-                    }
-                    //n15 id: 5c066e3a0db834001b7353f0
-                    if (nvgID == "5c066e3a0db834001b7353f0")
-                    {
-                        //vanilla intensity:1.8
-                        __instance.Intensity = 2.1F;
-                        //vanilla noiseintensity:0.04
-                        __instance.NoiseIntensity = 0.05F;
-                        //vanilla noisescale:2
-                        __instance.NoiseScale = 0.85F;
-
-                        __instance.MaskSize = 1F;
-                        __instance.Color.r = (float)60 / 255;
-                        __instance.Color.g = (float)235 / 255;
-                        __instance.Color.b = (float)100 / 255;
-                        __instance.Color.a = (float)254 / 255;
-                        __instance.BinocularMaskTexture = Plugin.maskBino;
-
-                    }
-                    //pnv10t id: 5c0696830db834001d23f5da
-                    if (nvgID == "5c0696830db834001d23f5da")
-                    {
-                        //vanilla intensity:2
-                        __instance.Intensity = 1.8F;
-                        //vanilla noiseintensity:0.05
-                        __instance.NoiseIntensity = 0.07F;
-                        //vanilla noisescale:1
-                        __instance.NoiseScale = 0.8F;
-
-                        __instance.MaskSize = 1F;
-                        __instance.Color.r = (float)60 / 255;
-                        __instance.Color.g = (float)210 / 255;
-                        __instance.Color.b = (float)60 / 255;
-                        __instance.Color.a = (float)254 / 255;
-                        __instance.BinocularMaskTexture = Plugin.maskMono;
-
-                    }
-                }
-            }
-
-        }
-    }
-    public class SetThermalMaskPatch : ModulePatch
-    {  //this will patch the instance of the ThermalVision class to edit the T-7
-        protected override MethodBase GetTargetMethod()
-        {
-            return typeof(ThermalVision).GetMethod("SetMask", BindingFlags.Instance | BindingFlags.Public);
-        }
-        [PatchPrefix]
-        private static void Prefix(ref ThermalVision __instance)
-        {
-            if (__instance.IsPixelated == false)
-            {
-                //this is all for the T7
-                //__instance.TextureMask.Size = 1f;
-                //__instance.ThermalVisionUtilities.MaskDescription.MaskSize = 1f;
-                __instance.ThermalVisionUtilities.MaskDescription.Mask = Plugin.maskThermal;
-                __instance.ThermalVisionUtilities.MaskDescription.Mask.wrapMode = TextureWrapMode.Clamp;
-                __instance.ThermalVisionUtilities.MaskDescription.OldMonocularMaskTexture = Plugin.maskThermal;
-                __instance.ThermalVisionUtilities.MaskDescription.OldMonocularMaskTexture.wrapMode = TextureWrapMode.Clamp;
-                __instance.ThermalVisionUtilities.MaskDescription.ThermalMaskTexture = Plugin.maskThermal;
-                __instance.ThermalVisionUtilities.MaskDescription.ThermalMaskTexture.wrapMode = TextureWrapMode.Clamp;
-                __instance.IsPixelated = true;
-                __instance.IsNoisy = false;
-                __instance.IsMotionBlurred = true;
-                __instance.PixelationUtilities = new PixelationUtilities();
-                __instance.PixelationUtilities.Mode = 0;
-                __instance.PixelationUtilities.BlockCount = 320; //doesn't do anything really
-                __instance.PixelationUtilities.PixelationMask = Plugin.maskPixel;
-                __instance.PixelationUtilities.PixelationShader = Plugin.pixelationShader;
-                __instance.StuckFpsUtilities = new StuckFPSUtilities();
-                __instance.IsFpsStuck = true;
-                __instance.StuckFpsUtilities.MinFramerate = 60;
-                __instance.StuckFpsUtilities.MaxFramerate = 60;
-            }
         }
     }
 }
