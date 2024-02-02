@@ -21,28 +21,27 @@ namespace BorkelRNVG.Patches
                 return;
             }
 
-                // This is all for the T7
-                //__instance.TextureMask.Size = 1f;
-                //__instance.ThermalVisionUtilities.MaskDescription.MaskSize = 1f;
-                __instance.ThermalVisionUtilities.MaskDescription.Mask = Plugin.MaskThermal;
-                __instance.ThermalVisionUtilities.MaskDescription.Mask.wrapMode = TextureWrapMode.Clamp;
-                __instance.ThermalVisionUtilities.MaskDescription.OldMonocularMaskTexture = Plugin.MaskThermal;
-                __instance.ThermalVisionUtilities.MaskDescription.OldMonocularMaskTexture.wrapMode = TextureWrapMode.Clamp;
-                __instance.ThermalVisionUtilities.MaskDescription.ThermalMaskTexture = Plugin.MaskThermal;
-                __instance.ThermalVisionUtilities.MaskDescription.ThermalMaskTexture.wrapMode = TextureWrapMode.Clamp;
-                __instance.IsPixelated = true;
-                __instance.IsNoisy = false;
-                __instance.IsMotionBlurred = true;
-                __instance.PixelationUtilities = new PixelationUtilities();
-                __instance.PixelationUtilities.Mode = 0;
-                __instance.PixelationUtilities.BlockCount = 320; //doesn't do anything really
-                __instance.PixelationUtilities.PixelationMask = Plugin.MaskPixel;
-                __instance.PixelationUtilities.PixelationShader = Plugin.PixelationShader;
-                __instance.StuckFpsUtilities = new StuckFPSUtilities();
-                __instance.IsFpsStuck = true;
-                __instance.StuckFpsUtilities.MinFramerate = 60;
-                __instance.StuckFpsUtilities.MaxFramerate = 60;
-            }
+            // This is all for the T7
+            //__instance.TextureMask.Size = 1f;
+            //__instance.ThermalVisionUtilities.MaskDescription.MaskSize = 1f;
+            __instance.ThermalVisionUtilities.MaskDescription.Mask = Plugin.MaskThermal;
+            __instance.ThermalVisionUtilities.MaskDescription.Mask.wrapMode = TextureWrapMode.Clamp;
+            __instance.ThermalVisionUtilities.MaskDescription.OldMonocularMaskTexture = Plugin.MaskThermal;
+            __instance.ThermalVisionUtilities.MaskDescription.OldMonocularMaskTexture.wrapMode = TextureWrapMode.Clamp;
+            __instance.ThermalVisionUtilities.MaskDescription.ThermalMaskTexture = Plugin.MaskThermal;
+            __instance.ThermalVisionUtilities.MaskDescription.ThermalMaskTexture.wrapMode = TextureWrapMode.Clamp;
+            __instance.IsPixelated = true;
+            __instance.IsNoisy = false;
+            __instance.IsMotionBlurred = true;
+            __instance.PixelationUtilities = new PixelationUtilities();
+            __instance.PixelationUtilities.Mode = 0;
+            __instance.PixelationUtilities.BlockCount = 320; //doesn't do anything really
+            __instance.PixelationUtilities.PixelationMask = Plugin.MaskPixel;
+            __instance.PixelationUtilities.PixelationShader = Plugin.PixelationShader;
+            __instance.StuckFpsUtilities = new StuckFPSUtilities();
+            __instance.IsFpsStuck = true;
+            __instance.StuckFpsUtilities.MinFramerate = 60;
+            __instance.StuckFpsUtilities.MaxFramerate = 60;
         }
     }
 }
