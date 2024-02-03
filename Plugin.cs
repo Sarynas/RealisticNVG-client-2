@@ -12,27 +12,101 @@ using System.Linq;
 using BSG.CameraEffects;
 using System.Xml.Linq;
 using EFT.InventoryLogic;
+using BepInEx.Configuration;
 
 namespace BorkelRNVG
 {
-    [BepInPlugin("com.borkel.nvgmasks", "my very humble attempt at replacing the damn nvg masks", "1.0.0")]
+    [BepInPlugin("com.borkel.nvgmasks", "Realistic NVGs", "1.0.0")]
     public class Plugin : BaseUnityPlugin
     {
-        //public static Texture2D[] masks; //my modded masks will be loaded here
-        //public AssetBundle bundle; //grabs the bundle with my masks
+        public static string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        //mask textures
         public static Texture2D maskAnvis;
         public static Texture2D maskBino;
         public static Texture2D maskMono;
         public static Texture2D maskThermal;
-        public static Texture2D maskPixel;
+        public static Texture2D maskPixel; //i don't really know if this one does anything
         public static Shader pixelationShader; //Assets/Systems/Effects/Pixelation/Pixelation.shader
-        public static string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        //player is used to know what nvg is equipped
         public static GameWorld gameWorld;
         public static Player player;
+        //global config stuff
+        public static ConfigEntry<float> globalMaskSize;
+        public static ConfigEntry<float> globalGain;
+        //gpnvg18 config stuff
+        public static ConfigEntry<float> quadR;
+        public static ConfigEntry<float> quadG;
+        public static ConfigEntry<float> quadB;
+        public static ConfigEntry<float> quadMaskSize;
+        public static ConfigEntry<float> quadNoiseIntensity;
+        public static ConfigEntry<float> quadNoiseSize;
+        public static ConfigEntry<float> quadGain;
+        //pvs14 config stuff
+        public static ConfigEntry<float> pvsR;
+        public static ConfigEntry<float> pvsG;
+        public static ConfigEntry<float> pvsB;
+        public static ConfigEntry<float> pvsMaskSize;
+        public static ConfigEntry<float> pvsNoiseIntensity;
+        public static ConfigEntry<float> pvsNoiseSize;
+        public static ConfigEntry<float> pvsGain;
+        //n15 config stuff
+        public static ConfigEntry<float> nR;
+        public static ConfigEntry<float> nG;
+        public static ConfigEntry<float> nB;
+        public static ConfigEntry<float> nMaskSize;
+        public static ConfigEntry<float> nNoiseIntensity;
+        public static ConfigEntry<float> nNoiseSize;
+        public static ConfigEntry<float> nGain;
+        //pnv10t config stuff
+        public static ConfigEntry<float> pnvR;
+        public static ConfigEntry<float> pnvG;
+        public static ConfigEntry<float> pnvB;
+        public static ConfigEntry<float> pnvMaskSize;
+        public static ConfigEntry<float> pnvNoiseIntensity;
+        public static ConfigEntry<float> pnvNoiseSize;
+        public static ConfigEntry<float> pnvGain;
+
         private void Awake()
         {
-            string directory = Plugin.directory;
-            //directory contains string of path where the .dll is located, for me it is C:\SPTarkov3.7.1\BepInEx\plugins
+            //############-BEPINEX F12-MENU##############
+            //Global multipliers
+            globalMaskSize = Config.Bind("Globals", "Mask size multiplier", 1f, new ConfigDescription("Applies multiplier to all masks", new AcceptableValueRange<float>(0f, 2f)));
+            globalGain = Config.Bind("Globals", "Gain multiplier", 1f, new ConfigDescription("Applies gain multiplier to all NVGs", new AcceptableValueRange<float>(0f, 5f)));
+            //GPNVG-18 config
+            quadGain = Config.Bind("GPNVG-18", "1.Gain", 2.5f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 5f)));
+            quadNoiseIntensity = Config.Bind("GPNVG-18", "2.Noise intensity", 0.035f, new ConfigDescription("", new AcceptableValueRange<float>(0f,0.2f)));
+            quadNoiseSize = Config.Bind("GPNVG-18", "3.Noise scale", 0.05f, new ConfigDescription("", new AcceptableValueRange<float>(0f,1f)));
+            quadMaskSize = Config.Bind("GPNVG-18", "4.Mask size", 0.96f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            quadR = Config.Bind("GPNVG-18", "5.Red", 152f, new ConfigDescription("", new AcceptableValueRange<float>(0f,255f)));
+            quadG = Config.Bind("GPNVG-18", "6.Green", 214f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
+            quadB = Config.Bind("GPNVG-18", "7.Blue", 252f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
+            //PVS-14 config
+            pvsGain = Config.Bind("PVS-14", "1.Gain", 2.4f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 5f)));
+            pvsNoiseIntensity = Config.Bind("PVS-14", "2.Noise intensity", 0.04f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 0.2f)));
+            pvsNoiseSize = Config.Bind("PVS-14", "3.Noise scale", 0.05f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            pvsMaskSize = Config.Bind("PVS-14", "4.Mask size", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            pvsR = Config.Bind("PVS-14", "5.Red", 95f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
+            pvsG = Config.Bind("PVS-14", "6.Green", 210f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
+            pvsB = Config.Bind("PVS-14", "7.Blue", 255f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
+            //N-15 config
+            nGain = Config.Bind("N-15", "1.Gain", 2.1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 5f)));
+            nNoiseIntensity = Config.Bind("N-15", "2.Noise intensity", 0.05f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 0.2f)));
+            nNoiseSize = Config.Bind("N-15", "3.Noise scale", 0.15f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            nMaskSize = Config.Bind("N-15", "4.Mask size", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            nR = Config.Bind("N-15", "5.Red", 60f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
+            nG = Config.Bind("N-15", "6.Green", 235f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
+            nB = Config.Bind("N-15", "7.Blue", 100f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
+            //PNV-10T config
+            pnvGain = Config.Bind("PNV-10T", "1.Gain", 1.8f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 5f)));
+            pnvNoiseIntensity = Config.Bind("PNV-10T", "2.Noise intensity", 0.07f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 0.2f)));
+            pnvNoiseSize = Config.Bind("PNV-10T", "3.Noise scale", 0.2f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            pnvMaskSize = Config.Bind("PNV-10T", "4.Mask size", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            pnvR = Config.Bind("PNV-10T", "5.Red", 60f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
+            pnvG = Config.Bind("PNV-10T", "6.Green", 210f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
+            pnvB = Config.Bind("PNV-10T", "7.Blue", 60f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
+            //###########################################
+
+            string directory = Plugin.directory;//directory contains string of path where the .dll is located, for me it is C:\SPTarkov3.7.1\BepInEx\plugins
             //loading from PNGs, like Fontaine suggested
             string anvisPath = $"{directory}\\BorkelRNVG\\PNGtextures\\mask_anvis.png";
             string binoPath = $"{directory}\\BorkelRNVG\\PNGtextures\\mask_binocular.png";
@@ -42,17 +116,13 @@ namespace BorkelRNVG
             maskAnvis = LoadPNG(anvisPath);
             maskBino = LoadPNG(binoPath);
             maskMono = LoadPNG(monoPath);
-            maskPixel = LoadPNG(pixelPath);
             maskThermal = LoadPNG(thermalPath);
-            pixelationShader = LoadShader("Assets/Systems/Effects/Pixelation/Pixelation.shader");
+            maskPixel = LoadPNG(pixelPath);//might not do anything really
+            pixelationShader = LoadShader("Assets/Systems/Effects/Pixelation/Pixelation.shader"); //to pixelate teh T-7
             maskAnvis.wrapMode = TextureWrapMode.Clamp;
             maskBino.wrapMode = TextureWrapMode.Clamp; //otherwise the mask will repeat itself around screen borders
             maskMono.wrapMode = TextureWrapMode.Clamp;
             maskThermal.wrapMode = TextureWrapMode.Clamp;
-            Logger.LogMessage($"Texture2D 0: {maskAnvis}"); //mask 0: mask_anvis
-            Logger.LogMessage($"Texture2D 1: {maskBino}"); //mask 1: mask_binocular
-            Logger.LogMessage($"Texture2D 2: {maskMono}"); //mask 2: mask_old_monocular
-            Logger.LogMessage($"Texture2D 3: {maskPixel}"); //mask 3:
             if (maskAnvis == null || maskBino == null || maskMono == null || maskThermal == null || maskPixel == null)
             {
                 Logger.LogError($"Error loading PNGs.");
@@ -104,75 +174,71 @@ namespace BorkelRNVG
         private static void Prefix(ref NightVision __instance)
         {
 
-            //replaces the masks in the class NightVision
+            //replaces the masks in the class NightVision and applies visual changes
             __instance.AnvisMaskTexture = Plugin.maskAnvis;
             __instance.BinocularMaskTexture = Plugin.maskBino;
             __instance.OldMonocularMaskTexture = Plugin.maskMono;
             __instance.ThermalMaskTexture = Plugin.maskMono;
-            __instance.MaskSize = 1;
-            Logger.LogMessage($"After Mask name: {__instance.Mask.name}");
-            Logger.LogMessage($"After Anvismask name: {__instance.AnvisMaskTexture.name}");
-            Logger.LogMessage($"After Binosmask name: {__instance.BinocularMaskTexture.name}");
-            Logger.LogMessage($"After Monomask name: {__instance.OldMonocularMaskTexture.name}");
-            //return false; //prevents original method from running, so we can fully override it //not needed
+            __instance.Color.a = (float)254 / 255; //i think it does nothing
+            __instance.MaskSize = 1; //does not affect the t-7 for some reason
             Plugin.gameWorld = Singleton<GameWorld>.Instance;
             Plugin.player = Plugin.gameWorld.MainPlayer;
             if (Plugin.gameWorld != null && Plugin.player != null)
             {
 
                 if (Plugin.player.NightVisionObserver.Component != null && Plugin.player.NightVisionObserver.Component.Item != null &&
-                    Plugin.player.NightVisionObserver.Component.Item.TemplateId != null /*&& Plugin.player.NightVisionObserver.Component.Togglable.On*/)
+                    Plugin.player.NightVisionObserver.Component.Item.TemplateId != null) //checks if the player has an nvg
                 {
-                    string nvgID = Plugin.player.NightVisionObserver.Component.Item.TemplateId;
+                    string nvgID = Plugin.player.NightVisionObserver.Component.Item.TemplateId; //ID of the nvg
                     //gpnvg18 id: 5c0558060db834001b735271
                     if (nvgID == "5c0558060db834001b735271")
                     {
                         //quadnod settings
                         //vanilla intensity:2.27
-                        __instance.Intensity = 2.5F;
+                        //__instance.Intensity = 2.5F;
+                        __instance.Intensity = Plugin.quadGain.Value * Plugin.globalGain.Value;
                         //vanilla noiseintensity:0.02
-                        __instance.NoiseIntensity = 0.035F;
+                        //__instance.NoiseIntensity = 0.035F;
+                        __instance.NoiseIntensity = Plugin.quadNoiseIntensity.Value;
                         //vanilla noisescale:5 smaller number means bigger noise
-                        __instance.NoiseScale = 0.95F;
+                        //__instance.NoiseScale = 0.95F; -> 0.05 in the bepinex menu, smaller number will mean smaller noise
+                        __instance.NoiseScale = 1f - Plugin.quadNoiseSize.Value;
 
-                        __instance.MaskSize = 0.96F;
-                        __instance.Color.r = (float)152 / 255;
-                        __instance.Color.g = (float)214 / 255;
-                        __instance.Color.b = (float)252 / 255;
-                        __instance.Color.a = (float)254 / 255;
+                        __instance.MaskSize = Plugin.quadMaskSize.Value * Plugin.globalMaskSize.Value;
+                        __instance.Color.r = Plugin.quadR.Value / 255f;
+                        __instance.Color.g = Plugin.quadG.Value / 255f;
+                        __instance.Color.b = Plugin.quadB.Value / 255f;
                     }
                     //pvs14 id: 57235b6f24597759bf5a30f1
                     if (nvgID == "57235b6f24597759bf5a30f1")
                     {
                         //vanilla intensity:2.27
-                        __instance.Intensity = 2.4F;
+                        __instance.Intensity = Plugin.pvsGain.Value * Plugin.globalGain.Value;
                         //vanilla noiseintensity:0.02
-                        __instance.NoiseIntensity = 0.04F;
+                        __instance.NoiseIntensity = Plugin.pvsNoiseIntensity.Value;
                         //vanilla noisescale:5
-                        __instance.NoiseScale = 0.95F;
+                        __instance.NoiseScale = 1f - Plugin.pvsNoiseSize.Value;
 
-                        __instance.MaskSize = 1F;
-                        __instance.Color.r = (float)95 / 255;
-                        __instance.Color.g = (float)210 / 255;
-                        __instance.Color.b = (float)255 / 255;
-                        __instance.Color.a = (float)254 / 255;
+                        __instance.MaskSize = Plugin.pvsMaskSize.Value * Plugin.globalMaskSize.Value;
+                        __instance.Color.r = Plugin.pvsR.Value / 255;
+                        __instance.Color.g = Plugin.pvsG.Value / 255;
+                        __instance.Color.b = Plugin.pvsB.Value / 255;
 
                     }
                     //n15 id: 5c066e3a0db834001b7353f0
                     if (nvgID == "5c066e3a0db834001b7353f0")
                     {
                         //vanilla intensity:1.8
-                        __instance.Intensity = 2.1F;
+                        __instance.Intensity = Plugin.nGain.Value * Plugin.globalGain.Value;
                         //vanilla noiseintensity:0.04
-                        __instance.NoiseIntensity = 0.05F;
+                        __instance.NoiseIntensity = Plugin.nNoiseIntensity.Value;
                         //vanilla noisescale:2
-                        __instance.NoiseScale = 0.85F;
+                        __instance.NoiseScale = 1f - Plugin.nNoiseSize.Value;
 
-                        __instance.MaskSize = 1F;
-                        __instance.Color.r = (float)60 / 255;
-                        __instance.Color.g = (float)235 / 255;
-                        __instance.Color.b = (float)100 / 255;
-                        __instance.Color.a = (float)254 / 255;
+                        __instance.MaskSize = Plugin.nMaskSize.Value * Plugin.globalMaskSize.Value;
+                        __instance.Color.r = Plugin.nR.Value / 255;
+                        __instance.Color.g = Plugin.nG.Value / 255;
+                        __instance.Color.b = Plugin.nB.Value / 255;
                         __instance.BinocularMaskTexture = Plugin.maskBino;
 
                     }
@@ -180,20 +246,20 @@ namespace BorkelRNVG
                     if (nvgID == "5c0696830db834001d23f5da")
                     {
                         //vanilla intensity:2
-                        __instance.Intensity = 1.8F;
+                        __instance.Intensity = Plugin.pnvGain.Value * Plugin.globalGain.Value;
                         //vanilla noiseintensity:0.05
-                        __instance.NoiseIntensity = 0.07F;
+                        __instance.NoiseIntensity = Plugin.pnvNoiseIntensity.Value;
                         //vanilla noisescale:1
-                        __instance.NoiseScale = 0.8F;
+                        __instance.NoiseScale = 1f - Plugin.pnvNoiseSize.Value;
 
-                        __instance.MaskSize = 1F;
-                        __instance.Color.r = (float)60 / 255;
-                        __instance.Color.g = (float)210 / 255;
-                        __instance.Color.b = (float)60 / 255;
-                        __instance.Color.a = (float)254 / 255;
+                        __instance.MaskSize = Plugin.pnvMaskSize.Value * Plugin.globalMaskSize.Value;
+                        __instance.Color.r = Plugin.pnvR.Value / 255;
+                        __instance.Color.g = Plugin.pnvG.Value / 255;
+                        __instance.Color.b = Plugin.pnvB.Value / 255;
                         __instance.BinocularMaskTexture = Plugin.maskMono;
 
                     }
+                    __instance.ApplySettings();
                 }
             }
 
