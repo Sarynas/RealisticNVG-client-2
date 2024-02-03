@@ -1,4 +1,4 @@
-bin/
-.vs/
-obj/
-References/
+/bin
+/.vs
+/obj
+/References
