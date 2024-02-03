@@ -13,6 +13,7 @@ using BSG.CameraEffects;
 using System.Xml.Linq;
 using EFT.InventoryLogic;
 using BepInEx.Configuration;
+using static GClass1607;
 
 namespace BorkelRNVG
 {
@@ -70,8 +71,8 @@ namespace BorkelRNVG
         {
             //############-BEPINEX F12-MENU##############
             //Global multipliers
-            globalMaskSize = Config.Bind("0.Globals", "Mask size multiplier", 1f, new ConfigDescription("Applies size multiplier to all masks", new AcceptableValueRange<float>(0f, 2f)));
-            globalGain = Config.Bind("0.Globals", "Gain multiplier", 1f, new ConfigDescription("Applies gain multiplier to all NVGs", new AcceptableValueRange<float>(0f, 5f)));
+            globalMaskSize = Config.Bind("0.Globals (changes apply on NVG reactivation)", "Mask size multiplier", 1f, new ConfigDescription("Applies size multiplier to all masks", new AcceptableValueRange<float>(0f, 2f)));
+            globalGain = Config.Bind("0.Globals (changes apply on NVG reactivation)", "Gain multiplier", 1f, new ConfigDescription("Applies gain multiplier to all NVGs", new AcceptableValueRange<float>(0f, 5f)));
             //GPNVG-18 config
             quadGain = Config.Bind("1.GPNVG-18", "1.Gain", 2.5f, new ConfigDescription("Light amplification", new AcceptableValueRange<float>(0f, 5f)));
             quadNoiseIntensity = Config.Bind("1.GPNVG-18", "2.Noise intensity", 0.035f, new ConfigDescription("", new AcceptableValueRange<float>(0f,0.2f)));
