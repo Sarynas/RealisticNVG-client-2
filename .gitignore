@@ -76,3 +76,8 @@ crashlytics-build.properties
 /obj/BorkelRNVG.csproj.nuget.g.targets
 /obj/project.assets.json
 /obj/project.nuget.cache
+/obj/Debug/net472/.NETFramework,Version=v4.7.2.AssemblyAttributes.cs
+/obj/Debug/net472/BorkelRNVG.assets.cache
+/obj/Debug/net472/BorkelRNVG.csproj.AssemblyReference.cache
+/obj/Debug/net472/BorkelRNVG.GeneratedMSBuildEditorConfig.editorconfig
+/obj/Debug/net472/PluginInfo.cs
