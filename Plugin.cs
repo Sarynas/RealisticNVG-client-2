@@ -117,7 +117,6 @@ namespace BorkelRNVG
             lensAnvis= LoadPNG(lensAnvisPath);
             lensBino= LoadPNG(lensBinoPath);
             lensMono= LoadPNG(lensMonoPath);
-            pixelationShader = LoadShader("Assets/Systems/Effects/Pixelation/Pixelation.shader"); //to pixelate the T-7
             if (maskAnvis == null || maskBino == null || maskMono == null || maskThermal == null || maskPixel == null
                 || lensAnvis == null || lensBino == null || lensMono == null)
             {
@@ -125,14 +124,7 @@ namespace BorkelRNVG
                 return;
             }
 
-            maskAnvis.wrapMode = TextureWrapMode.Clamp;
-            maskBino.wrapMode = TextureWrapMode.Clamp; //otherwise the mask will repeat itself around screen borders
-            maskMono.wrapMode = TextureWrapMode.Clamp;
-            maskThermal.wrapMode = TextureWrapMode.Clamp;
-            lensAnvis.wrapMode = TextureWrapMode.Clamp;
-            lensBino.wrapMode = TextureWrapMode.Clamp;
-            lensMono.wrapMode = TextureWrapMode.Clamp;
-
+            pixelationShader = LoadShader("Assets/Systems/Effects/Pixelation/Pixelation.shader"); //to pixelate the T-7
             if (pixelationShader == null)
             {
                 Logger.LogError($"Error loading pixelation shader. Patches will be disabled.");
@@ -154,14 +146,13 @@ namespace BorkelRNVG
                 fileData = File.ReadAllBytes(filePath);
                 tex = new Texture2D(2, 2);
                 tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
+                tex.wrapMode = TextureWrapMode.Clamp; //otherwise the mask will repeat itself around screen borders
             }
             return tex;
         }
 
         private static Shader LoadShader(string shaderName) //for the thermals
         {
-            //string bundlePath2 = $"{directory}\\BorkelRNVG\\Shader\\shaders";
-            //string bundlePath = Path.GetFullPath($"{directory}\\..\\..\\EscapeFromTarkov_Data\\StreamingAssets\\Windows\\shaders");
             string bundlePath = Path.Combine(Environment.CurrentDirectory, "EscapeFromTarkov_Data", "StreamingAssets", "Windows", "shaders");
             AssetBundle assetBundle = AssetBundle.LoadFromFile(bundlePath);
             Shader sh = assetBundle.LoadAsset<Shader>(shaderName);
