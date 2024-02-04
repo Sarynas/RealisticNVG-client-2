@@ -1,6 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using BorkelRNVG.Patches;
+using System;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
@@ -107,7 +108,6 @@ namespace BorkelRNVG
             maskThermal = LoadPNG(thermalPath);
             maskPixel = LoadPNG(pixelPath);//might not do anything really
             pixelationShader = LoadShader("Assets/Systems/Effects/Pixelation/Pixelation.shader"); //to pixelate the T-7
-
             if (maskAnvis == null || maskBino == null || maskMono == null || maskThermal == null || maskPixel == null)
             {
                 Logger.LogError($"Error loading PNGs. Patches will be disabled.");
@@ -147,7 +147,8 @@ namespace BorkelRNVG
         private static Shader LoadShader(string shaderName) //for the thermals
         {
             //string bundlePath2 = $"{directory}\\BorkelRNVG\\Shader\\shaders";
-            string bundlePath = Path.GetFullPath($"..\\..\\EscapeFromTarkov_Data\\StreamingAssets\\Windows\\shaders");
+            //string bundlePath = Path.GetFullPath($"{directory}\\..\\..\\EscapeFromTarkov_Data\\StreamingAssets\\Windows\\shaders");
+            string bundlePath = Path.Combine(Environment.CurrentDirectory, "EscapeFromTarkov_Data", "StreamingAssets", "Windows", "shaders");
             AssetBundle assetBundle = AssetBundle.LoadFromFile(bundlePath);
             Shader sh = assetBundle.LoadAsset<Shader>(shaderName);
             assetBundle.Unload(false);

@@ -8,6 +8,7 @@ namespace BorkelRNVG.Patches
     internal class ThermalVisionSetMaskPatch : ModulePatch
     {
         // This will patch the instance of the ThermalVision class to edit the T-7
+
         protected override MethodBase GetTargetMethod()
         {
             return AccessTools.Method(typeof(ThermalVision), nameof(ThermalVision.SetMask));
