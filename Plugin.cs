@@ -19,6 +19,10 @@ namespace BorkelRNVG
         public static Texture2D maskThermal;
         public static Texture2D maskPixel; //i don't really know if this one does anything
         public static Shader pixelationShader; //Assets/Systems/Effects/Pixelation/Pixelation.shader
+        //lens textures
+        public static Texture2D lensAnvis;
+        public static Texture2D lensBino;
+        public static Texture2D lensMono;
         //global config stuff
         public static ConfigEntry<float> globalMaskSize;
         public static ConfigEntry<float> globalGain;
@@ -97,18 +101,25 @@ namespace BorkelRNVG
 
             string directory = Plugin.directory;//directory contains string of path where the .dll is located, for me it is C:\SPTarkov3.7.1\BepInEx\plugins
             //loading from PNGs, like Fontaine suggested
-            string anvisPath = $"{directory}\\BorkelRNVG\\PNGtextures\\mask_anvis.png";
-            string binoPath = $"{directory}\\BorkelRNVG\\PNGtextures\\mask_binocular.png";
-            string monoPath = $"{directory}\\BorkelRNVG\\PNGtextures\\mask_old_monocular.png";
-            string thermalPath = $"{directory}\\BorkelRNVG\\PNGtextures\\mask_thermal.png";
-            string pixelPath = $"{directory}\\BorkelRNVG\\PNGtextures\\pixel_mask1.png";
+            string anvisPath = $"{directory}\\BorkelRNVG\\MaskTextures\\mask_anvis.png";
+            string binoPath = $"{directory}\\BorkelRNVG\\MaskTextures\\mask_binocular.png";
+            string monoPath = $"{directory}\\BorkelRNVG\\MaskTextures\\mask_old_monocular.png";
+            string thermalPath = $"{directory}\\BorkelRNVG\\MaskTextures\\mask_thermal.png";
+            string pixelPath = $"{directory}\\BorkelRNVG\\MaskTextures\\pixel_mask1.png";
+            string lensAnvisPath = $"{directory}\\BorkelRNVG\\LensTextures\\lens_anvis.png";
+            string lensBinoPath = $"{directory}\\BorkelRNVG\\LensTextures\\lens_binocular.png";
+            string lensMonoPath = $"{directory}\\BorkelRNVG\\LensTextures\\lens_old_monocular.png";
             maskAnvis = LoadPNG(anvisPath);
             maskBino = LoadPNG(binoPath);
             maskMono = LoadPNG(monoPath);
             maskThermal = LoadPNG(thermalPath);
             maskPixel = LoadPNG(pixelPath);//might not do anything really
+            lensAnvis= LoadPNG(lensAnvisPath);
+            lensBino= LoadPNG(lensBinoPath);
+            lensMono= LoadPNG(lensMonoPath);
             pixelationShader = LoadShader("Assets/Systems/Effects/Pixelation/Pixelation.shader"); //to pixelate the T-7
-            if (maskAnvis == null || maskBino == null || maskMono == null || maskThermal == null || maskPixel == null)
+            if (maskAnvis == null || maskBino == null || maskMono == null || maskThermal == null || maskPixel == null
+                || lensAnvis == null || lensBino == null || lensMono == null)
             {
                 Logger.LogError($"Error loading PNGs. Patches will be disabled.");
                 return;
@@ -118,6 +129,9 @@ namespace BorkelRNVG
             maskBino.wrapMode = TextureWrapMode.Clamp; //otherwise the mask will repeat itself around screen borders
             maskMono.wrapMode = TextureWrapMode.Clamp;
             maskThermal.wrapMode = TextureWrapMode.Clamp;
+            lensAnvis.wrapMode = TextureWrapMode.Clamp;
+            lensBino.wrapMode = TextureWrapMode.Clamp;
+            lensMono.wrapMode = TextureWrapMode.Clamp;
 
             if (pixelationShader == null)
             {
