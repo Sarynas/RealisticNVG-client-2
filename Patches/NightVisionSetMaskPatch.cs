@@ -19,12 +19,6 @@ namespace BorkelRNVG.Patches
         [PatchPrefix]
         private static void PatchPrefix(ref NightVision __instance)
         {
-            //replaces the masks in the class NightVision and applies visual changes
-            __instance.AnvisMaskTexture = Plugin.maskAnvis;
-            __instance.BinocularMaskTexture = Plugin.maskBino;
-            __instance.OldMonocularMaskTexture = Plugin.maskMono;
-            __instance.ThermalMaskTexture = Plugin.maskMono;
-
             var gameWorld = Singleton<GameWorld>.Instance;
             if (gameWorld == null)
             {
@@ -52,13 +46,11 @@ namespace BorkelRNVG.Patches
 
             }
             //pnv10t id: 5c0696830db834001d23f5da
-            if (nvgID == "5c0696830db834001d23f5da")
+            else if (nvgID == "5c0696830db834001d23f5da")
             {
                 __instance.BinocularMaskTexture = Plugin.maskMono; //forces the PNV-10T to use monocular mask
 
             }
-
-            __instance.ApplySettings();
         }
     }
 }

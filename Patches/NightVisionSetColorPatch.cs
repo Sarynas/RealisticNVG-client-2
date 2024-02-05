@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace BorkelRNVG.Patches
 {
-    public class NightVisionSetColorPatch : ModulePatch
+    internal class NightVisionSetColorPatch : ModulePatch
     {
         protected override MethodBase GetTargetMethod()
         {
@@ -50,9 +50,9 @@ namespace BorkelRNVG.Patches
                 //__instance.NoiseScale = 0.95F; -> 0.05 in the bepinex menu, smaller number will mean smaller noise (easier for the user)
                 __instance.NoiseScale = 1f - Plugin.quadNoiseSize.Value;
                 __instance.MaskSize = Plugin.quadMaskSize.Value * Plugin.globalMaskSize.Value;
-                __instance.Color.r = Plugin.quadR.Value / 255f;
-                __instance.Color.g = Plugin.quadG.Value / 255f;
-                __instance.Color.b = Plugin.quadB.Value / 255f;
+                __instance.Color.r = Plugin.quadR.Value / 255;
+                __instance.Color.g = Plugin.quadG.Value / 255;
+                __instance.Color.b = Plugin.quadB.Value / 255;
             }
             //pvs14 id: 57235b6f24597759bf5a30f1
             if (nvgID == "57235b6f24597759bf5a30f1")
