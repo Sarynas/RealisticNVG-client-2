@@ -145,7 +145,6 @@ namespace BorkelRNVG
             new NightVisionAwakePatch().Enable();
             new NightVisionApplySettingsPatch().Enable();
             new NightVisionSetMaskPatch().Enable();
-            //new NightVisionSetColorPatch().Enable();
             new ThermalVisionSetMaskPatch().Enable();
 
             var controller = new GameObject("BorkelRNVG").AddComponent<BorkelRNVGController>();
