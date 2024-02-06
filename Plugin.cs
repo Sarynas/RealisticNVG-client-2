@@ -61,17 +61,17 @@ namespace BorkelRNVG
         public static ConfigEntry<float> pnvNoiseSize;
         public static ConfigEntry<float> pnvGain;
 
-        private static Dictionary<Texture, Texture> maskToLens = [];
+        private static readonly Dictionary<Texture, Texture> maskToLens = [];
 
         private void Awake()
         {
             //############-BEPINEX F12-MENU##############
             //Global multipliers
-            globalMaskSize = Config.Bind("0.Globals (changes apply on NVG reactivation)", "Mask size multiplier", 1f, new ConfigDescription("Applies size multiplier to all masks", new AcceptableValueRange<float>(0f, 2f)));
-            globalGain = Config.Bind("0.Globals (changes apply on NVG reactivation)", "Gain multiplier", 1f, new ConfigDescription("Applies gain multiplier to all NVGs", new AcceptableValueRange<float>(0f, 5f)));
+            globalMaskSize = Config.Bind("0.Globals", "Mask size multiplier", 1f, new ConfigDescription("Applies size multiplier to all masks", new AcceptableValueRange<float>(0f, 2f)));
+            globalGain = Config.Bind("0.Globals", "Gain multiplier", 1f, new ConfigDescription("Applies gain multiplier to all NVGs", new AcceptableValueRange<float>(0f, 5f)));
             //GPNVG-18 config
             quadGain = Config.Bind("1.GPNVG-18", "1.Gain", 2.5f, new ConfigDescription("Light amplification", new AcceptableValueRange<float>(0f, 5f)));
-            quadNoiseIntensity = Config.Bind("1.GPNVG-18", "2.Noise intensity", 0.035f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 0.2f)));
+            quadNoiseIntensity = Config.Bind("1.GPNVG-18", "2.Noise intensity", 0.035f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
             quadNoiseSize = Config.Bind("1.GPNVG-18", "3.Noise scale", 0.05f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 0.99f)));
             quadMaskSize = Config.Bind("1.GPNVG-18", "4.Mask size", 0.96f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 1f)));
             quadR = Config.Bind("1.GPNVG-18", "5.Red", 152f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
@@ -79,7 +79,7 @@ namespace BorkelRNVG
             quadB = Config.Bind("1.GPNVG-18", "7.Blue", 252f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
             //PVS-14 config
             pvsGain = Config.Bind("2.PVS-14", "1.Gain", 2.4f, new ConfigDescription("Light amplification", new AcceptableValueRange<float>(0f, 5f)));
-            pvsNoiseIntensity = Config.Bind("2.PVS-14", "2.Noise intensity", 0.04f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 0.2f)));
+            pvsNoiseIntensity = Config.Bind("2.PVS-14", "2.Noise intensity", 0.04f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
             pvsNoiseSize = Config.Bind("2.PVS-14", "3.Noise scale", 0.05f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 0.99f)));
             pvsMaskSize = Config.Bind("2.PVS-14", "4.Mask size", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 1f)));
             pvsR = Config.Bind("2.PVS-14", "5.Red", 95f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
@@ -87,7 +87,7 @@ namespace BorkelRNVG
             pvsB = Config.Bind("2.PVS-14", "7.Blue", 255f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
             //N-15 config
             nGain = Config.Bind("3.N-15", "1.Gain", 2.1f, new ConfigDescription("Light amplification", new AcceptableValueRange<float>(0f, 5f)));
-            nNoiseIntensity = Config.Bind("3.N-15", "2.Noise intensity", 0.05f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 0.2f)));
+            nNoiseIntensity = Config.Bind("3.N-15", "2.Noise intensity", 0.05f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
             nNoiseSize = Config.Bind("3.N-15", "3.Noise scale", 0.15f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 0.99f)));
             nMaskSize = Config.Bind("3.N-15", "4.Mask size", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 1f)));
             nR = Config.Bind("3.N-15", "5.Red", 60f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
@@ -95,7 +95,7 @@ namespace BorkelRNVG
             nB = Config.Bind("3.N-15", "7.Blue", 100f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
             //PNV-10T config
             pnvGain = Config.Bind("4.PNV-10T", "1.Gain", 1.8f, new ConfigDescription("Light amplification", new AcceptableValueRange<float>(0f, 5f)));
-            pnvNoiseIntensity = Config.Bind("4.PNV-10T", "2.Noise intensity", 0.07f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 0.2f)));
+            pnvNoiseIntensity = Config.Bind("4.PNV-10T", "2.Noise intensity", 0.07f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
             pnvNoiseSize = Config.Bind("4.PNV-10T", "3.Noise scale", 0.2f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 0.99f)));
             pnvMaskSize = Config.Bind("4.PNV-10T", "4.Mask size", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 1f)));
             pnvR = Config.Bind("4.PNV-10T", "5.Red", 60f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
@@ -145,8 +145,11 @@ namespace BorkelRNVG
             new NightVisionAwakePatch().Enable();
             new NightVisionApplySettingsPatch().Enable();
             new NightVisionSetMaskPatch().Enable();
-            new NightVisionSetColorPatch().Enable();
+            //new NightVisionSetColorPatch().Enable();
             new ThermalVisionSetMaskPatch().Enable();
+
+            var controller = new GameObject("BorkelRNVG").AddComponent<BorkelRNVGController>();
+            DontDestroyOnLoad(controller.gameObject);
         }
 
         public static Texture GetMatchingLensMask(Texture mask)
@@ -173,7 +176,7 @@ namespace BorkelRNVG
             return tex;
         }
 
-        private static Shader LoadShader(string shaderName, string bundlePath) //for the thermals
+        private static Shader LoadShader(string shaderName, string bundlePath)
         {
             AssetBundle assetBundle = AssetBundle.LoadFromFile(bundlePath);
             Shader sh = assetBundle.LoadAsset<Shader>(shaderName);
