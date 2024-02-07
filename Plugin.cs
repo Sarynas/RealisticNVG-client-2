@@ -17,6 +17,7 @@ namespace BorkelRNVG
         public static Texture2D maskAnvis;
         public static Texture2D maskBino;
         public static Texture2D maskMono;
+        public static Texture2D maskPnv;
         public static Texture2D maskThermal;
         public static Texture2D maskPixel; //i don't really know if this one does anything
         public static Shader pixelationShader; //Assets/Systems/Effects/Pixelation/Pixelation.shader
@@ -61,7 +62,7 @@ namespace BorkelRNVG
         public static ConfigEntry<float> pnvNoiseSize;
         public static ConfigEntry<float> pnvGain;
 
-        private static readonly Dictionary<Texture, Texture> maskToLens = [];
+        private static readonly Dictionary<Texture, Texture> maskToLens = new Dictionary<Texture, Texture>();
 
         private void Awake()
         {
@@ -69,35 +70,35 @@ namespace BorkelRNVG
             //Global multipliers
             globalMaskSize = Config.Bind("0.Globals", "Mask size multiplier", 1f, new ConfigDescription("Applies size multiplier to all masks", new AcceptableValueRange<float>(0f, 2f)));
             globalGain = Config.Bind("0.Globals", "Gain multiplier", 1f, new ConfigDescription("Applies gain multiplier to all NVGs", new AcceptableValueRange<float>(0f, 5f)));
-            //GPNVG-18 config
+            //GPNVG-18 config. Mask size should be 0.96 times of the rest
             quadGain = Config.Bind("1.GPNVG-18", "1.Gain", 2.5f, new ConfigDescription("Light amplification", new AcceptableValueRange<float>(0f, 5f)));
-            quadNoiseIntensity = Config.Bind("1.GPNVG-18", "2.Noise intensity", 0.035f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-            quadNoiseSize = Config.Bind("1.GPNVG-18", "3.Noise scale", 0.05f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 0.99f)));
-            quadMaskSize = Config.Bind("1.GPNVG-18", "4.Mask size", 0.96f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 1f)));
+            quadNoiseIntensity = Config.Bind("1.GPNVG-18", "2.Noise intensity", 0.2f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            quadNoiseSize = Config.Bind("1.GPNVG-18", "3.Noise scale", 0.1f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 0.99f)));
+            quadMaskSize = Config.Bind("1.GPNVG-18", "4.Mask size", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 2f)));
             quadR = Config.Bind("1.GPNVG-18", "5.Red", 152f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
             quadG = Config.Bind("1.GPNVG-18", "6.Green", 214f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
             quadB = Config.Bind("1.GPNVG-18", "7.Blue", 252f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
             //PVS-14 config
             pvsGain = Config.Bind("2.PVS-14", "1.Gain", 2.4f, new ConfigDescription("Light amplification", new AcceptableValueRange<float>(0f, 5f)));
-            pvsNoiseIntensity = Config.Bind("2.PVS-14", "2.Noise intensity", 0.04f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
-            pvsNoiseSize = Config.Bind("2.PVS-14", "3.Noise scale", 0.05f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 0.99f)));
-            pvsMaskSize = Config.Bind("2.PVS-14", "4.Mask size", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 1f)));
+            pvsNoiseIntensity = Config.Bind("2.PVS-14", "2.Noise intensity", 0.2f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            pvsNoiseSize = Config.Bind("2.PVS-14", "3.Noise scale", 0.1f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 0.99f)));
+            pvsMaskSize = Config.Bind("2.PVS-14", "4.Mask size", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 2f)));
             pvsR = Config.Bind("2.PVS-14", "5.Red", 95f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
             pvsG = Config.Bind("2.PVS-14", "6.Green", 210f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
             pvsB = Config.Bind("2.PVS-14", "7.Blue", 255f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
             //N-15 config
             nGain = Config.Bind("3.N-15", "1.Gain", 2.1f, new ConfigDescription("Light amplification", new AcceptableValueRange<float>(0f, 5f)));
-            nNoiseIntensity = Config.Bind("3.N-15", "2.Noise intensity", 0.05f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            nNoiseIntensity = Config.Bind("3.N-15", "2.Noise intensity", 0.3f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
             nNoiseSize = Config.Bind("3.N-15", "3.Noise scale", 0.15f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 0.99f)));
-            nMaskSize = Config.Bind("3.N-15", "4.Mask size", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 1f)));
+            nMaskSize = Config.Bind("3.N-15", "4.Mask size", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 2f)));
             nR = Config.Bind("3.N-15", "5.Red", 60f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
             nG = Config.Bind("3.N-15", "6.Green", 235f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
             nB = Config.Bind("3.N-15", "7.Blue", 100f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
             //PNV-10T config
             pnvGain = Config.Bind("4.PNV-10T", "1.Gain", 1.8f, new ConfigDescription("Light amplification", new AcceptableValueRange<float>(0f, 5f)));
-            pnvNoiseIntensity = Config.Bind("4.PNV-10T", "2.Noise intensity", 0.07f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            pnvNoiseIntensity = Config.Bind("4.PNV-10T", "2.Noise intensity", 0.3f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
             pnvNoiseSize = Config.Bind("4.PNV-10T", "3.Noise scale", 0.2f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 0.99f)));
-            pnvMaskSize = Config.Bind("4.PNV-10T", "4.Mask size", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 1f)));
+            pnvMaskSize = Config.Bind("4.PNV-10T", "4.Mask size", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 2f)));
             pnvR = Config.Bind("4.PNV-10T", "5.Red", 60f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
             pnvG = Config.Bind("4.PNV-10T", "6.Green", 210f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
             pnvB = Config.Bind("4.PNV-10T", "7.Blue", 60f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
@@ -109,6 +110,7 @@ namespace BorkelRNVG
             string anvisPath = $"{pluginDirectory}\\MaskTextures\\mask_anvis.png";
             string binoPath = $"{pluginDirectory}\\MaskTextures\\mask_binocular.png";
             string monoPath = $"{pluginDirectory}\\MaskTextures\\mask_old_monocular.png";
+            string pnvPath = $"{pluginDirectory}\\MaskTextures\\mask_pnv.png";
             string thermalPath = $"{pluginDirectory}\\MaskTextures\\mask_thermal.png";
             string pixelPath = $"{pluginDirectory}\\MaskTextures\\pixel_mask1.png";
             string lensAnvisPath = $"{pluginDirectory}\\LensTextures\\lens_anvis.png";
@@ -117,12 +119,13 @@ namespace BorkelRNVG
             maskAnvis = LoadPNG(anvisPath);
             maskBino = LoadPNG(binoPath);
             maskMono = LoadPNG(monoPath);
+            maskPnv = LoadPNG(pnvPath);
             maskThermal = LoadPNG(thermalPath);
             maskPixel = LoadPNG(pixelPath);//might not do anything really
             lensAnvis= LoadPNG(lensAnvisPath);
             lensBino= LoadPNG(lensBinoPath);
             lensMono= LoadPNG(lensMonoPath);
-            if (maskAnvis == null || maskBino == null || maskMono == null || maskThermal == null || maskPixel == null
+            if (maskAnvis == null || maskBino == null || maskMono == null || maskPnv == null || maskThermal == null || maskPixel == null
                 || lensAnvis == null || lensBino == null || lensMono == null)
             {
                 Logger.LogError($"Error loading PNGs. Patches will be disabled.");
@@ -132,6 +135,7 @@ namespace BorkelRNVG
             maskToLens.Add(maskAnvis, lensAnvis);
             maskToLens.Add(maskBino, lensBino);
             maskToLens.Add(maskMono, lensMono);
+            maskToLens.Add(maskPnv, lensMono);
 
             string nightVisionShaderPath = $"{pluginDirectory}\\borkel_realisticnvg_shaders";
             pixelationShader = LoadShader("Assets/Systems/Effects/Pixelation/Pixelation.shader", eftShaderPath); //to pixelate the T-7
