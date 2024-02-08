@@ -61,8 +61,15 @@ namespace BorkelRNVG
         public static ConfigEntry<float> pnvNoiseIntensity;
         public static ConfigEntry<float> pnvNoiseSize;
         public static ConfigEntry<float> pnvGain;
-
+        //sprint patch stuff
+        public static bool isSprinting;
+        public static bool wasSprinting = false;
+        public static Dictionary<string, bool> LightDictionary = new Dictionary<string, bool>();
+        //UltimateBloom stuff
+        public static UltimateBloom UltimateBloomInstance;
+        
         private static readonly Dictionary<Texture, Texture> maskToLens = new Dictionary<Texture, Texture>();
+
 
         private void Awake()
         {
@@ -150,6 +157,8 @@ namespace BorkelRNVG
             new NightVisionApplySettingsPatch().Enable();
             new NightVisionSetMaskPatch().Enable();
             new ThermalVisionSetMaskPatch().Enable();
+            new SprintPatch().Enable();
+            new NightVisionMethod_1().Enable(); //not working
 
             var controller = new GameObject("BorkelRNVG").AddComponent<BorkelRNVGController>();
             DontDestroyOnLoad(controller.gameObject);

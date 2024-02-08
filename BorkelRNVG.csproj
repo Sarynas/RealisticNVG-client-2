@@ -30,5 +30,8 @@
     <Reference Include="Comfort">
       <HintPath>..\..\..\EscapeFromTarkov_Data\Managed\Comfort.dll</HintPath>
     </Reference>
+    <Reference Include="ItemComponent.Types">
+      <HintPath>..\..\..\EscapeFromTarkov_Data\Managed\ItemComponent.Types.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

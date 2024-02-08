@@ -17,11 +17,12 @@ namespace BorkelRNVG.Patches
         private static void PatchPrefix(NightVision __instance, ref Shader ___Shader)
         {
             //replaces the masks in the class NightVision and applies visual changes
+            Plugin.UltimateBloomInstance = __instance.GetComponent<UltimateBloom>(); //to disable it when NVG turns ON
+            //Plugin.UltimateBloomIntensity = Plugin.UltimateBloomInstance.m_BloomIntensity;
             __instance.AnvisMaskTexture = Plugin.maskAnvis;
             __instance.BinocularMaskTexture = Plugin.maskBino;
             __instance.OldMonocularMaskTexture = Plugin.maskMono;
             __instance.ThermalMaskTexture = Plugin.maskMono;
-
             ___Shader = Plugin.nightVisionShader;
         }
     }
