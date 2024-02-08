@@ -38,10 +38,9 @@ namespace BorkelRNVG.Patches
         [PatchPostfix]
         private static void PatchPostfix(ref Player __instance)
         {
-            if (!__instance.IsYourPlayer || __instance.CurrentManagedState.Name.ToString() == "Jump")
+            if (!__instance.IsYourPlayer || __instance.CurrentManagedState.Name.ToString() == "Jump" || !Plugin.enableSprintPatch.Value)
                 return;
             Plugin.isSprinting = __instance.IsSprintEnabled;
-            //Logger.LogMessage($"MOVEMENT: {__instance.CurrentManagedState.Name}");
             FirearmController fc = __instance.HandsController as FirearmController;
             if (Plugin.isSprinting != Plugin.wasSprinting) //if the player goes from sprinting to not sprinting, or from not sprinting to sprinting
             {
@@ -64,7 +63,7 @@ namespace BorkelRNVG.Patches
                         {
                             state = false;
                             Plugin.LightDictionary[mod.Id] = true;
-                            fc.StartCoroutine(ToggleLaserWithDelay(fc, light, state, 0f));
+                            fc.StartCoroutine(ToggleLaserWithDelay(fc, light, state, 0.1f));
                         }
                     }
                 }
