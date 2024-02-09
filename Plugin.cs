@@ -10,7 +10,7 @@ using UnityStandardAssets.ImageEffects;
 
 namespace BorkelRNVG
 {
-    [BepInPlugin("com.borkel.nvgmasks", "Borkel's Realistic NVGs", "1.4.1")]
+    [BepInPlugin("com.borkel.nvgmasks", "Borkel's Realistic NVGs", "1.4.2")]
     public class Plugin : BaseUnityPlugin
     {
         public static readonly string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -70,6 +70,7 @@ namespace BorkelRNVG
         //UltimateBloom stuff
         public static BloomAndFlares BloomAndFlaresInstance;
         public static UltimateBloom UltimateBloomInstance;
+
 
         private static readonly Dictionary<Texture, Texture> maskToLens = new Dictionary<Texture, Texture>();
 

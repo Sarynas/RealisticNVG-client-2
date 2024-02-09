@@ -40,7 +40,6 @@ namespace BorkelRNVG.Patches
             {
                 return;
             }
-
             string nvgID = player.NightVisionObserver.Component.Item.TemplateId; //ID of the nvg
             //n15 id: 5c066e3a0db834001b7353f0
             if (nvgID == "5c066e3a0db834001b7353f0")

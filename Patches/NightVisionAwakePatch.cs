@@ -14,7 +14,7 @@ namespace BorkelRNVG.Patches
         }
 
         [PatchPrefix]
-        private static void PatchPrefix(NightVision __instance, ref Shader ___Shader)
+        private static void PatchPrefix(NightVision __instance, ref Shader ___Shader) //___Shader is the same as __instance.Shader
         {
             //replaces the masks in the class NightVision and applies visual changes
             //Plugin.UltimateBloomInstance = __instance.GetComponent<UltimateBloom>(); //to disable it when NVG turns ON
@@ -23,7 +23,8 @@ namespace BorkelRNVG.Patches
             __instance.BinocularMaskTexture = Plugin.maskBino;
             __instance.OldMonocularMaskTexture = Plugin.maskMono;
             __instance.ThermalMaskTexture = Plugin.maskMono;
-            ___Shader = Plugin.nightVisionShader;
+            if(__instance.Color.g > 0.9f) //this prevents the vulcan nv scope from using the custom shader
+                ___Shader = Plugin.nightVisionShader;
         }
     }
 }
