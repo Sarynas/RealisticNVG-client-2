@@ -19,11 +19,12 @@ namespace BorkelRNVG.Patches
         }
 
         [PatchPrefix]
-        private static bool PatchPrefix(UltimateBloom __instance)
+        private static void PatchPrefix(UltimateBloom __instance)
         {
-            Plugin.UltimateBloomInstance = __instance; //to disable it when NVG turns ON
+            //Plugin.UltimateBloomInstance = __instance; //to disable it when NVG turns ON
             //__instance.gameObject.SetActive(false);
-            return true;
+            //return true;
+            //__instance.m_FlareMask = Plugin.maskFlare;
             //Plugin.UltimateBloomInstance.gameObject.SetActive(false);
         }
     }

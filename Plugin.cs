@@ -10,7 +10,7 @@ using UnityStandardAssets.ImageEffects;
 
 namespace BorkelRNVG
 {
-    [BepInPlugin("com.borkel.nvgmasks", "Borkel's Realistic NVGs", "1.4.2")]
+    [BepInPlugin("com.borkel.nvgmasks", "Borkel's Realistic NVGs", "1.4.3")]
     public class Plugin : BaseUnityPlugin
     {
         public static readonly string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -21,12 +21,14 @@ namespace BorkelRNVG
         public static Texture2D maskPnv;
         public static Texture2D maskThermal;
         public static Texture2D maskPixel; //i don't really know if this one does anything
+        //public static Texture2D maskFlare;
         public static Shader pixelationShader; //Assets/Systems/Effects/Pixelation/Pixelation.shader
         public static Shader nightVisionShader; // Assets/Shaders/CustomNightVision.shader
         //lens textures
         public static Texture2D lensAnvis;
         public static Texture2D lensBino;
         public static Texture2D lensMono;
+        public static Texture2D lensPnv;
         //global config stuff
         public static ConfigEntry<float> globalMaskSize;
         public static ConfigEntry<float> globalGain;
@@ -129,6 +131,8 @@ namespace BorkelRNVG
             string lensAnvisPath = $"{pluginDirectory}\\LensTextures\\lens_anvis.png";
             string lensBinoPath = $"{pluginDirectory}\\LensTextures\\lens_binocular.png";
             string lensMonoPath = $"{pluginDirectory}\\LensTextures\\lens_old_monocular.png";
+            string lensPnvPath = $"{pluginDirectory}\\LensTextures\\lens_pnv.png";
+            //string flarePath = $"{pluginDirectory}\\MaskTextures\\FlareMask.png";
             maskAnvis = LoadPNG(anvisPath);
             maskBino = LoadPNG(binoPath);
             maskMono = LoadPNG(monoPath);
@@ -138,8 +142,10 @@ namespace BorkelRNVG
             lensAnvis= LoadPNG(lensAnvisPath);
             lensBino= LoadPNG(lensBinoPath);
             lensMono= LoadPNG(lensMonoPath);
+            lensPnv= LoadPNG(lensPnvPath);
+            //maskFlare= LoadPNG(flarePath);
             if (maskAnvis == null || maskBino == null || maskMono == null || maskPnv == null || maskThermal == null || maskPixel == null
-                || lensAnvis == null || lensBino == null || lensMono == null)
+                || lensAnvis == null || lensBino == null || lensMono == null || lensPnv == null)
             {
                 Logger.LogError($"Error loading PNGs. Patches will be disabled.");
                 return;
@@ -148,7 +154,7 @@ namespace BorkelRNVG
             maskToLens.Add(maskAnvis, lensAnvis);
             maskToLens.Add(maskBino, lensBino);
             maskToLens.Add(maskMono, lensMono);
-            maskToLens.Add(maskPnv, lensMono);
+            maskToLens.Add(maskPnv, lensPnv);
 
             string nightVisionShaderPath = $"{pluginDirectory}\\borkel_realisticnvg_shaders";
             pixelationShader = LoadShader("Assets/Systems/Effects/Pixelation/Pixelation.shader", eftShaderPath); //to pixelate the T-7
