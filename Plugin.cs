@@ -10,7 +10,7 @@ using UnityStandardAssets.ImageEffects;
 
 namespace BorkelRNVG
 {
-    [BepInPlugin("com.borkel.nvgmasks", "Borkel's Realistic NVGs", "1.4.3")]
+    [BepInPlugin("com.borkel.nvgmasks", "Borkel's Realistic NVGs", "1.4.4")]
     public class Plugin : BaseUnityPlugin
     {
         public static readonly string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -173,6 +173,7 @@ namespace BorkelRNVG
             //new WeaponSwapPatch().Enable(); //not working
             //new UltimateBloomPatch().Enable(); //works if Awake is prevented from running
             //new NightVisionMethod_1().Enable(); //not working
+            //new LevelSettingsPatch().Enable();
 
             var controller = new GameObject("BorkelRNVG").AddComponent<BorkelRNVGController>();
             DontDestroyOnLoad(controller.gameObject);

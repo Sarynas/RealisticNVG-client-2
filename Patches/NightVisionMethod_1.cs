@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace BorkelRNVG.Patches
 {
@@ -24,7 +25,7 @@ namespace BorkelRNVG.Patches
         {
             Logger.LogMessage($"a-----");
             Logger.LogMessage($"NVG ON? {__0}");
-            if (Plugin.UltimateBloomInstance == null) //instance from UltimateBloomPatch or NightVisionAwakePatch
+            /*if (Plugin.UltimateBloomInstance == null) //instance from UltimateBloomPatch or NightVisionAwakePatch
             {
                 Logger.LogMessage($"UB instance null");
                 return;
@@ -34,7 +35,7 @@ namespace BorkelRNVG.Patches
                 //Plugin.UltimateBloomInstance.m_BloomIntensity = 0f;
             else
                 Plugin.UltimateBloomInstance.enabled = true;
-            Logger.LogMessage($"-----a");
+            Logger.LogMessage($"-----a");*/
         }
     }
 }
