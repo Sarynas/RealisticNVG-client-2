@@ -10,7 +10,7 @@ using UnityStandardAssets.ImageEffects;
 
 namespace BorkelRNVG
 {
-    [BepInPlugin("com.borkel.nvgmasks", "Borkel's Realistic NVGs", "1.4.4")]
+    [BepInPlugin("com.borkel.nvgmasks", "Borkel's Realistic NVGs", "1.4.5")]
     public class Plugin : BaseUnityPlugin
     {
         public static readonly string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -81,7 +81,7 @@ namespace BorkelRNVG
         {
             //############-BEPINEX F12-MENU##############
             //Mitigations
-            enableSprintPatch = Config.Bind("0.Mitigations","1.Sprint toggles tactical devices", true, "Sprinting will toggle tactical devices until you stop sprinting, this mitigates the IR lights being visible outside of the NVGs");
+            enableSprintPatch = Config.Bind("0.Mitigations","1.Sprint toggles tactical devices", false, "Sprinting will toggle tactical devices until you stop sprinting, this mitigates the IR lights being visible outside of the NVGs. I recommend enabling this feature.");
             //Global multipliers
             globalMaskSize = Config.Bind("1.Globals", "Mask size multiplier", 1f, new ConfigDescription("Applies size multiplier to all masks", new AcceptableValueRange<float>(0f, 2f)));
             globalGain = Config.Bind("1.Globals", "Gain multiplier", 1f, new ConfigDescription("Applies gain multiplier to all NVGs", new AcceptableValueRange<float>(0f, 5f)));
@@ -103,7 +103,7 @@ namespace BorkelRNVG
             pvsB = Config.Bind("3.PVS-14", "7.Blue", 255f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
             //N-15 config
             nGain = Config.Bind("4.N-15", "1.Gain", 2.1f, new ConfigDescription("Light amplification", new AcceptableValueRange<float>(0f, 5f)));
-            nNoiseIntensity = Config.Bind("4.N-15", "2.Noise intensity", 0.3f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
+            nNoiseIntensity = Config.Bind("4.N-15", "2.Noise intensity", 0.25f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 1f)));
             nNoiseSize = Config.Bind("4.N-15", "3.Noise scale", 0.15f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 0.99f)));
             nMaskSize = Config.Bind("4.N-15", "4.Mask size", 1f, new ConfigDescription("", new AcceptableValueRange<float>(0.01f, 2f)));
             nR = Config.Bind("4.N-15", "5.Red", 60f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
