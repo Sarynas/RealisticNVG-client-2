@@ -38,7 +38,8 @@ namespace BorkelRNVG.Patches
         [PatchPostfix]
         private static void PatchPostfix(ref Player __instance)
         {
-            if (!__instance.IsYourPlayer || __instance.CurrentManagedState.Name.ToString() == "Jump" || !Plugin.enableSprintPatch.Value)
+            if (!__instance.IsYourPlayer || __instance.CurrentManagedState==null ||
+                __instance.CurrentManagedState.Name.ToString() == "Jump" || !Plugin.enableSprintPatch.Value || __instance.HandsController==null)
                 return;
             Plugin.isSprinting = __instance.IsSprintEnabled;
             FirearmController fc = __instance.HandsController as FirearmController;

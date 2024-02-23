@@ -37,7 +37,7 @@ namespace BorkelRNVG.Patches
             {
                 material.SetTexture(maskId, lensMask);
             }
-            
+
             material.SetFloat(invMaskSizeId, 1f / __instance.MaskSize);
 
             float invAspectValue = ___Mask != null
