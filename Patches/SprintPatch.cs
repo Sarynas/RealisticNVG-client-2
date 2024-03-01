@@ -43,6 +43,8 @@ namespace BorkelRNVG.Patches
                 return;
             Plugin.isSprinting = __instance.IsSprintEnabled;
             FirearmController fc = __instance.HandsController as FirearmController;
+            if (fc == null)
+                return;
             if (Plugin.isSprinting != Plugin.wasSprinting) //if the player goes from sprinting to not sprinting, or from not sprinting to sprinting
             {
                 foreach(Mod mod in fc.Item.Mods)

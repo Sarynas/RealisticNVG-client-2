@@ -10,32 +10,55 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+//using WindowsInput;
+//using WindowsInput.Native;
+using EFT.InventoryLogic;
+using Comfort.Common;
+using System.Collections;
+using EFT;
 
 namespace BorkelRNVG.Patches
 {
-    internal class NightVisionMethod_1 : ModulePatch //method_1 gets called when NVGs turn off or on, supposed to turn off UltimateBloom when on but doesnt work
+    internal class NightVisionMethod_1 : ModulePatch //method_1 gets called when NVGs turn off or on, tells the reshade to activate
     {
+        /*private static IEnumerator activateReshade(InputSimulator poop, VirtualKeyCode key)
+        {
+            poop.Keyboard.KeyDown(key);
+            yield return new WaitForSeconds(0.1f);
+            poop.Keyboard.KeyUp(key);
+        }*/
         protected override MethodBase GetTargetMethod()
         {
             return AccessTools.Method(typeof(NightVision), "method_1");
         }
 
-        [PatchPrefix]
-        private static void PatchPrefix(NightVision __instance, bool __0) //if i use the name of the parameter it doesn't work, __0 works correctly
+        [PatchPostfix]
+        private static void PatchPostfix(NightVision __instance, bool __0) //if i use the name of the parameter it doesn't work, __0 works correctly
         {
-            Logger.LogMessage($"a-----");
-            Logger.LogMessage($"NVG ON? {__0}");
-            /*if (Plugin.UltimateBloomInstance == null) //instance from UltimateBloomPatch or NightVisionAwakePatch
+            /*var gameWorld = Singleton<GameWorld>.Instance;
+            if (gameWorld == null)
             {
-                Logger.LogMessage($"UB instance null");
                 return;
             }
-            if (__0)//if on = true
-                Plugin.UltimateBloomInstance.enabled = false;
-                //Plugin.UltimateBloomInstance.m_BloomIntensity = 0f;
-            else
-                Plugin.UltimateBloomInstance.enabled = true;
-            Logger.LogMessage($"-----a");*/
+
+            var player = gameWorld.MainPlayer;
+            if (player == null)
+            {
+                return;
+            }
+
+            if (player.NightVisionObserver.Component == null
+                || player.NightVisionObserver.Component.Item == null
+                || player.NightVisionObserver.Component.Item.TemplateId == null)
+            {
+                return;
+            }
+            InputSimulator poop = new InputSimulator();
+            VirtualKeyCode key = Plugin.nvgKey;
+            if(__0)
+                __instance.StartCoroutine(activateReshade(poop, key));
+            else if (!__0)
+                __instance.StartCoroutine(activateReshade(poop, VirtualKeyCode.NUMPAD5));*/
         }
     }
 }

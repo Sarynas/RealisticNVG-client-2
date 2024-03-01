@@ -7,10 +7,11 @@ using System.IO;
 using System.Reflection;
 using UnityEngine;
 using UnityStandardAssets.ImageEffects;
+//using WindowsInput.Native;
 
 namespace BorkelRNVG
 {
-    [BepInPlugin("com.borkel.nvgmasks", "Borkel's Realistic NVGs", "1.4.6")]
+    [BepInPlugin("com.borkel.nvgmasks", "Borkel's Realistic NVGs", "1.4.7")]
     public class Plugin : BaseUnityPlugin
     {
         public static readonly string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -66,13 +67,14 @@ namespace BorkelRNVG
         public static ConfigEntry<float> pnvGain;
         //sprint patch stuff
         public static ConfigEntry<bool> enableSprintPatch;
-        public static bool isSprinting;
+        public static bool isSprinting = false;
         public static bool wasSprinting = false;
         public static Dictionary<string, bool> LightDictionary = new Dictionary<string, bool>();
         //UltimateBloom stuff
         public static BloomAndFlares BloomAndFlaresInstance;
         public static UltimateBloom UltimateBloomInstance;
-
+        //Reshade stuff
+        //public static VirtualKeyCode nvgKey = VirtualKeyCode.NUMPAD0;
 
         private static readonly Dictionary<Texture, Texture> maskToLens = new Dictionary<Texture, Texture>();
 
@@ -172,7 +174,7 @@ namespace BorkelRNVG
             new SprintPatch().Enable();
             //new WeaponSwapPatch().Enable(); //not working
             //new UltimateBloomPatch().Enable(); //works if Awake is prevented from running
-            //new NightVisionMethod_1().Enable(); //not working
+            //new NightVisionMethod_1().Enable(); //reshade
             //new LevelSettingsPatch().Enable();
 
             var controller = new GameObject("BorkelRNVG").AddComponent<BorkelRNVGController>();
