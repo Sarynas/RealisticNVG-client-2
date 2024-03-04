@@ -10,8 +10,8 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-//using WindowsInput;
-//using WindowsInput.Native;
+using WindowsInput;
+using WindowsInput.Native;
 using EFT.InventoryLogic;
 using Comfort.Common;
 using System.Collections;
@@ -21,12 +21,12 @@ namespace BorkelRNVG.Patches
 {
     internal class NightVisionMethod_1 : ModulePatch //method_1 gets called when NVGs turn off or on, tells the reshade to activate
     {
-        /*private static IEnumerator activateReshade(InputSimulator poop, VirtualKeyCode key)
+        private static IEnumerator activateReshade(InputSimulator poop, VirtualKeyCode key)
         {
             poop.Keyboard.KeyDown(key);
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.2f);
             poop.Keyboard.KeyUp(key);
-        }*/
+        }
         protected override MethodBase GetTargetMethod()
         {
             return AccessTools.Method(typeof(NightVision), "method_1");
@@ -35,7 +35,9 @@ namespace BorkelRNVG.Patches
         [PatchPostfix]
         private static void PatchPostfix(NightVision __instance, bool __0) //if i use the name of the parameter it doesn't work, __0 works correctly
         {
-            /*var gameWorld = Singleton<GameWorld>.Instance;
+            if (!Plugin.enableReshade.Value)
+                return;
+            var gameWorld = Singleton<GameWorld>.Instance;
             if (gameWorld == null)
             {
                 return;
@@ -58,7 +60,7 @@ namespace BorkelRNVG.Patches
             if(__0)
                 __instance.StartCoroutine(activateReshade(poop, key));
             else if (!__0)
-                __instance.StartCoroutine(activateReshade(poop, VirtualKeyCode.NUMPAD5));*/
+                __instance.StartCoroutine(activateReshade(poop, VirtualKeyCode.NUMPAD5));
         }
     }
 }

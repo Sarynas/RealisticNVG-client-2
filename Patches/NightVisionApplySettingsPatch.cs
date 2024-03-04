@@ -91,7 +91,7 @@ namespace BorkelRNVG.Patches
                 nightVision.Color.r = Plugin.quadR.Value / 255;
                 nightVision.Color.g = Plugin.quadG.Value / 255;
                 nightVision.Color.b = Plugin.quadB.Value / 255;
-                //Plugin.nvgKey = VirtualKeyCode.NUMPAD9;
+                Plugin.nvgKey = VirtualKeyCode.NUMPAD9;
             }
             // PVS-14
             if (nvgID == "57235b6f24597759bf5a30f1")
@@ -106,7 +106,7 @@ namespace BorkelRNVG.Patches
                 nightVision.Color.r = Plugin.pvsR.Value / 255;
                 nightVision.Color.g = Plugin.pvsG.Value / 255;
                 nightVision.Color.b = Plugin.pvsB.Value / 255;
-                //Plugin.nvgKey = VirtualKeyCode.NUMPAD8;
+                Plugin.nvgKey = VirtualKeyCode.NUMPAD8;
             }
             // N-15
             if (nvgID == "5c066e3a0db834001b7353f0")
@@ -121,7 +121,7 @@ namespace BorkelRNVG.Patches
                 nightVision.Color.r = Plugin.nR.Value / 255;
                 nightVision.Color.g = Plugin.nG.Value / 255;
                 nightVision.Color.b = Plugin.nB.Value / 255;
-                //Plugin.nvgKey = VirtualKeyCode.NUMPAD7;
+                Plugin.nvgKey = VirtualKeyCode.NUMPAD7;
 
             }
             // PNV-10T
@@ -137,7 +137,7 @@ namespace BorkelRNVG.Patches
                 nightVision.Color.r = Plugin.pnvR.Value / 255;
                 nightVision.Color.g = Plugin.pnvG.Value / 255;
                 nightVision.Color.b = Plugin.pnvB.Value / 255;
-                //Plugin.nvgKey = VirtualKeyCode.NUMPAD6;
+                Plugin.nvgKey = VirtualKeyCode.NUMPAD6;
             }
         }
     }

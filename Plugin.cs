@@ -7,11 +7,11 @@ using System.IO;
 using System.Reflection;
 using UnityEngine;
 using UnityStandardAssets.ImageEffects;
-//using WindowsInput.Native;
+using WindowsInput.Native;
 
 namespace BorkelRNVG
 {
-    [BepInPlugin("com.borkel.nvgmasks", "Borkel's Realistic NVGs", "1.4.7")]
+    [BepInPlugin("com.borkel.nvgmasks", "Borkel's Realistic NVGs", "1.4.8")]
     public class Plugin : BaseUnityPlugin
     {
         public static readonly string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -74,7 +74,8 @@ namespace BorkelRNVG
         public static BloomAndFlares BloomAndFlaresInstance;
         public static UltimateBloom UltimateBloomInstance;
         //Reshade stuff
-        //public static VirtualKeyCode nvgKey = VirtualKeyCode.NUMPAD0;
+        public static VirtualKeyCode nvgKey = VirtualKeyCode.NUMPAD0;
+        public static ConfigEntry<bool> enableReshade;
 
         private static readonly Dictionary<Texture, Texture> maskToLens = new Dictionary<Texture, Texture>();
 
@@ -82,8 +83,9 @@ namespace BorkelRNVG
         private void Awake()
         {
             //############-BEPINEX F12-MENU##############
-            //Mitigations
-            enableSprintPatch = Config.Bind("0.Mitigations","1.Sprint toggles tactical devices", false, "Sprinting will toggle tactical devices until you stop sprinting, this mitigates the IR lights being visible outside of the NVGs. I recommend enabling this feature.");
+            //Stuff
+            enableSprintPatch = Config.Bind("0.Stuff", "Sprint toggles tactical devices", false, "Sprinting will toggle tactical devices until you stop sprinting, this mitigates the IR lights being visible outside of the NVGs. I recommend enabling this feature.");
+            enableReshade = Config.Bind("0.Stuff", "Enable ReShade input simulation", false, "Will enable the input simulation to enable the ReShade, will use numpad keys. GPNVG-18 -> numpad 9. PVS-14 -> numpad 8. N-15 -> numpad 7. PNV-10T -> numpad 6. Off -> numpad 5. Only enable if you've installed the ReShade.");
             //Global multipliers
             globalMaskSize = Config.Bind("1.Globals", "Mask size multiplier", 1.07f, new ConfigDescription("Applies size multiplier to all masks", new AcceptableValueRange<float>(0f, 2f)));
             globalGain = Config.Bind("1.Globals", "Gain multiplier", 1f, new ConfigDescription("Applies gain multiplier to all NVGs", new AcceptableValueRange<float>(0f, 5f)));
@@ -121,7 +123,7 @@ namespace BorkelRNVG
             pnvB = Config.Bind("5.PNV-10T", "7.Blue", 60f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
             //###########################################
 
-            string pluginDirectory = $"{directory}\\BorkelRNVG";//plugin folder
+            string pluginDirectory = $"{directory}";//plugin folder
             string eftShaderPath = Path.Combine(Environment.CurrentDirectory, "EscapeFromTarkov_Data", "StreamingAssets", "Windows", "shaders");
             //loading from PNGs, like Fontaine suggested
             string anvisPath = $"{pluginDirectory}\\MaskTextures\\mask_anvis.png";
@@ -174,7 +176,7 @@ namespace BorkelRNVG
             new SprintPatch().Enable();
             //new WeaponSwapPatch().Enable(); //not working
             //new UltimateBloomPatch().Enable(); //works if Awake is prevented from running
-            //new NightVisionMethod_1().Enable(); //reshade
+            new NightVisionMethod_1().Enable(); //reshade
             //new LevelSettingsPatch().Enable();
 
             var controller = new GameObject("BorkelRNVG").AddComponent<BorkelRNVGController>();
