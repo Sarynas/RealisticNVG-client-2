@@ -35,6 +35,7 @@ namespace BorkelRNVG.Patches
         [PatchPostfix]
         private static void PatchPostfix(NightVision __instance, bool __0) //if i use the name of the parameter it doesn't work, __0 works correctly
         {
+            Plugin.nvgOn = __0;
             if (!Plugin.enableReshade.Value)
                 return;
             var gameWorld = Singleton<GameWorld>.Instance;

@@ -23,6 +23,7 @@ namespace BorkelRNVG.Patches
             __instance.BinocularMaskTexture = Plugin.maskBino;
             __instance.OldMonocularMaskTexture = Plugin.maskMono;
             __instance.ThermalMaskTexture = Plugin.maskMono;
+            __instance.Noise = Plugin.Noise;
             if(__instance.Color.g > 0.9f) //this prevents the vulcan nv scope from using the custom shader
                 ___Shader = Plugin.nightVisionShader;
         }

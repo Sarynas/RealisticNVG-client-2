@@ -81,12 +81,12 @@ namespace BorkelRNVG.Patches
             if (nvgID == "5c0558060db834001b735271")
             {
                 // vanilla intensity:2.27
-                nightVision.Intensity = Plugin.quadGain.Value * Plugin.globalGain.Value;
+                nightVision.Intensity = Plugin.quadGain.Value * Plugin.globalGain.Value + Plugin.quadGain.Value * Plugin.globalGain.Value * 0.3f * Plugin.gatingLevel.Value/2;
                 // vanilla noiseintensity:0.02
-                nightVision.NoiseIntensity = Plugin.quadNoiseIntensity.Value;
+                nightVision.NoiseIntensity = 2 * Plugin.quadNoiseIntensity.Value;
                 // vanilla noisescale:5 bigger number means smaller noise
                 //nightVision.NoiseScale = 0.95F; -> 0.05 in the bepinex menu, smaller number will mean smaller noise (easier for the user)
-                nightVision.NoiseScale = 1f - Plugin.quadNoiseSize.Value;
+                nightVision.NoiseScale = 2f - 2 * Plugin.quadNoiseSize.Value;
                 nightVision.MaskSize = Plugin.quadMaskSize.Value * Plugin.globalMaskSize.Value;
                 nightVision.Color.r = Plugin.quadR.Value / 255;
                 nightVision.Color.g = Plugin.quadG.Value / 255;
@@ -97,11 +97,11 @@ namespace BorkelRNVG.Patches
             if (nvgID == "57235b6f24597759bf5a30f1")
             {
                 //vanilla intensity:2.27
-                nightVision.Intensity = Plugin.pvsGain.Value * Plugin.globalGain.Value;
+                nightVision.Intensity = Plugin.pvsGain.Value * Plugin.globalGain.Value + Plugin.pvsGain.Value * Plugin.globalGain.Value * 0.3f * Plugin.gatingLevel.Value/2;
                 //vanilla noiseintensity:0.02
-                nightVision.NoiseIntensity = Plugin.pvsNoiseIntensity.Value;
+                nightVision.NoiseIntensity = 2 * Plugin.pvsNoiseIntensity.Value;
                 //vanilla noisescale:5
-                nightVision.NoiseScale = 1f - Plugin.pvsNoiseSize.Value;
+                nightVision.NoiseScale = 2f - 2 * Plugin.pvsNoiseSize.Value;
                 nightVision.MaskSize = Plugin.pvsMaskSize.Value * Plugin.globalMaskSize.Value;
                 nightVision.Color.r = Plugin.pvsR.Value / 255;
                 nightVision.Color.g = Plugin.pvsG.Value / 255;
@@ -112,11 +112,11 @@ namespace BorkelRNVG.Patches
             if (nvgID == "5c066e3a0db834001b7353f0")
             {
                 //vanilla intensity:1.8
-                nightVision.Intensity = Plugin.nGain.Value * Plugin.globalGain.Value;
+                nightVision.Intensity = Plugin.nGain.Value * Plugin.globalGain.Value + Plugin.nGain.Value * Plugin.globalGain.Value * 0.3f * Plugin.gatingLevel.Value/2;
                 //vanilla noiseintensity:0.04
-                nightVision.NoiseIntensity = Plugin.nNoiseIntensity.Value;
+                nightVision.NoiseIntensity = 2 * Plugin.nNoiseIntensity.Value;
                 //vanilla noisescale:2
-                nightVision.NoiseScale = 1f - Plugin.nNoiseSize.Value;
+                nightVision.NoiseScale = 2f - 2*Plugin.nNoiseSize.Value;
                 nightVision.MaskSize = Plugin.nMaskSize.Value * Plugin.globalMaskSize.Value;
                 nightVision.Color.r = Plugin.nR.Value / 255;
                 nightVision.Color.g = Plugin.nG.Value / 255;
@@ -128,11 +128,11 @@ namespace BorkelRNVG.Patches
             if (nvgID == "5c0696830db834001d23f5da")
             {
                 //vanilla intensity:2
-                nightVision.Intensity = Plugin.pnvGain.Value * Plugin.globalGain.Value;
+                nightVision.Intensity = Plugin.pnvGain.Value * Plugin.globalGain.Value + Plugin.pnvGain.Value * Plugin.globalGain.Value * 0.3f * Plugin.gatingLevel.Value/2;
                 //vanilla noiseintensity:0.05
-                nightVision.NoiseIntensity = Plugin.pnvNoiseIntensity.Value;
+                nightVision.NoiseIntensity = 2*Plugin.pnvNoiseIntensity.Value;
                 //vanilla noisescale:1
-                nightVision.NoiseScale = 1f - Plugin.pnvNoiseSize.Value;
+                nightVision.NoiseScale = 2f - 2*Plugin.pnvNoiseSize.Value;
                 nightVision.MaskSize = Plugin.pnvMaskSize.Value * Plugin.globalMaskSize.Value;
                 nightVision.Color.r = Plugin.pnvR.Value / 255;
                 nightVision.Color.g = Plugin.pnvG.Value / 255;

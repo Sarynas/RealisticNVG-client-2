@@ -19,7 +19,8 @@ namespace BorkelRNVG
         {
             PlayerCameraController.OnPlayerCameraControllerCreated += PlayerCameraCreated;
             PlayerCameraController.OnPlayerCameraControllerDestroyed += PlayerCameraDestroyed;
-
+            //Gating
+            Plugin.gatingLevel.SettingChanged += SettingUpdated;
             // Globals
             Plugin.globalMaskSize.SettingChanged += SettingUpdated;
             Plugin.globalGain.SettingChanged += SettingUpdated;
