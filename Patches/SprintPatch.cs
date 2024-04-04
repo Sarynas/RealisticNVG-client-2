@@ -9,7 +9,7 @@ using System.Collections.Specialized;
 using System.Numerics;
 using System.Reflection;
 using UnityEngine;
-using LightStruct = GStruct155; //public static void Serialize(GInterface63 stream, ref GStruct155 tacticalComboStatus)
+using LightStruct = GStruct163; //public static void Serialize(GInterface63 stream, ref GStruct155 tacticalComboStatus)
 using static EFT.Player;
 using System.Collections;
 
@@ -32,7 +32,7 @@ namespace BorkelRNVG.Patches
         }
         protected override MethodBase GetTargetMethod()
         {
-            return typeof(Player).GetMethod("LateUpdate", BindingFlags.Instance | BindingFlags.NonPublic);
+            return AccessTools.Method(typeof(Player), nameof(Player.LateUpdate));
         }
 
         [PatchPostfix]
