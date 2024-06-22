@@ -78,7 +78,8 @@ namespace BorkelRNVG.Patches
 
             string nvgID = player.NightVisionObserver.Component.Item.TemplateId; // ID of the NVG
             // GPNVG-18
-            if (nvgID == "5c0558060db834001b735271")
+            if (/*vanilla*/nvgID == "5c0558060db834001b735271" ||/*artem*/ nvgID == "66326bfd46817c660d01512e" || nvgID == "66326bfd46817c660d015148"
+                || nvgID == "66326bfd46817c660d015146")
             {
                 // vanilla intensity:2.27
                 nightVision.Intensity = Plugin.quadGain.Value * Plugin.globalGain.Value + Plugin.quadGain.Value * Plugin.globalGain.Value * 0.3f * Plugin.gatingLevel.Value/2;
