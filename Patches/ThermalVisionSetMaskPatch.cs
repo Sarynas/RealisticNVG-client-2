@@ -35,14 +35,21 @@ namespace BorkelRNVG.Patches
             __instance.IsNoisy = false;
             __instance.IsMotionBlurred = true;
             __instance.PixelationUtilities = new PixelationUtilities();
-            __instance.PixelationUtilities.Mode = 0;
-            __instance.PixelationUtilities.BlockCount = 320; //doesn't do anything really
-            __instance.PixelationUtilities.PixelationMask = Plugin.maskPixel;
-            __instance.PixelationUtilities.PixelationShader = Plugin.pixelationShader;
-            __instance.StuckFpsUtilities = new StuckFPSUtilities();
-            __instance.IsFpsStuck = true;
-            __instance.StuckFpsUtilities.MinFramerate = 60;
-            __instance.StuckFpsUtilities.MaxFramerate = 60;
+            if(Plugin.t7Pixelation.Value)
+            {
+                //__instance.PixelationUtilities.Mode = GClass866.PixelationMode.CRT;
+                __instance.PixelationUtilities.Mode = 0;
+                __instance.PixelationUtilities.BlockCount = 320; //doesn't do anything really
+                __instance.PixelationUtilities.PixelationMask = Plugin.maskPixel;
+                __instance.PixelationUtilities.PixelationShader = Plugin.pixelationShader;
+            }
+            if(Plugin.t7HzLock.Value)
+            {
+                __instance.StuckFpsUtilities = new StuckFPSUtilities();
+                __instance.IsFpsStuck = true;
+                __instance.StuckFpsUtilities.MinFramerate = 60;
+                __instance.StuckFpsUtilities.MaxFramerate = 60;
+            }
         }
     }
 }

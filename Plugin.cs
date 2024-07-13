@@ -14,7 +14,7 @@ using Comfort.Common;
 
 namespace BorkelRNVG
 {
-    [BepInPlugin("com.borkel.nvgmasks", "Borkel's Realistic NVGs", "1.5.4")]
+    [BepInPlugin("com.borkel.nvgmasks", "Borkel's Realistic NVGs", "1.5.5")]
     public class Plugin : BaseUnityPlugin
     {
         public static readonly string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -70,6 +70,10 @@ namespace BorkelRNVG
         public static ConfigEntry<float> pnvNoiseIntensity;
         public static ConfigEntry<float> pnvNoiseSize;
         public static ConfigEntry<float> pnvGain;
+        //t-7 config
+        public static ConfigEntry<bool> t7Pixelation;
+        public static ConfigEntry<bool> t7HzLock;
+
         //sprint patch stuff
         public static ConfigEntry<bool> enableSprintPatch;
         public static bool isSprinting = false;
@@ -81,6 +85,8 @@ namespace BorkelRNVG
         //Reshade stuff
         public static VirtualKeyCode nvgKey = VirtualKeyCode.NUMPAD0;
         public static ConfigEntry<bool> enableReshade;
+        public static ConfigEntry<bool> disableReshadeInMenus;
+        //public static bool disabledInMenu = false;
         //Gating
         public static ConfigEntry<KeyCode> gatingInc;
         public static ConfigEntry<KeyCode> gatingDec;
@@ -100,6 +106,7 @@ namespace BorkelRNVG
             //Stuff
             enableSprintPatch = Config.Bind("0.Stuff", "Sprint toggles tactical devices", false, "Sprinting will toggle tactical devices until you stop sprinting, this mitigates the IR lights being visible outside of the NVGs. I recommend enabling this feature.");
             enableReshade = Config.Bind("0.Stuff", "Enable ReShade input simulation", false, "Will enable the input simulation to enable the ReShade, will use numpad keys. GPNVG-18 -> numpad 9. PVS-14 -> numpad 8. N-15 -> numpad 7. PNV-10T -> numpad 6. Off -> numpad 5. Only enable if you've installed the ReShade.");
+            disableReshadeInMenus = Config.Bind("0.Stuff", "Disable ReShade when in menus", true, "Is a bit wonky in the hideout, but works well in-raid.");
             //Gating
             gatingInc = Config.Bind("00.Gating", "1.Manual gating increase", KeyCode.None, "Increases the gain by 1 step. There's 5 levels (-2...2), default level is the third level (0).");
             gatingDec = Config.Bind("00.Gating", "2.Manual gating decrease", KeyCode.None, "Decreases the gain by 1 step. There's 5 levels (-2...2), default level is the third level (0).");
@@ -139,6 +146,10 @@ namespace BorkelRNVG
             pnvR = Config.Bind("5.PNV-10T", "5.Red", 60f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
             pnvG = Config.Bind("5.PNV-10T", "6.Green", 210f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
             pnvB = Config.Bind("5.PNV-10T", "7.Blue", 60f, new ConfigDescription("", new AcceptableValueRange<float>(0f, 255f)));
+            //T-7 config
+            t7Pixelation = Config.Bind("6.T-7", "1.Pixelation", true, "Requires restart. Pixelates the T-7, like a real digital screen");
+            t7HzLock = Config.Bind("6.T-7", "1.Hz Lock", true, "Requires restart. Locks the Hz of the T-7 to 60Hz, like a real digital screen");
+
             //###########################################
             gatingLevel.Value = 0;
             string pluginDirectory = $"{directory}";//plugin folder
@@ -204,6 +215,8 @@ namespace BorkelRNVG
             new ThermalVisionSetMaskPatch().Enable();
             new SprintPatch().Enable();
             new NightVisionMethod_1().Enable(); //reshade
+            new MenuPatch().Enable(); //reshade
+            //new EndOfRaid().Enable(); //reshade
             //new WeaponSwapPatch().Enable(); //not working
             //new UltimateBloomPatch().Enable(); //works if Awake is prevented from running
             //new LevelSettingsPatch().Enable();

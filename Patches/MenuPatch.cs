@@ -1,27 +1,26 @@
 ﻿using Aki.Reflection.Patching;
-using BSG.CameraEffects;
+using EFT.UI;
+using EFT.UI.Screens;
 using HarmonyLib;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityStandardAssets.ImageEffects;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using WindowsInput;
 using WindowsInput.Native;
-using EFT.InventoryLogic;
 using Comfort.Common;
-using System.Collections;
+using WindowsInput;
 using EFT;
+using UnityEngine.UIElements;
 
 namespace BorkelRNVG.Patches
 {
-    internal class NightVisionMethod_1 : ModulePatch //method_1 gets called when NVGs turn off or on, tells the reshade to activate
+    internal class MenuPatch : ModulePatch //if Awake is prevented from running, the exaggerated bloom goes away
     {
-        private static async Task activateReshade(InputSimulator inputSimulator, VirtualKeyCode key)
+        private static async Task ToggleReshadeAsync(InputSimulator inputSimulator, VirtualKeyCode key)
         {
             inputSimulator.Keyboard.KeyDown(key);
             await Task.Delay(200);
@@ -29,15 +28,14 @@ namespace BorkelRNVG.Patches
         }
         protected override MethodBase GetTargetMethod()
         {
-            return AccessTools.Method(typeof(NightVision), "method_1");
+            return AccessTools.Method(typeof(MenuTaskBar), "OnScreenChanged");
         }
 
-        [PatchPostfix]
-        private static void PatchPostfix(bool __0) //if i use the name of the parameter it doesn't work, __0 works correctly
+        [PatchPrefix]
+        private static void PatchPrefix(EEftScreenType eftScreenType)
         {
-            Plugin.nvgOn = __0;
-            if (!Plugin.enableReshade.Value)
-                    return;
+            if (!Plugin.enableReshade.Value || !Plugin.disableReshadeInMenus.Value)
+                return;
             var gameWorld = Singleton<GameWorld>.Instance;
             if (gameWorld == null)
             {
@@ -57,11 +55,18 @@ namespace BorkelRNVG.Patches
                 return;
             }
             InputSimulator poop = new InputSimulator();
-            VirtualKeyCode key = Plugin.nvgKey;
-            if(__0)
-                Task.Run(() => activateReshade(poop, Plugin.nvgKey));
-            else if (!__0)
-                Task.Run(() => activateReshade(poop, VirtualKeyCode.NUMPAD5));
+            switch (eftScreenType)
+            {
+                case EEftScreenType.None:
+                case EEftScreenType.BattleUI:
+                    if(Plugin.nvgOn)
+                            Task.Run(() => ToggleReshadeAsync(poop, Plugin.nvgKey));
+                    break;
+                default:
+                    if(Plugin.nvgOn)
+                        Task.Run(() => ToggleReshadeAsync(poop, VirtualKeyCode.NUMPAD5));
+                    break;
+            }
         }
     }
 }

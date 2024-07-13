@@ -12,14 +12,15 @@ using UnityEngine;
 using LightStruct = GStruct163; //public static void Serialize(GInterface63 stream, ref GStruct155 tacticalComboStatus)
 using static EFT.Player;
 using System.Collections;
+using System.Threading.Tasks;
 
 namespace BorkelRNVG.Patches
 {
     internal class SprintPatch : ModulePatch
     {
-        private static IEnumerator ToggleLaserWithDelay(FirearmController fc, LightComponent light, bool newState, float delay)
+        private static async Task ToggleLaserWithDelay(FirearmController fc, LightComponent light, bool newState, int delay)
         {
-            yield return new WaitForSeconds(delay);
+            await Task.Delay(delay);
             fc.SetLightsState(new LightStruct[]
             {
             new LightStruct
@@ -60,13 +61,14 @@ namespace BorkelRNVG.Patches
                         {
                             state = true;
                             Plugin.LightDictionary[mod.Id] = false;
-                            fc.StartCoroutine(ToggleLaserWithDelay(fc, light, state, 0.3f)); //delay of 300ms when turning on
+                            Task.Run(() => ToggleLaserWithDelay(fc, light, state, 300));
+                            //delay of 300ms when turning on
                         }
                         else if(Plugin.isSprinting == true && isOn)
                         {
                             state = false;
                             Plugin.LightDictionary[mod.Id] = true;
-                            fc.StartCoroutine(ToggleLaserWithDelay(fc, light, state, 0.1f));
+                            Task.Run(() => ToggleLaserWithDelay(fc, light, state, 100));
                         }
                     }
                 }
