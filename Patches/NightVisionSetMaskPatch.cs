@@ -1,11 +1,9 @@
-﻿using Aki.Reflection.Patching;
+﻿using SPT.Reflection.Patching;
 using BSG.CameraEffects;
 using Comfort.Common;
 using EFT;
 using HarmonyLib;
 using System.Reflection;
-using UnityEngine;
-using UnityStandardAssets.ImageEffects;
 
 
 namespace BorkelRNVG.Patches

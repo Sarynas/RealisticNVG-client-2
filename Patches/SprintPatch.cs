@@ -1,4 +1,4 @@
-﻿using Aki.Reflection.Patching;
+﻿using SPT.Reflection.Patching;
 using BSG.CameraEffects;
 using Comfort.Common;
 using EFT;
@@ -9,7 +9,7 @@ using System.Collections.Specialized;
 using System.Numerics;
 using System.Reflection;
 using UnityEngine;
-using LightStruct = GStruct163; //public static void Serialize(GInterface63 stream, ref GStruct155 tacticalComboStatus)
+using LightStruct = FirearmLightStateStruct; //public static void Serialize(GInterface63 stream, ref GStruct155 tacticalComboStatus)
 using static EFT.Player;
 using System.Collections;
 using System.Threading.Tasks;

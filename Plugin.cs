@@ -8,13 +8,12 @@ using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityStandardAssets.ImageEffects;
 using WindowsInput.Native;
 using Comfort.Common;
 
 namespace BorkelRNVG
 {
-    [BepInPlugin("com.borkel.nvgmasks", "Borkel's Realistic NVGs", "1.5.5")]
+    [BepInPlugin("com.borkel.nvgmasks", "Borkel's Realistic NVGs", "1.5.6")]
     public class Plugin : BaseUnityPlugin
     {
         public static readonly string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -80,8 +79,8 @@ namespace BorkelRNVG
         public static bool wasSprinting = false;
         public static Dictionary<string, bool> LightDictionary = new Dictionary<string, bool>();
         //UltimateBloom stuff
-        public static BloomAndFlares BloomAndFlaresInstance;
-        public static UltimateBloom UltimateBloomInstance;
+        //public static BloomAndFlares BloomAndFlaresInstance;
+        //public static UltimateBloom UltimateBloomInstance;
         //Reshade stuff
         public static VirtualKeyCode nvgKey = VirtualKeyCode.NUMPAD0;
         public static ConfigEntry<bool> enableReshade;
