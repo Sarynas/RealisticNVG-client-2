@@ -13,7 +13,7 @@ using Comfort.Common;
 
 namespace BorkelRNVG
 {
-    [BepInPlugin("com.borkel.nvgmasks", "Borkel's Realistic NVGs", "1.5.6")]
+    [BepInPlugin("com.borkel.nvgmasks", "Borkel's Realistic NVGs", "1.5.7")]
     public class Plugin : BaseUnityPlugin
     {
         public static readonly string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -103,7 +103,7 @@ namespace BorkelRNVG
         {
             //############-BEPINEX F12-MENU##############
             //Stuff
-            enableSprintPatch = Config.Bind("0.Stuff", "Sprint toggles tactical devices", false, "Sprinting will toggle tactical devices until you stop sprinting, this mitigates the IR lights being visible outside of the NVGs. I recommend enabling this feature.");
+            enableSprintPatch = Config.Bind("0.Stuff", "Sprint toggles tactical devices. DO NOT USE WITH FIKA.", false, "Sprinting will toggle tactical devices until you stop sprinting, this mitigates the IR lights being visible outside of the NVGs. I recommend enabling this feature.");
             enableReshade = Config.Bind("0.Stuff", "Enable ReShade input simulation", false, "Will enable the input simulation to enable the ReShade, will use numpad keys. GPNVG-18 -> numpad 9. PVS-14 -> numpad 8. N-15 -> numpad 7. PNV-10T -> numpad 6. Off -> numpad 5. Only enable if you've installed the ReShade.");
             disableReshadeInMenus = Config.Bind("0.Stuff", "Disable ReShade when in menus", true, "Is a bit wonky in the hideout, but works well in-raid.");
             //Gating
