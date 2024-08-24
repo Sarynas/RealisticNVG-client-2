@@ -18,9 +18,11 @@ namespace BorkelRNVG.Patches
 {
     internal class SprintPatch : ModulePatch
     {
-        private static async Task ToggleLaserWithDelay(FirearmController fc, LightComponent light, bool newState, int delay)
+        //private static async Task ToggleLaserWithDelay(FirearmController fc, LightComponent light, bool newState, int delay)
+        private static IEnumerator ToggleLaserWithDelay(FirearmController fc, LightComponent light, bool newState, float delay)
         {
-            await Task.Delay(delay);
+            //await Task.Delay(delay);
+            yield return new WaitForSeconds(delay);
             fc.SetLightsState(new LightStruct[]
             {
             new LightStruct
@@ -61,14 +63,16 @@ namespace BorkelRNVG.Patches
                         {
                             state = true;
                             Plugin.LightDictionary[mod.Id] = false;
-                            Task.Run(() => ToggleLaserWithDelay(fc, light, state, 300));
+                            //Task.Run(() => ToggleLaserWithDelay(fc, light, state, 300));
+                            fc.StartCoroutine(ToggleLaserWithDelay(fc, light, state, 0.3f)); //delay of 300ms when turning on
                             //delay of 300ms when turning on
                         }
                         else if(Plugin.isSprinting == true && isOn)
                         {
                             state = false;
                             Plugin.LightDictionary[mod.Id] = true;
-                            Task.Run(() => ToggleLaserWithDelay(fc, light, state, 100));
+                            //Task.Run(() => ToggleLaserWithDelay(fc, light, state, 100));
+                            fc.StartCoroutine(ToggleLaserWithDelay(fc, light, state, 0.1f));
                         }
                     }
                 }
