@@ -58,7 +58,7 @@ namespace BorkelRNVG.Patches
 
         private static void ApplyModSettings(ref NightVision nightVision)
         {
-            nightVision.Color.a = (float)254 / 255; // i think it does nothing
+            nightVision.Color.a = 1;
             nightVision.MaskSize = 1; // does not affect the t-7 for some reason
 
             var gameWorld = Singleton<GameWorld>.Instance;
@@ -77,6 +77,9 @@ namespace BorkelRNVG.Patches
 
             if (nvgConfig != null)
             {
+                nvgConfig.Update();
+
+                // grab the values from the (now updated) night vision item config
                 nightVision.Intensity = nvgConfig.Intensity;
                 nightVision.NoiseIntensity = nvgConfig.NoiseIntensity;
                 nightVision.NoiseScale = nvgConfig.NoiseScale;

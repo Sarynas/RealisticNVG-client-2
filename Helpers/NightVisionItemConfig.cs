@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using WindowsInput.Native;
 
 namespace BorkelRNVG
 {
+    // feel like this shit is way too over-engineered
     public class NightVisionItemConfig
     {
         public float Intensity { get; set; }
@@ -15,24 +17,50 @@ namespace BorkelRNVG
         public float B { get; set; }
         public VirtualKeyCode Key { get; set; }
         public Texture2D BinocularMaskTexture { get; set; }
+        public Action Update { get; set; }
 
-        public NightVisionItemConfig(float intensity, float noiseIntensity, float noiseScale, float maskSize, float r, float g, float b, VirtualKeyCode key, Texture2D binocularMaskTexture)
+        // am i abusing delegates too hard? probably not.. just feels weird
+        public NightVisionItemConfig(
+            Func<float> intensityCalc,
+            Func<float> noiseIntensityCalc,
+            Func<float> noiseScaleCalc,
+            Func<float> maskSizeCalc,
+            Func<float> r,
+            Func<float> g,
+            Func<float> b,
+            VirtualKeyCode key,
+            Texture2D binocularMaskTexture)
         {
-            Intensity = intensity;
-            NoiseIntensity = noiseIntensity;
-            NoiseScale = noiseScale;
-            MaskSize = maskSize;
-            R = r;
-            G = g;
-            B = b;
-            Key = key;
-            BinocularMaskTexture = binocularMaskTexture;
+            // define the update action
+            Update = () => 
+            {
+                Intensity = intensityCalc();
+                NoiseIntensity = noiseIntensityCalc();
+                NoiseScale = noiseScaleCalc();
+                MaskSize = maskSizeCalc();
+                R = r();
+                G = g();
+                B = b();
+                Key = key;
+                BinocularMaskTexture = binocularMaskTexture;
+            };
+
+            // initial calculation
+            Update();
         }
 
-        public NightVisionItemConfig(float intensity, float noiseIntensity, float noiseScale, float maskSize, float r, float g, float b, VirtualKeyCode key)
-            : this(intensity, noiseIntensity, noiseScale, maskSize, r, g, b, key, null) {}
+        public NightVisionItemConfig(
+            Func<float> intensityCalc,
+            Func<float> noiseIntensityCalc,
+            Func<float> noiseScaleCalc,
+            Func<float> maskSizeCalc,
+            Func<float> r,
+            Func<float> g,
+            Func<float> b,
+            VirtualKeyCode key): 
+            this(intensityCalc, noiseIntensityCalc, noiseScaleCalc, maskSizeCalc, r, g, b, key, null) {}
 
-        public static Dictionary<string, NightVisionItemConfig> Items { get; private set; } = new();
+        public static Dictionary<string, NightVisionItemConfig> Items = new();
 
         public static NightVisionItemConfig Add(string itemId, NightVisionItemConfig config)
         {
@@ -57,29 +85,18 @@ namespace BorkelRNVG
             return config;
         }
 
-        public static NightVisionItemConfig Update(string itemId, NightVisionItemConfig config)
-        {
-            if (Items.ContainsKey(itemId))
-            {
-                Items[itemId] = config;
-                return config;
-            }
-
-            return null;
-        }
-
         public static void InitializeNVGs()
         {
             // vanilla GPNVG-18
             string gpnvg18 = "5c0558060db834001b735271";
             Add(gpnvg18, new NightVisionItemConfig(
-                Plugin.quadGain.Value * Plugin.globalGain.Value + Plugin.quadGain.Value * Plugin.globalGain.Value * 0.3f * Plugin.gatingLevel.Value / 2,
-                2 * Plugin.quadNoiseIntensity.Value,
-                2f - 2 * Plugin.quadNoiseSize.Value,
-                Plugin.quadMaskSize.Value * Plugin.globalMaskSize.Value,
-                Plugin.quadR.Value / 255,
-                Plugin.quadG.Value / 255,
-                Plugin.quadB.Value / 255,
+                () => Plugin.quadGain.Value * Plugin.globalGain.Value + Plugin.quadGain.Value * Plugin.globalGain.Value * 0.3f * Plugin.gatingLevel.Value / 2,
+                () => 2 * Plugin.quadNoiseIntensity.Value,
+                () => 2f - 2 * Plugin.quadNoiseSize.Value,
+                () => Plugin.quadMaskSize.Value * Plugin.globalMaskSize.Value,
+                () => Plugin.quadR.Value / 255,
+                () => Plugin.quadG.Value / 255,
+                () => Plugin.quadB.Value / 255,
                 VirtualKeyCode.NUMPAD9
             ));
 
@@ -90,39 +107,39 @@ namespace BorkelRNVG
 
             // PVS-14
             Add("57235b6f24597759bf5a30f1", new NightVisionItemConfig(
-                Plugin.pvsGain.Value * Plugin.globalGain.Value + Plugin.pvsGain.Value * Plugin.globalGain.Value * 0.3f * Plugin.gatingLevel.Value / 2,
-                2 * Plugin.pvsNoiseIntensity.Value,
-                2f - 2 * Plugin.pvsNoiseSize.Value,
-                Plugin.pvsMaskSize.Value * Plugin.globalMaskSize.Value,
-                Plugin.pvsR.Value / 255,
-                Plugin.pvsG.Value / 255,
-                Plugin.pvsB.Value / 255,
+                () => Plugin.pvsGain.Value * Plugin.globalGain.Value + Plugin.pvsGain.Value * Plugin.globalGain.Value * 0.3f * Plugin.gatingLevel.Value / 2,
+                () => 2 * Plugin.pvsNoiseIntensity.Value,
+                () => 2f - 2 * Plugin.pvsNoiseSize.Value,
+                () => Plugin.pvsMaskSize.Value * Plugin.globalMaskSize.Value,
+                () => Plugin.pvsR.Value / 255,
+                () => Plugin.pvsG.Value / 255,
+                () => Plugin.pvsB.Value / 255,
                 VirtualKeyCode.NUMPAD8
             ));
 
             // N-15
             Add("5c066e3a0db834001b7353f0", new NightVisionItemConfig(
-                Plugin.nGain.Value * Plugin.globalGain.Value + Plugin.nGain.Value * Plugin.globalGain.Value * 0.3f * Plugin.gatingLevel.Value / 2,
-                2 * Plugin.nNoiseIntensity.Value,
-                2f - 2 * Plugin.nNoiseSize.Value,
-                Plugin.nMaskSize.Value * Plugin.globalMaskSize.Value,
-                Plugin.nR.Value / 255,
-                Plugin.nG.Value / 255,
-                Plugin.nB.Value / 255,
+                () => Plugin.nGain.Value * Plugin.globalGain.Value + Plugin.nGain.Value * Plugin.globalGain.Value * 0.3f * Plugin.gatingLevel.Value / 2,
+                () => 2 * Plugin.nNoiseIntensity.Value,
+                () => 2f - 2 * Plugin.nNoiseSize.Value,
+                () => Plugin.nMaskSize.Value * Plugin.globalMaskSize.Value,
+                () => Plugin.nR.Value / 255,
+                () => Plugin.nG.Value / 255,
+                () => Plugin.nB.Value / 255,
                 VirtualKeyCode.NUMPAD7,
                 Plugin.maskBino
             ));
 
             // PNV-10T
             Add("5c0696830db834001d23f5da", new NightVisionItemConfig(
-                Plugin.pnvGain.Value * Plugin.globalGain.Value + Plugin.pnvGain.Value * Plugin.globalGain.Value * 0.3f * Plugin.gatingLevel.Value / 2,
-                2 * Plugin.pnvNoiseIntensity.Value,
-                2f - 2 * Plugin.pnvNoiseSize.Value,
-                Plugin.pnvMaskSize.Value * Plugin.globalMaskSize.Value,
-                Plugin.pnvR.Value / 255,
-                Plugin.pnvG.Value / 255,
-                Plugin.pnvB.Value / 255,
-                Plugin.nvgKey = VirtualKeyCode.NUMPAD6,
+                () => Plugin.pnvGain.Value * Plugin.globalGain.Value + Plugin.pnvGain.Value * Plugin.globalGain.Value * 0.3f * Plugin.gatingLevel.Value / 2,
+                () => 2 * Plugin.pnvNoiseIntensity.Value,
+                () => 2f - 2 * Plugin.pnvNoiseSize.Value,
+                () => Plugin.pnvMaskSize.Value * Plugin.globalMaskSize.Value,
+                () => Plugin.pnvR.Value / 255,
+                () => Plugin.pnvG.Value / 255,
+                () => Plugin.pnvB.Value / 255,
+                VirtualKeyCode.NUMPAD6,
                 Plugin.maskPnv
             ));
         }

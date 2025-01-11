@@ -240,14 +240,21 @@ namespace BorkelRNVG
 
             NightVisionItemConfig.InitializeNVGs();
 
-            new NightVisionAwakePatch().Enable();
-            new NightVisionApplySettingsPatch().Enable();
-            new NightVisionSetMaskPatch().Enable();
-            new ThermalVisionSetMaskPatch().Enable();
-            new SprintPatch().Enable();
-            new NightVisionMethod_1().Enable(); //reshade
-            new MenuPatch().Enable(); //reshade
-            Logger.LogMessage("PATCHIEEEEEEE");
+            try
+            {
+                new NightVisionAwakePatch().Enable();
+                new NightVisionApplySettingsPatch().Enable();
+                new NightVisionSetMaskPatch().Enable();
+                new ThermalVisionSetMaskPatch().Enable();
+                new SprintPatch().Enable();
+                new NightVisionMethod_1().Enable(); //reshade
+                new MenuPatch().Enable(); //reshade
+                Logger.LogInfo("Patches enabled successfully!");
+            }
+            catch (Exception exception)
+            {
+                Logger.LogError(exception);
+            }
             
             // umm......
             //new VignettePatch().Enable();
@@ -267,12 +274,12 @@ namespace BorkelRNVG
                 if(Input.GetKeyDown(gatingInc.Value) && gatingLevel.Value<2)
                 {
                     gatingLevel.Value++;
-                    Singleton<BetterAudio>.Instance.PlayAtPoint(new Vector3(0, 0, 0), Plugin.LoadedAudioClips["gatingKnob.wav"], 0, BetterAudio.AudioSourceGroupType.Nonspatial, 100, 1.0f, EOcclusionTest.None, null, false);
+                    Singleton<BetterAudio>.Instance.PlayAtPoint(new Vector3(0, 0, 0), LoadedAudioClips["gatingKnob.wav"], 0, BetterAudio.AudioSourceGroupType.Nonspatial, 100, 1.0f, EOcclusionTest.None, null, false);
                 }
                 else if(Input.GetKeyUp(gatingDec.Value) && gatingLevel.Value>-2)
                 {
                     gatingLevel.Value--;
-                    Singleton<BetterAudio>.Instance.PlayAtPoint(new Vector3(0, 0, 0), Plugin.LoadedAudioClips["gatingKnob.wav"], 0, BetterAudio.AudioSourceGroupType.Nonspatial, 100, 1.0f, EOcclusionTest.None, null, false);
+                    Singleton<BetterAudio>.Instance.PlayAtPoint(new Vector3(0, 0, 0), LoadedAudioClips["gatingKnob.wav"], 0, BetterAudio.AudioSourceGroupType.Nonspatial, 100, 1.0f, EOcclusionTest.None, null, false);
                 }
             }
         }
