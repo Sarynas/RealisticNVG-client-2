@@ -13,7 +13,7 @@ using Comfort.Common;
 
 namespace BorkelRNVG
 {
-    [BepInPlugin("com.borkel.nvgmasks", "Borkel's Realistic NVGs", "1.5.7")]
+    [BepInPlugin("com.borkel.nvgmasks", "Borkel's Realistic NVGs", "1.5.9")]
     public class Plugin : BaseUnityPlugin
     {
         public static readonly string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -215,6 +215,8 @@ namespace BorkelRNVG
             new SprintPatch().Enable();
             new NightVisionMethod_1().Enable(); //reshade
             new MenuPatch().Enable(); //reshade
+            Logger.LogMessage("PATCHIEEEEEEE");
+            //new VignettePatch().Enable();
             //new EndOfRaid().Enable(); //reshade
             //new WeaponSwapPatch().Enable(); //not working
             //new UltimateBloomPatch().Enable(); //works if Awake is prevented from running

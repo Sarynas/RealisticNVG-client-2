@@ -23,16 +23,16 @@
   
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>C:\SPTarkov3.9.0\EscapeFromTarkov_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>V:\SPTarkov3.10\EscapeFromTarkov_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Comfort">
-      <HintPath>C:\SPTarkov3.9.0\EscapeFromTarkov_Data\Managed\Comfort.dll</HintPath>
+      <HintPath>V:\SPTarkov3.10\EscapeFromTarkov_Data\Managed\Comfort.dll</HintPath>
     </Reference>
     <Reference Include="ItemComponent.Types">
-      <HintPath>C:\SPTarkov3.9.0\EscapeFromTarkov_Data\Managed\ItemComponent.Types.dll</HintPath>
+      <HintPath>V:\SPTarkov3.10\EscapeFromTarkov_Data\Managed\ItemComponent.Types.dll</HintPath>
     </Reference>
     <Reference Include="spt-reflection">
-      <HintPath>C:\SPTarkov3.9.0\BepInEx\plugins\spt\spt-reflection.dll</HintPath>
+      <HintPath>V:\SPTarkov3.10\BepInEx\plugins\spt\spt-reflection.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

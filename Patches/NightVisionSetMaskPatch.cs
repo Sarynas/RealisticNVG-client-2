@@ -34,11 +34,11 @@ namespace BorkelRNVG.Patches
 
             if (player.NightVisionObserver.Component == null
                 || player.NightVisionObserver.Component.Item == null
-                || player.NightVisionObserver.Component.Item.TemplateId == null)
+                || player.NightVisionObserver.Component.Item.StringTemplateId == null)
             {
                 return;
             }
-            string nvgID = player.NightVisionObserver.Component.Item.TemplateId; //ID of the nvg
+            string nvgID = player.NightVisionObserver.Component.Item.StringTemplateId; //ID of the nvg
             //n15 id: 5c066e3a0db834001b7353f0
             if (nvgID == "5c066e3a0db834001b7353f0")
             {
