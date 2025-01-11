@@ -1,19 +1,11 @@
 ﻿using SPT.Reflection.Patching;
 using BSG.CameraEffects;
 using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
-using UnityEngine;
-using UnityEngine.SceneManagement;
 using WindowsInput;
 using WindowsInput.Native;
-using EFT.InventoryLogic;
 using Comfort.Common;
-using System.Collections;
 using EFT;
 
 namespace BorkelRNVG.Patches

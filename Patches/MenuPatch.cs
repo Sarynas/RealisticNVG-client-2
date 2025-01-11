@@ -2,19 +2,12 @@
 using EFT.UI;
 using EFT.UI.Screens;
 using HarmonyLib;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
-using UnityEngine;
 using WindowsInput.Native;
 using Comfort.Common;
 using WindowsInput;
 using EFT;
-using UnityEngine.UIElements;
 
 namespace BorkelRNVG.Patches
 {
