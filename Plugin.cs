@@ -17,6 +17,7 @@ namespace BorkelRNVG
     public class Plugin : BaseUnityPlugin
     {
         public static readonly string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        public static readonly string assetsDirectory = $"{directory}\\Assets";
 
         //mask textures
         public static Texture2D maskAnvis;
@@ -177,22 +178,21 @@ namespace BorkelRNVG
             t7HzLock = Config.Bind(t7Category, "1. Hz lock", true, "Requires restart. Locks the Hz of the T-7 to 60Hz, like a real digital screen");
 
             // other variables.. idk
-            gatingLevel.Value = 0;
-            string pluginDirectory = $"{directory}";//plugin folder
+            gatingLevel.Value = 0;            
             string eftShaderPath = Path.Combine(Environment.CurrentDirectory, "EscapeFromTarkov_Data", "StreamingAssets", "Windows", "shaders");
-            
+
             // loading from PNGs, like Fontaine suggested
-            string anvisPath = $"{pluginDirectory}\\MaskTextures\\mask_anvis.png";
-            string binoPath = $"{pluginDirectory}\\MaskTextures\\mask_binocular.png";
-            string monoPath = $"{pluginDirectory}\\MaskTextures\\mask_old_monocular.png";
-            string pnvPath = $"{pluginDirectory}\\MaskTextures\\mask_pnv.png";
-            string thermalPath = $"{pluginDirectory}\\MaskTextures\\mask_thermal.png";
-            string pixelPath = $"{pluginDirectory}\\MaskTextures\\pixel_mask1.png";
-            string noisePath = $"{pluginDirectory}\\MaskTextures\\Noise.png";
-            string lensAnvisPath = $"{pluginDirectory}\\LensTextures\\lens_anvis.png";
-            string lensBinoPath = $"{pluginDirectory}\\LensTextures\\lens_binocular.png";
-            string lensMonoPath = $"{pluginDirectory}\\LensTextures\\lens_old_monocular.png";
-            string lensPnvPath = $"{pluginDirectory}\\LensTextures\\lens_pnv.png";
+            string anvisPath = $"{assetsDirectory}\\MaskTextures\\mask_anvis.png";
+            string binoPath = $"{assetsDirectory}\\MaskTextures\\mask_binocular.png";
+            string monoPath = $"{assetsDirectory}\\MaskTextures\\mask_old_monocular.png";
+            string pnvPath = $"{assetsDirectory}\\MaskTextures\\mask_pnv.png";
+            string thermalPath = $"{assetsDirectory}\\MaskTextures\\mask_thermal.png";
+            string pixelPath = $"{assetsDirectory}\\MaskTextures\\pixel_mask1.png";
+            string noisePath = $"{assetsDirectory}\\MaskTextures\\Noise.png";
+            string lensAnvisPath = $"{assetsDirectory}\\LensTextures\\lens_anvis.png";
+            string lensBinoPath = $"{assetsDirectory}\\LensTextures\\lens_binocular.png";
+            string lensMonoPath = $"{assetsDirectory}\\LensTextures\\lens_old_monocular.png";
+            string lensPnvPath = $"{assetsDirectory}\\LensTextures\\lens_pnv.png";
             try
             {
                 loadAudioClips();
@@ -209,10 +209,10 @@ namespace BorkelRNVG
             maskPnv = LoadPNG(pnvPath);
             maskThermal = LoadPNG(thermalPath);
             maskPixel = LoadPNG(pixelPath);//might not do anything really
-            lensAnvis= LoadPNG(lensAnvisPath);
-            lensBino= LoadPNG(lensBinoPath);
-            lensMono= LoadPNG(lensMonoPath);
-            lensPnv= LoadPNG(lensPnvPath);
+            lensAnvis = LoadPNG(lensAnvisPath);
+            lensBino = LoadPNG(lensBinoPath);
+            lensMono = LoadPNG(lensMonoPath);
+            lensPnv = LoadPNG(lensPnvPath);
             Noise = LoadPNG(noisePath);
             Noise.wrapMode = TextureWrapMode.Repeat;
 
@@ -229,7 +229,7 @@ namespace BorkelRNVG
             maskToLens.Add(maskMono, lensMono);
             maskToLens.Add(maskPnv, lensPnv);
 
-            string nightVisionShaderPath = $"{pluginDirectory}\\borkel_realisticnvg_shaders";
+            string nightVisionShaderPath = $"{assetsDirectory}\\Shaders\\borkel_realisticnvg_shaders";
             pixelationShader = LoadShader("Assets/Systems/Effects/Pixelation/Pixelation.shader", eftShaderPath); //to pixelate the T-7
             nightVisionShader = LoadShader("Assets/Shaders/CustomNightVision.shader", nightVisionShaderPath);
             if (pixelationShader == null || nightVisionShader == null)
@@ -238,6 +238,7 @@ namespace BorkelRNVG
                 return;
             }
 
+            // create nvg config classes
             NightVisionItemConfig.InitializeNVGs();
 
             try
@@ -316,7 +317,7 @@ namespace BorkelRNVG
 
         private void loadAudioClips()
         {
-            string[] audioFilesDir = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory + "\\BepInEx\\plugins\\BorkelRNVG\\Sounds\\");
+            string[] audioFilesDir = Directory.GetFiles($"{assetsDirectory}\\Sounds");
             LoadedAudioClips.Clear();
 
             foreach (string fileDir in audioFilesDir)
