@@ -20,6 +20,7 @@ namespace BorkelRNVG
         public Action Update { get; set; }
 
         // am i abusing delegates too hard? probably not.. just feels weird
+        // is this too much voodoo
         public NightVisionItemConfig(
             Func<float> intensityCalc,
             Func<float> noiseIntensityCalc,

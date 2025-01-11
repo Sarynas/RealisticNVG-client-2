@@ -27,32 +27,25 @@ namespace BorkelRNVG.Patches
         private static void PatchPostfix(bool __0) //if i use the name of the parameter it doesn't work, __0 works correctly
         {
             Plugin.nvgOn = __0;
-            if (!Plugin.enableReshade.Value)
-                    return;
+            if (!Plugin.enableReshade.Value) return;
+
             var gameWorld = Singleton<GameWorld>.Instance;
-            if (gameWorld == null)
-            {
-                return;
-            }
+            if (gameWorld == null) return;
 
             var player = gameWorld.MainPlayer;
-            if (player == null)
-            {
-                return;
-            }
+            if (player == null) return;
 
             if (player.NightVisionObserver.Component == null
                 || player.NightVisionObserver.Component.Item == null
-                || player.NightVisionObserver.Component.Item.TemplateId == null)
-            {
+                || player.NightVisionObserver.Component.Item.StringTemplateId == null)
                 return;
-            }
-            InputSimulator poop = new InputSimulator();
+
+            InputSimulator inputSimulator = new InputSimulator(); // poop
             VirtualKeyCode key = Plugin.nvgKey;
             if(__0)
-                Task.Run(() => activateReshade(poop, Plugin.nvgKey));
+                Task.Run(() => activateReshade(inputSimulator, Plugin.nvgKey));
             else if (!__0)
-                Task.Run(() => activateReshade(poop, VirtualKeyCode.NUMPAD5));
+                Task.Run(() => activateReshade(inputSimulator, VirtualKeyCode.NUMPAD5));
         }
     }
 }

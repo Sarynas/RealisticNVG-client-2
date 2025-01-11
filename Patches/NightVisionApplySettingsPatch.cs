@@ -24,10 +24,7 @@ namespace BorkelRNVG.Patches
         {
             ApplyModSettings(ref __instance);
 
-            if (___TextureMask == null)
-            {
-                return;
-            }
+            if (___TextureMask == null) return;
 
             int maskId = Shader.PropertyToID("_Mask");
             int invMaskSizeId = Shader.PropertyToID("_InvMaskSize");

@@ -271,12 +271,12 @@ namespace BorkelRNVG
         {
             if(nvgOn)
             {
-                if(Input.GetKeyDown(gatingInc.Value) && gatingLevel.Value<2)
+                if(Input.GetKeyDown(gatingInc.Value) && gatingLevel.Value < 2)
                 {
                     gatingLevel.Value++;
                     Singleton<BetterAudio>.Instance.PlayAtPoint(new Vector3(0, 0, 0), LoadedAudioClips["gatingKnob.wav"], 0, BetterAudio.AudioSourceGroupType.Nonspatial, 100, 1.0f, EOcclusionTest.None, null, false);
                 }
-                else if(Input.GetKeyUp(gatingDec.Value) && gatingLevel.Value>-2)
+                else if(Input.GetKeyUp(gatingDec.Value) && gatingLevel.Value > -2)
                 {
                     gatingLevel.Value--;
                     Singleton<BetterAudio>.Instance.PlayAtPoint(new Vector3(0, 0, 0), LoadedAudioClips["gatingKnob.wav"], 0, BetterAudio.AudioSourceGroupType.Nonspatial, 100, 1.0f, EOcclusionTest.None, null, false);

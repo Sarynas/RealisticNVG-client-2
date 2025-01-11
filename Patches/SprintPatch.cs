@@ -51,29 +51,28 @@ namespace BorkelRNVG.Patches
             {
                 foreach(Mod modification in firearmController.Item.Mods)
                 {
-                    LightComponent light;
-                    if (modification.TryGetItemComponent<LightComponent>(out light))
+                    LightComponent lightComponent;
+                    if (modification.TryGetItemComponent<LightComponent>(out lightComponent))
                     {
                         if (!Plugin.LightDictionary.ContainsKey(modification.Id))
                             Plugin.LightDictionary.Add(modification.Id, false);
 
-                        bool isOn = light.IsActive;
                         bool state = false;
 
-                        if (Plugin.isSprinting == false && !isOn && Plugin.LightDictionary[modification.Id])
+                        if (Plugin.isSprinting == false && !lightComponent.IsActive && Plugin.LightDictionary[modification.Id])
                         {
                             state = true;
                             Plugin.LightDictionary[modification.Id] = false;
                             //Task.Run(() => ToggleLaserWithDelay(fc, light, state, 300));
-                            firearmController.StartCoroutine(ToggleLaserWithDelay(firearmController, light, state, 0.3f)); //delay of 300ms when turning on
+                            firearmController.StartCoroutine(ToggleLaserWithDelay(firearmController, lightComponent, state, 0.3f)); //delay of 300ms when turning on
                             //delay of 300ms when turning on
                         }
-                        else if(Plugin.isSprinting == true && isOn)
+                        else if(Plugin.isSprinting == true && lightComponent.IsActive)
                         {
                             state = false;
                             Plugin.LightDictionary[modification.Id] = true;
                             //Task.Run(() => ToggleLaserWithDelay(fc, light, state, 100));
-                            firearmController.StartCoroutine(ToggleLaserWithDelay(firearmController, light, state, 0.1f));
+                            firearmController.StartCoroutine(ToggleLaserWithDelay(firearmController, lightComponent, state, 0.1f));
                         }
                     }
                 }
