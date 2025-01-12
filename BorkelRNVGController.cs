@@ -19,8 +19,10 @@ namespace BorkelRNVG
         {
             PlayerCameraController.OnPlayerCameraControllerCreated += PlayerCameraCreated;
             PlayerCameraController.OnPlayerCameraControllerDestroyed += PlayerCameraDestroyed;
-            //Gating
+
+            // Gating
             Plugin.gatingLevel.SettingChanged += SettingUpdated;
+
             // Globals
             Plugin.globalMaskSize.SettingChanged += SettingUpdated;
             Plugin.globalGain.SettingChanged += SettingUpdated;
@@ -101,6 +103,7 @@ namespace BorkelRNVG
                 }
                 nightVision = fpsCamera.NightVision;
             }
+
             nightVision.ApplySettings();
         }
     }
