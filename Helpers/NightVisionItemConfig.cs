@@ -35,7 +35,8 @@ namespace BorkelRNVG
             // define the update action
             Update = () => 
             {
-                Intensity = intensityCalc();
+                float gatingValue = AutoGatingController.Instance == null ? 1 : AutoGatingController.Instance.GatingMultiplier;
+                Intensity = intensityCalc() * gatingValue;
                 NoiseIntensity = noiseIntensityCalc();
                 NoiseScale = noiseScaleCalc();
                 MaskSize = maskSizeCalc();
@@ -91,7 +92,7 @@ namespace BorkelRNVG
             // vanilla GPNVG-18
             string gpnvg18 = "5c0558060db834001b735271";
             Add(gpnvg18, new NightVisionItemConfig(
-                () => Plugin.quadGain.Value * Plugin.globalGain.Value + Plugin.quadGain.Value * Plugin.globalGain.Value * 0.3f * Plugin.gatingLevel.Value / 2,
+                () => Plugin.quadGain.Value * Plugin.globalGain.Value + Plugin.quadGain.Value * Plugin.globalGain.Value * 0.3f,
                 () => 2 * Plugin.quadNoiseIntensity.Value,
                 () => 2f - 2 * Plugin.quadNoiseSize.Value,
                 () => Plugin.quadMaskSize.Value * Plugin.globalMaskSize.Value,

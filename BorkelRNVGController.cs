@@ -1,4 +1,6 @@
 ﻿using BSG.CameraEffects;
+using Comfort.Common;
+using EFT;
 using EFT.CameraControl;
 using System;
 using UnityEngine;
@@ -76,6 +78,8 @@ namespace BorkelRNVG
             {
                 nightVision = fpsCamera.NightVision;
             }
+
+            AutoGatingController.Create();
         }
 
         private void PlayerCameraDestroyed()

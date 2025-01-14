@@ -10,6 +10,8 @@ using UnityEngine;
 using UnityEngine.Networking;
 using WindowsInput.Native;
 using Comfort.Common;
+using System.Security.Cryptography.X509Certificates;
+using BepInEx.Logging;
 
 namespace BorkelRNVG
 {
@@ -18,6 +20,7 @@ namespace BorkelRNVG
     {
         public static readonly string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         public static readonly string assetsDirectory = $"{directory}\\Assets";
+        public static ManualLogSource Log;
 
         //mask textures
         public static Texture2D maskAnvis;
@@ -107,10 +110,11 @@ namespace BorkelRNVG
         public static ConfigEntry<bool> disableReshadeInMenus;
         //public static bool disabledInMenu = false;
 
-        //Gating
+        // Gating
         public static ConfigEntry<KeyCode> gatingInc;
         public static ConfigEntry<KeyCode> gatingDec;
         public static ConfigEntry<int> gatingLevel;
+
         public static bool nvgOn = false;
 
         //Audio
@@ -122,7 +126,8 @@ namespace BorkelRNVG
         private void Awake()
         {
             // BepInEx F12 menu
-            
+            Log = Logger;
+
             // Miscellaneous
             enableSprintPatch = Config.Bind(miscCategory, "Sprint toggles tactical devices. DO NOT USE WITH FIKA.", false, "Sprinting will toggle tactical devices until you stop sprinting, this mitigates the IR lights being visible outside of the NVGs. I recommend enabling this feature.");
             enableReshade = Config.Bind(miscCategory, "Enable ReShade input simulation", false, "Will enable the input simulation to enable the ReShade, will use numpad keys. GPNVG-18 -> numpad 9. PVS-14 -> numpad 8. N-15 -> numpad 7. PNV-10T -> numpad 6. Off -> numpad 5. Only enable if you've installed the ReShade.");
@@ -240,7 +245,7 @@ namespace BorkelRNVG
 
             // create nvg config classes
             NightVisionItemConfig.InitializeNVGs();
-
+            
             try
             {
                 new NightVisionAwakePatch().Enable();

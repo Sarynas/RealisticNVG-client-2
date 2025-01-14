@@ -53,7 +53,7 @@ namespace BorkelRNVG.Patches
             material.SetFloat(cameraAspectId, cameraAspectValue);
         }
 
-        private static void ApplyModSettings(ref NightVision nightVision)
+        public static void ApplyModSettings(ref NightVision nightVision)
         {
             nightVision.Color.a = 1;
             nightVision.MaskSize = 1; // does not affect the t-7 for some reason
