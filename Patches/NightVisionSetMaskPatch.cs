@@ -5,6 +5,7 @@ using EFT;
 using HarmonyLib;
 using System.Reflection;
 using UnityEngine;
+using BorkelRNVG.Helpers.Configuration;
 
 
 namespace BorkelRNVG.Patches
@@ -35,6 +36,7 @@ namespace BorkelRNVG.Patches
 
             string nvgID = player.NightVisionObserver.Component.Item.StringTemplateId;
             Texture2D nvgMask = NightVisionItemConfig.Get(nvgID)?.BinocularMaskTexture;
+
             if (nvgMask == null) return;
 
             __instance.Mask = nvgMask;

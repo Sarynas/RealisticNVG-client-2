@@ -1,10 +1,6 @@
-﻿using BorkelRNVG.Patches;
+﻿using BorkelRNVG.Helpers;
 using BSG.CameraEffects;
-using Comfort.Common;
-using EFT.UI;
-using EFT.Vaulting;
-using HarmonyLib;
-using System.Reflection;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
@@ -15,51 +11,66 @@ namespace BorkelRNVG
     {
         public static AutoGatingController Instance;
 
-        // randomass variables
+        public float GatingMultiplier = 1.0f;
+
+        // component vars
         public Camera mainCamera;
-        //private Camera _rtCamera;
         public NightVision nightVision;
 
-        // shader stuff
-        public ComputeShader computeShader;
+        // computeshader vars
+        public ComputeShader computeShader = AssetHelper.LoadComputeShader("assets/shaders/pein/shaders/brightnessshader.compute", $"{AssetHelper.assetsDirectory}\\Shaders\\pein_shaders");
         public ComputeBuffer brightnessBuffer;
-        public RenderTexture renderTexture;
-
         public CommandBuffer commandBuffer;
-        public int nvInt_6;
-        public RenderTargetIdentifier nvTargetIdentifier;
-        public Material nvMaterial_0;
-
-        private int _currentFrame = 0;
-        private float _currentBrightness = 1.0f;
-        private CameraEvent _cameraEvent = CameraEvent.BeforeImageEffects;
-
         private const float BRIGHTNESS_SCALE = 10000f;
         private int kernel;
-        private int textureWidth;
-        private int textureHeight;
-        private int _renderInterval = 60;
-        private float _gateSpeed = 0.02f;
-        private float _lerp1 = 1f;
-        private float _lerp2 = 0.2f;
-        private float minInput = 0.08f;
-        private float maxInput = 0.1f;
 
-        // more randomass vars
-        private int _brightnessExponent = 1;
+        // various other vars
+        private float _currentBrightness = 1.0f; // value that GatingMultiplier gets lerped to
+        private float _gateSpeed = 0.3f; // lerp speed
+        private float _lerp1 = 1f; // max gatingmult
+        private float _lerp2 = 0.2f; // min gatingmult
+        private float minInput = 0f; // min _currentBrightness
+        private float maxInput = 0.3f; // max _currentBrightness
+        private int _frameInterval = 5; // interval between shader dispatches
+        private int _frameCount = 0;
+        private int textureWidth = Screen.width;
+        private int textureHeight = Screen.height;
 
-        // screen was upside down.. very funny but not playable
-        private Vector2 _uvScale = new Vector2(1, -1);
-        private Vector2 _uvOffset = new Vector2(0, 1);
+        // shader nonsense.....
+        public Shader contrastShader = AssetHelper.LoadShader("assets/shaders/pein/shaders/contrastshader.shader", $"{AssetHelper.assetsDirectory}\\Shaders\\pein_shaders");
+        public Shader additiveBlendShader = AssetHelper.LoadShader("assets/shaders/pein/shaders/additiveblendshader.shader", $"{AssetHelper.assetsDirectory}\\Shaders\\pein_shaders");
+        public Shader blurShader = AssetHelper.LoadShader("assets/shaders/pein/shaders/blurshader.shader", $"{AssetHelper.assetsDirectory}\\Shaders\\pein_shaders");
+        public Shader exposureShader = AssetHelper.LoadShader("assets/shaders/pein/shaders/exposureshader.shader", $"{AssetHelper.assetsDirectory}\\Shaders\\pein_shaders");
+        public Shader maskShader = AssetHelper.LoadShader("assets/shaders/pein/shaders/maskshader.shader", $"{AssetHelper.assetsDirectory}\\Shaders\\pein_shaders");
 
-        // public stuff
-        public float GatingMultiplier { get; private set; } = 1.0f;
+        public Material blurMaterial;
+        public Material additiveBlendMaterial;
+        public Material contrastMaterial;
+        public Material exposureMaterial;
+        public Material maskMaterial;
+
+        public RenderTexture renderTexture; // FINAL TEXTURE
+        public RenderTexture blurTexture1;
+        public RenderTexture blurTexture2;
+        public RenderTexture contrastTexture;
+        public RenderTexture exposureTexture;
+        public RenderTexture maskTexture;
+
+        public float blurSize = 8f;
+        public float contrastLevel = 3f;
+        public float exposureAmount = 4f;
+        ComputeBuffer outputBuffer = new ComputeBuffer(1, sizeof(uint)); // float4 (RGBA) = 4 * sizeof(float)
 
         public static AutoGatingController Create()
         {
             GameObject camera = CameraClass.Instance.Camera.gameObject;
             AutoGatingController autoGatingController = camera.AddComponent<AutoGatingController>();
             return autoGatingController;
+        }
+
+        public void ApplySettings()
+        {
+
         }
 
         private void Awake()
@@ -73,39 +84,33 @@ namespace BorkelRNVG
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            textureWidth = Screen.width;
-            textureHeight = Screen.height;
-
             mainCamera = CameraClass.Instance.Camera;
             nightVision = CameraClass.Instance.NightVision;
 
             // everything beyond this point makes my head hurt
-
             renderTexture = CreateRenderTexture();
 
-            commandBuffer = new CommandBuffer();
-            commandBuffer.SetRenderTarget(renderTexture);
-            commandBuffer.Blit(null, renderTexture);
-            mainCamera.AddCommandBuffer(CameraEvent.BeforeImageEffects, commandBuffer);
+            commandBuffer = new CommandBuffer {name = "AutoGatingCommandBuffer"};
 
-            /*
-            GameObject rtCameraGameObject = new GameObject("RTCamera");
-            _rtCamera = rtCameraGameObject.AddComponent<Camera>();
-            _rtCamera.CopyFrom(_mainCamera);
-            _rtCamera.targetTexture = renderTexture;
-            _rtCamera.nearClipPlane = 2f;
-            _rtCamera.enabled = false;
-            DontDestroyOnLoad(rtCameraGameObject);*/
+            blurTexture1 = new RenderTexture(Screen.width, Screen.height, 0, RenderTextureFormat.ARGB32);
+            blurTexture2 = new RenderTexture(Screen.width, Screen.height, 0, RenderTextureFormat.ARGB32);
+            contrastTexture = new RenderTexture(Screen.width, Screen.height, 0, RenderTextureFormat.ARGB32);
+            exposureTexture = new RenderTexture(Screen.width, Screen.height, 0, RenderTextureFormat.ARGB32);
+            maskTexture = new RenderTexture(Screen.width, Screen.height, 0, RenderTextureFormat.ARGB32);
+
+            contrastMaterial = new Material(contrastShader) { name = "ContrastMaterial" }; 
+            blurMaterial = new Material(blurShader) { name = "BlurMaterial" };
+            additiveBlendMaterial = new Material(additiveBlendShader) { name = "AdditiveBlendMaterial" };
+            exposureMaterial = new Material(exposureShader) { name = "ExposureMaterial" };
+            maskMaterial = new Material(maskShader) { name = "MaskShader" };
+
+            SetupCommandBuffer();
 
             brightnessBuffer = new ComputeBuffer(1, sizeof(uint));
 
-            //computeShader = AssetBundle.LoadFromFile($"{Plugin.assetsDirectory}\\Shaders\\pein_shaders").LoadAsset("BrightnessShader") as ComputeShader;
-            computeShader = AssetBundle.LoadFromFile($"{Plugin.assetsDirectory}\\Shaders\\pein_shaders").LoadAsset("AverageBrightnessShader") as ComputeShader;
             kernel = computeShader.FindKernel("CSReduceBrightness");
             computeShader.SetInt("_Width", textureWidth);
             computeShader.SetInt("_Height", textureHeight);
-            computeShader.SetTexture(kernel, "_InputTexture", renderTexture);
-            computeShader.SetBuffer(kernel, "_BrightnessBuffer", brightnessBuffer);
 
             // temp rt debug
             var canvas = new GameObject("Canvas", typeof(Canvas)).GetComponent<Canvas>();
@@ -114,13 +119,76 @@ namespace BorkelRNVG
             var rawImage = new GameObject("RawImage", typeof(RawImage)).GetComponent<RawImage>();
             rawImage.transform.SetParent(canvas.transform);
 
-            RectTransform rectTransform = rawImage.GetComponent<RectTransform>();
-            rectTransform.anchorMin = new Vector2(1, 1);
-            rectTransform.anchorMax = new Vector2(1, 1);
-
-            rectTransform.anchoredPosition = new Vector2(-100, -100);
+            rawImage.rectTransform.sizeDelta = new Vector2(500, 500);
+            rawImage.rectTransform.anchoredPosition = new Vector2(700, 0);
 
             rawImage.texture = renderTexture;
+        }
+
+        private void SetupCommandBuffer()
+        {
+            commandBuffer.Clear();
+            
+            commandBuffer.Blit(BuiltinRenderTextureType.CurrentActive, exposureTexture, exposureMaterial);
+
+            commandBuffer.Blit(exposureTexture, contrastTexture, contrastMaterial);
+
+            commandBuffer.Blit(contrastTexture, blurTexture1, blurMaterial); // blur pass 1
+            commandBuffer.Blit(blurTexture1, blurTexture2, blurMaterial); // blur pass 2
+
+            additiveBlendMaterial.SetTexture("_MainTex", contrastTexture);
+            additiveBlendMaterial.SetTexture("_AddTex", blurTexture2);
+
+            commandBuffer.Blit(contrastTexture, renderTexture, additiveBlendMaterial);
+
+            maskMaterial.SetTexture("_BaseTex", renderTexture);
+            maskMaterial.SetTexture("_OverlayTex", nightVision.Material_0.GetTexture(Shader.PropertyToID("_Mask")));
+
+            commandBuffer.Blit(renderTexture, renderTexture, maskMaterial);
+
+            mainCamera.AddCommandBuffer(CameraEvent.BeforeImageEffects, commandBuffer);
+        }
+
+        public IEnumerator ComputeBrightness()
+        {
+            uint[] bufferData = new uint[1];
+            brightnessBuffer.SetData(bufferData);
+
+            int threadGroupsX = Mathf.CeilToInt(textureWidth / 8.0f);
+            int threadGroupsY = Mathf.CeilToInt(textureHeight / 8.0f);
+            computeShader.SetTexture(kernel, "_InputTexture", renderTexture);
+            computeShader.SetBuffer(kernel, "_BrightnessBuffer", brightnessBuffer);
+            computeShader.Dispatch(kernel, threadGroupsX, threadGroupsY, 1);
+
+            // wait a frame (is this even necessary?)
+            yield return new WaitForEndOfFrame();
+
+            brightnessBuffer.GetData(bufferData);
+
+            uint totalBrightness = bufferData[0];
+            float avgBrightness = (float)totalBrightness / (textureWidth * textureHeight * BRIGHTNESS_SCALE);
+
+            _currentBrightness = avgBrightness;
+        }
+
+        private void FixedUpdate()
+        {
+            _frameCount++;
+            if (_frameCount >= _frameInterval)
+            {
+                _frameCount = 0;
+                StartCoroutine(ComputeBrightness());
+            }
+
+            contrastMaterial.SetFloat("_Amount", contrastLevel);
+            blurMaterial.SetFloat("_BlurSize", blurSize);
+            exposureMaterial.SetFloat("_Exposure", exposureAmount);
+
+            float gatingTarget = Mathf.Lerp(_lerp1, _lerp2, Mathf.Clamp((_currentBrightness - minInput) / (maxInput - minInput), 0.0f, 1.0f));
+
+            GatingMultiplier = Mathf.Lerp(GatingMultiplier, gatingTarget, _gateSpeed);
+
+            nightVision.ApplySettings();
         }
 
         private RenderTexture CreateRenderTexture()
@@ -135,67 +203,18 @@ namespace BorkelRNVG
             return rt;
         }
 
-        private void Update()
-        {
-            /*
-            // Ensure the renderTexture is set up properly
-            if (renderTexture == null || !renderTexture.IsCreated())
-            {
-                renderTexture = CreateRT();
-            }
-
-            //_rtCamera.transform.position = _mainCamera.transform.position;
-            //_rtCamera.transform.rotation = _mainCamera.transform.rotation;
-            //_rtCamera.Render();
-
-            uint[] brightnessSum = new uint[1] { 0 };
-            brightnessBuffer.SetData(brightnessSum);
-
-            computeShader.Dispatch(kernel, 8, 8, 1);
-
-            brightnessBuffer.GetData(brightnessSum);
-
-            float totalPixels = textureWidth * textureHeight;
-
-            _currentBrightness = brightnessSum[0] / totalPixels;
-
-            float normalizedBrightness = Mathf.Clamp((_currentBrightness - minInput) / (maxInput - minInput), 0.0f, 1.0f);
-            float gatingTarget = Mathf.Lerp(_lerp1, _lerp2, normalizedBrightness);
-
-            GatingMultiplier = Mathf.Lerp(GatingMultiplier, gatingTarget, _gateSpeed);
-
-            _nightVision.ApplySettings();*/
-        }
-
-        private void OnPreCull()
-        {
-            //Graphics.ExecuteCommandBuffer(commandBuffer);
-            mainCamera.GetComponent<UltimateBloom>()?.method_23(null, renderTexture, 1f);
-        }
-
-        /*
-        private void OnPreCull()
-        {
-            commandBuffer.Blit(BuiltinRenderTextureType.CurrentActive, renderTexture);
-
-            Singleton<LevelSettings>.Instance.AmbientType = AmbientType.NightVision;
-            nvCommandBuffer.Clear();
-            nvCommandBuffer.GetTemporaryRT(nvInt_6, -1, -1);
-            nvCommandBuffer.Blit(nvTargetIdentifier, nvInt_6, _nightVision.Material_0);
-            nvCommandBuffer.Blit(nvInt_6, nvTargetIdentifier);
-            nvCommandBuffer.ReleaseTemporaryRT(nvInt_6);
-        }
-
-        private void OnPostRender()
-        {
-            Singleton<LevelSettings>.Instance.AmbientType = AmbientType.Default;
-        }*/
-
         private void OnDestroy()
         {
             // get rid of this shit...
             renderTexture?.Release();
+            blurTexture1?.Release();
+            blurTexture2?.Release();
+            contrastTexture?.Release();
+            exposureTexture?.Release();
+            maskTexture?.Release();
             brightnessBuffer?.Release();
+            mainCamera.RemoveCommandBuffer(CameraEvent.BeforeImageEffects, commandBuffer);
+            commandBuffer?.Release();
         }
     }
 }

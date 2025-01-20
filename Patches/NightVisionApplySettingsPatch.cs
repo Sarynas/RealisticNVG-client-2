@@ -5,8 +5,9 @@ using EFT;
 using HarmonyLib;
 using System.Reflection;
 using UnityEngine;
-using WindowsInput.Native;
 using System.Collections.Generic;
+using BorkelRNVG.Helpers.Configuration;
+using BorkelRNVG.Helpers;
 
 namespace BorkelRNVG.Patches
 {
@@ -33,10 +34,10 @@ namespace BorkelRNVG.Patches
 
             var material = (Material)AccessTools.Property(__instance.GetType(), "Material_0").GetValue(__instance);
 
-            var lensMask = Plugin.GetMatchingLensMask(___Mask);
-            if (lensMask != null)
+            var lensMask = AssetHelper.MaskToLens.TryGetValue(___Mask, out var lens);
+            if (lens != null)
             {
-                material.SetTexture(maskId, lensMask);
+                material.SetTexture(maskId, lens);
             }
 
             material.SetFloat(invMaskSizeId, 1f / __instance.MaskSize);
