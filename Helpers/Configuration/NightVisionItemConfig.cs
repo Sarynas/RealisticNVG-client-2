@@ -11,6 +11,7 @@ namespace BorkelRNVG.Helpers.Configuration
     // feel like this shit is way too over-engineered
     public class NightVisionItemConfig
     {
+        public NightVisionConfig NightVisionConfig { get; set; }
         public float Intensity { get; set; }
         public float NoiseIntensity { get; set; }
         public float NoiseScale { get; set; }
@@ -20,7 +21,6 @@ namespace BorkelRNVG.Helpers.Configuration
         public float B { get; set; }
         public VirtualKeyCode Key { get; set; }
         public Texture2D BinocularMaskTexture { get; set; }
-        public NightVisionConfig NightVisionConfig { get; set; }
         public Action Update { get; set; }
 
         // am i abusing delegates too hard? probably not.. just feels weird
@@ -41,6 +41,7 @@ namespace BorkelRNVG.Helpers.Configuration
             Update = () =>
             {
                 float gatingValue = AutoGatingController.Instance == null ? 1 : AutoGatingController.Instance.GatingMultiplier;
+
                 Intensity = intensityCalc() * gatingValue;
                 NoiseIntensity = noiseIntensityCalc();
                 NoiseScale = noiseScaleCalc();
@@ -125,7 +126,6 @@ namespace BorkelRNVG.Helpers.Configuration
             ));
 
             // artem nvgs
-            // note: trying to obtain the itemid from config will return the vanilla gpnvg itemid
             Add("66326bfd46817c660d01512e", Get(gpnvg18));
             Add("66326bfd46817c660d015148", Get(gpnvg18));
             Add("66326bfd46817c660d015146", Get(gpnvg18));

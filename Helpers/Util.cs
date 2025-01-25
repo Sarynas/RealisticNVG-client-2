@@ -41,7 +41,7 @@ namespace BorkelRNVG.Helpers
         {
             _fpsCamera = null;
             _nightVision = null;
-            GameObject.Destroy(AutoGatingController.Instance);
+            GameObject.Destroy(AutoGatingController.Instance.gameObject);
         }
 
         private static bool CheckFpsCameraExist()
