@@ -64,7 +64,7 @@ namespace BorkelRNVG.Helpers
 
                 MaskTextures[mask.Key] = texture;
 
-                if (mask.Key == ENVGTexture.Noise) // umm.... not good
+                if (mask.Key == ENVGTexture.Noise) // umm.... weird.
                 {
                     noiseTexture = texture;
                     noiseTexture.wrapMode = TextureWrapMode.Repeat;

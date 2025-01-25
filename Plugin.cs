@@ -77,8 +77,8 @@ namespace BorkelRNVG
             enableAutoGating = Config.Bind(gatingCategory, "4. Enable Auto-Gating", false, "EXPERIMENTAL! WILL REDUCE FPS! Enables auto-gating (automatic brightness adjustment) for certain night vision devices. Auto-gating WILL NOT work without this enabled.");
 
             // Global multipliers
-            globalMaskSize = Config.Bind(globalCategory, "Mask size multiplier", 1.07f, new ConfigDescription("Applies size multiplier to all masks", new AcceptableValueRange<float>(0f, 2f)));
-            globalGain = Config.Bind(globalCategory, "Gain multiplier", 1f, new ConfigDescription("Applies gain multiplier to all NVGs", new AcceptableValueRange<float>(0f, 5f)));
+            globalMaskSize = Config.Bind(globalCategory, "1. Mask size multiplier", 1.07f, new ConfigDescription("Applies size multiplier to all masks", new AcceptableValueRange<float>(0f, 2f)));
+            globalGain = Config.Bind(globalCategory, "2. Gain multiplier", 1f, new ConfigDescription("Applies gain multiplier to all NVGs", new AcceptableValueRange<float>(0f, 5f)));
 
             // other variables.. idk
             gatingLevel.Value = 0;

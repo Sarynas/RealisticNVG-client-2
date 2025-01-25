@@ -1,4 +1,5 @@
 ﻿using BorkelRNVG.Helpers;
+using BorkelRNVG.Helpers.Configuration;
 using BSG.CameraEffects;
 using System.Collections;
 using UnityEngine;
@@ -26,15 +27,16 @@ namespace BorkelRNVG
 
         // various other vars
         private float _currentBrightness = 1.0f; // value that GatingMultiplier gets lerped to
-        private float _gateSpeed = 0.3f; // lerp speed
-        private float _lerp1 = 1f; // max gatingmult
-        private float _lerp2 = 0.2f; // min gatingmult
-        private float minInput = 0f; // min _currentBrightness
-        private float maxInput = 0.3f; // max _currentBrightness
+        public float gateSpeed = 0.3f; // lerp speed
+        public float maxBrightnessMult = 1f; // max gatingmult
+        public float minBrightnessMult = 0.2f; // min gatingmult
+        public float minInput = 0f; // min _currentBrightness
+        public float maxInput = 0.1f; // max _currentBrightness
         private int _frameInterval = 5; // interval between shader dispatches
         private int _frameCount = 0;
-        private int textureWidth = Screen.width;
-        private int textureHeight = Screen.height;
+
+        private int textureWidth = Screen.width / 8;
+        private int textureHeight = Screen.height / 8;
 
         // shader nonsense.....
         public Shader contrastShader = AssetHelper.LoadShader("assets/shaders/pein/shaders/contrastshader.shader", $"{AssetHelper.assetsDirectory}\\Shaders\\pein_shaders");
@@ -68,9 +70,13 @@ namespace BorkelRNVG
             return autoGatingController;
         }
 
-        public void ApplySettings()
+        public void ApplySettings(NightVisionConfig config)
         {
-
+            gateSpeed = config.GatingSpeed.Value;
+            maxBrightnessMult = config.MaxBrightness.Value;
+            minBrightnessMult = config.MinBrightness.Value;
+            minInput = config.MinBrightnessThreshold.Value;
+            maxInput = config.MaxBrightnessThreshold.Value;
         }
 
         private void Awake()
@@ -112,7 +118,7 @@ namespace BorkelRNVG
             computeShader.SetInt("_Width", textureWidth);
             computeShader.SetInt("_Height", textureHeight);
 
-            // temp rt debug
+            // rendertexture debug
             var canvas = new GameObject("Canvas", typeof(Canvas)).GetComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
 
@@ -142,7 +148,6 @@ namespace BorkelRNVG
             commandBuffer.Blit(contrastTexture, renderTexture, additiveBlendMaterial);
 
             maskMaterial.SetTexture("_BaseTex", renderTexture);
-            maskMaterial.SetTexture("_OverlayTex", nightVision.Material_0.GetTexture(Shader.PropertyToID("_Mask")));
 
             commandBuffer.Blit(renderTexture, renderTexture, maskMaterial);
 
@@ -173,6 +178,8 @@ namespace BorkelRNVG
 
         private void FixedUpdate()
         {
+            if (!Plugin.nvgOn) return;
+
             _frameCount++;
             if (_frameCount >= _frameInterval)
             {
@@ -183,10 +190,11 @@ namespace BorkelRNVG
             contrastMaterial.SetFloat("_Amount", contrastLevel);
             blurMaterial.SetFloat("_BlurSize", blurSize);
             exposureMaterial.SetFloat("_Exposure", exposureAmount);
+            maskMaterial.SetTexture("_OverlayTex", nightVision.Material_0.GetTexture(Shader.PropertyToID("_Mask")));
 
-            float gatingTarget = Mathf.Lerp(_lerp1, _lerp2, Mathf.Clamp((_currentBrightness - minInput) / (maxInput - minInput), 0.0f, 1.0f));
+            float gatingTarget = Mathf.Lerp(maxBrightnessMult, minBrightnessMult, Mathf.Clamp((_currentBrightness - minInput) / (maxInput - minInput), 0.0f, 1.0f));
 
-            GatingMultiplier = Mathf.Lerp(GatingMultiplier, gatingTarget, _gateSpeed);
+            GatingMultiplier = Mathf.Lerp(GatingMultiplier, gatingTarget, gateSpeed);
 
             nightVision.ApplySettings();
         }

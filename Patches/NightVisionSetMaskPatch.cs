@@ -6,6 +6,7 @@ using HarmonyLib;
 using System.Reflection;
 using UnityEngine;
 using BorkelRNVG.Helpers.Configuration;
+using BorkelRNVG.Helpers;
 
 
 namespace BorkelRNVG.Patches
@@ -23,19 +24,11 @@ namespace BorkelRNVG.Patches
         [PatchPrefix]
         private static void PatchPrefix(ref NightVision __instance)
         {
-            var gameWorld = Singleton<GameWorld>.Instance;
-            if (gameWorld == null) return;
+            string nvgID = Util.GetCurrentNvgItemId();
 
-            var player = gameWorld.MainPlayer;
-            if (player == null) return;
+            if (nvgID == null) return;
 
-            if (player.NightVisionObserver.Component == null
-                || player.NightVisionObserver.Component.Item == null
-                || player.NightVisionObserver.Component.Item.StringTemplateId == null)
-                return;
-
-            string nvgID = player.NightVisionObserver.Component.Item.StringTemplateId;
-            Texture2D nvgMask = NightVisionItemConfig.Get(nvgID)?.BinocularMaskTexture;
+            Texture2D nvgMask = NightVisionItemConfig.Get(nvgID).BinocularMaskTexture;
 
             if (nvgMask == null) return;
 

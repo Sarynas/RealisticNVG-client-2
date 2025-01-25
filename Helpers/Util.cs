@@ -1,4 +1,5 @@
-﻿using BSG.CameraEffects;
+﻿using BorkelRNVG.Helpers.Configuration;
+using BSG.CameraEffects;
 using Comfort.Common;
 using EFT;
 using EFT.CameraControl;
@@ -28,6 +29,8 @@ namespace BorkelRNVG.Helpers
                 return;
             }
 
+            _gameWorld = Singleton<GameWorld>.Instance;
+            _mainPlayer = _gameWorld.MainPlayer;
             _fpsCamera = CameraClass.Instance;
             if (_fpsCamera.NightVision != null)
             {
@@ -35,6 +38,25 @@ namespace BorkelRNVG.Helpers
             }
 
             AutoGatingController.Create();
+        }
+
+        public static bool IsNvgValid()
+        {
+            if (_gameWorld == null || _nightVision == null || _mainPlayer == null) return false;
+
+            if (_mainPlayer.NightVisionObserver.Component == null
+                || _mainPlayer.NightVisionObserver.Component.Item == null
+                || _mainPlayer.NightVisionObserver.Component.Item.StringTemplateId == null)
+                return false;
+
+            return true;
+        }
+
+        public static string GetCurrentNvgItemId()
+        {
+            if (!IsNvgValid()) return null;
+        
+            return _mainPlayer.NightVisionObserver.Component.Item.StringTemplateId;
         }
 
         private static void OnCameraDestroyed()
@@ -69,7 +91,9 @@ namespace BorkelRNVG.Helpers
 
         public static void ApplyGatingSettings(object sender, EventArgs eventArgs)
         {
-            AutoGatingController.Instance?.ApplySettings();
+            NightVisionItemConfig nvgConfig = NightVisionItemConfig.Get(GetCurrentNvgItemId());
+
+            AutoGatingController.Instance?.ApplySettings(nvgConfig.NightVisionConfig);
         }
     }
 }

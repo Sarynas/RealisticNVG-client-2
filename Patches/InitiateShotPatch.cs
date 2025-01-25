@@ -17,12 +17,15 @@ namespace BorkelRNVG.Patches
         private static void PatchPostfix(FirearmsEffects __instance)
         {
             AutoGatingController inst = AutoGatingController.Instance;
-            inst?.StartCoroutine(ForceCompute(inst));
+            if (Plugin.nvgOn && inst != null)
+            {
+                inst?.StartCoroutine(ForceCompute(inst));
+            }
         }
 
         private static IEnumerator ForceCompute(AutoGatingController __instance)
         {
-            yield return new WaitForSeconds(0.05f);
+            yield return new WaitForSeconds(0.01f); // yea.. this is a bit hacky
 
             __instance.StartCoroutine(__instance.ComputeBrightness());
         }
