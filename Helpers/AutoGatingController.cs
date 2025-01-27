@@ -79,6 +79,11 @@ namespace BorkelRNVG
             maxInput = config.MaxBrightnessThreshold.Value;
         }
 
+        public void SetBrightnessTarget(float target)
+        {
+            _currentBrightness = target;
+        }
+
         private void Awake()
         {
             if (Instance != null)

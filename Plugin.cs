@@ -99,7 +99,7 @@ namespace BorkelRNVG
                 new SprintPatch().Enable();
                 new NightVisionMethod_1().Enable(); //reshade
                 new MenuPatch().Enable(); //reshade
-                new LightAndSoundShotPatch().Enable();
+                new StartFireEffectsPatch().Enable();
 
                 Logger.LogInfo("Patches enabled successfully!");
             }
