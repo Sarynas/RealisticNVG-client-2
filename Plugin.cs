@@ -3,7 +3,6 @@ using BepInEx.Configuration;
 using BorkelRNVG.Patches;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 using WindowsInput.Native;
 using Comfort.Common;
@@ -99,7 +98,7 @@ namespace BorkelRNVG
                 new SprintPatch().Enable();
                 new NightVisionMethod_1().Enable(); //reshade
                 new MenuPatch().Enable(); //reshade
-                new StartFireEffectsPatch().Enable();
+                new InitiateShotPatch().Enable();
 
                 Logger.LogInfo("Patches enabled successfully!");
             }

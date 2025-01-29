@@ -1,8 +1,10 @@
 ﻿using BorkelRNVG.Helpers.Configuration;
+using BorkelRNVG.Helpers.Enum;
 using BSG.CameraEffects;
 using Comfort.Common;
 using EFT;
 using EFT.CameraControl;
+using EFT.InventoryLogic;
 using GPUInstancer;
 using System;
 using UnityEngine;
@@ -94,6 +96,22 @@ namespace BorkelRNVG.Helpers
             NightVisionItemConfig nvgConfig = NightVisionItemConfig.Get(GetCurrentNvgItemId());
 
             AutoGatingController.Instance?.ApplySettings(nvgConfig.NightVisionConfig);
+        }
+
+        public static EMuzzleDeviceType GetSuppressedOrFlashHidden(Player.FirearmController controller)
+        {
+            if (controller.IsSilenced) return EMuzzleDeviceType.Suppressor;
+
+            Slot[] slots = controller.Item.Slots;
+            for (int i = 0; i < slots.Length; i++)
+            {
+                if (slots[i].ContainedItem is FlashHiderItemClass)
+                {
+                    return EMuzzleDeviceType.FlashHider;
+                }
+            }
+
+            return EMuzzleDeviceType.None;
         }
     }
 }
