@@ -1,13 +1,11 @@
 ﻿using BorkelRNVG.Helpers;
 using BorkelRNVG.Helpers.Configuration;
 using BorkelRNVG.Helpers.Enum;
-using Comfort.Common;
 using EFT;
 using SPT.Reflection.Patching;
 using System.Collections;
 using System.Reflection;
 using UnityEngine;
-using static ApplicationConfigClass;
 
 namespace BorkelRNVG.Patches
 {

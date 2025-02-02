@@ -5,7 +5,6 @@ using Comfort.Common;
 using EFT;
 using EFT.CameraControl;
 using EFT.InventoryLogic;
-using GPUInstancer;
 using System;
 using UnityEngine;
 
@@ -40,6 +39,16 @@ namespace BorkelRNVG.Helpers
             }
 
             AutoGatingController.Create();
+        }
+
+        public static Player GetPlayer()
+        {
+            if (_mainPlayer == null)
+            {
+                _mainPlayer = Singleton<GameWorld>.Instance.MainPlayer;
+            }
+
+            return _mainPlayer;
         }
 
         public static bool IsNvgValid()
