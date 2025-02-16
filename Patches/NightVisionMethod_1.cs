@@ -5,8 +5,6 @@ using System.Reflection;
 using System.Threading.Tasks;
 using WindowsInput;
 using WindowsInput.Native;
-using Comfort.Common;
-using EFT;
 using BorkelRNVG.Helpers;
 
 namespace BorkelRNVG.Patches

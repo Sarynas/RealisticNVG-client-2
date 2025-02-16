@@ -124,5 +124,21 @@ namespace BorkelRNVG.Helpers
 
             return EMuzzleDeviceType.None;
         }
+
+        public static bool VisibilityCheckBetweenPoints(Vector3 v1, Vector3 v2, LayerMask layer)
+        {
+            Vector3 dir = v2 - v1;
+            Vector3 dirNormal = dir.normalized;
+            float dist = dir.magnitude; // idk bruh
+            bool hit = Physics.Raycast(v1, dirNormal, dist, layer);
+
+            return !hit;
+        }
+
+        public static bool VisibilityCheckOnScreen(Vector3 pos)
+        {
+            Vector3 screenPos = _fpsCamera.Camera.WorldToScreenPoint(pos);
+            return screenPos.z > 0 && screenPos.x > 0 && screenPos.x < Screen.width && screenPos.y > 0 && screenPos.y < Screen.height;
+        }
     }
 }

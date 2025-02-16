@@ -1,5 +1,6 @@
 ﻿using BepInEx.Configuration;
 using BorkelRNVG.Helpers.Configuration;
+using BorkelRNVG.Helpers.Enum;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,7 +21,7 @@ namespace BorkelRNVG.Helpers.Configuration
         public float G { get; set; }
         public float B { get; set; }
         public VirtualKeyCode Key { get; set; }
-        public Texture2D BinocularMaskTexture { get; set; }
+        public Texture2D MaskTexture { get; set; }
         public Action Update { get; set; }
 
         // am i abusing delegates too hard? probably not.. just feels weird
@@ -35,7 +36,7 @@ namespace BorkelRNVG.Helpers.Configuration
             Func<float> g,
             Func<float> b,
             VirtualKeyCode key,
-            Texture2D binocularMaskTexture)
+            Texture2D maskTexture)
         {
             // define the update action
             Update = () =>
@@ -50,7 +51,7 @@ namespace BorkelRNVG.Helpers.Configuration
                 G = g();
                 B = b();
                 Key = key;
-                BinocularMaskTexture = binocularMaskTexture;
+                MaskTexture = maskTexture;
                 NightVisionConfig = nvgConfig;
             };
 
@@ -122,7 +123,7 @@ namespace BorkelRNVG.Helpers.Configuration
                 () => gpnvgConfig.Green.Value / 255,
                 () => gpnvgConfig.Blue.Value / 255,
                 VirtualKeyCode.NUMPAD9,
-                null
+                AssetHelper.MaskTextures[ENVGTexture.Anvis]
             ));
 
             // artem nvgs
@@ -147,7 +148,7 @@ namespace BorkelRNVG.Helpers.Configuration
                 () => pvs14Config.Green.Value / 255,
                 () => pvs14Config.Blue.Value / 255,
                 VirtualKeyCode.NUMPAD8,
-                null
+                AssetHelper.MaskTextures[ENVGTexture.Monocular]
             ));
 
             // N-15
@@ -167,7 +168,7 @@ namespace BorkelRNVG.Helpers.Configuration
                 () => n15Config.Green.Value / 255,
                 () => n15Config.Blue.Value / 255,
                 VirtualKeyCode.NUMPAD7,
-                null
+                AssetHelper.MaskTextures[ENVGTexture.Binocular]
             ));
 
             // PNV-10T
@@ -187,7 +188,7 @@ namespace BorkelRNVG.Helpers.Configuration
                 () => pnv10Config.Green.Value / 255,
                 () => pnv10Config.Blue.Value / 255,
                 VirtualKeyCode.NUMPAD6,
-                null
+                AssetHelper.MaskTextures[ENVGTexture.Pnv]
             ));
 
             Plugin.t7Pixelation = configFile.Bind(Plugin.t7Category, "1. Pixelation", true, "Requires restart. Pixelates the T-7, like a real digital screen");

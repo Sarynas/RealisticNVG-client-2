@@ -1,7 +1,5 @@
 ﻿using SPT.Reflection.Patching;
 using BSG.CameraEffects;
-using Comfort.Common;
-using EFT;
 using HarmonyLib;
 using System.Reflection;
 using UnityEngine;
@@ -25,11 +23,9 @@ namespace BorkelRNVG.Patches
         private static void PatchPrefix(ref NightVision __instance)
         {
             string nvgID = Util.GetCurrentNvgItemId();
-
             if (nvgID == null) return;
 
-            Texture2D nvgMask = NightVisionItemConfig.Get(nvgID).BinocularMaskTexture;
-
+            Texture2D nvgMask = NightVisionItemConfig.Get(nvgID).MaskTexture;
             if (nvgMask == null) return;
 
             __instance.Mask = nvgMask;

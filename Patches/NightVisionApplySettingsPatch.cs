@@ -1,7 +1,5 @@
 ﻿using SPT.Reflection.Patching;
 using BSG.CameraEffects;
-using Comfort.Common;
-using EFT;
 using HarmonyLib;
 using System.Reflection;
 using UnityEngine;
@@ -56,9 +54,6 @@ namespace BorkelRNVG.Patches
 
         public static void ApplyModSettings(ref NightVision nightVision)
         {
-            nightVision.Color.a = 1;
-            nightVision.MaskSize = 1; // does not affect the t-7 for some reason
-
             string nvgID = Util.GetCurrentNvgItemId();
             if (nvgID == null) return;
 
@@ -70,9 +65,11 @@ namespace BorkelRNVG.Patches
                 nvgItemConfig.Update();
 
                 // grab the values from the (now updated) night vision item config
+                nightVision.Color.a = 1;
                 nightVision.Intensity = nvgItemConfig.Intensity;
                 nightVision.NoiseIntensity = nvgItemConfig.NoiseIntensity;
                 nightVision.NoiseScale = nvgItemConfig.NoiseScale;
+                nightVision.Mask = nvgItemConfig.MaskTexture;
                 nightVision.MaskSize = nvgItemConfig.MaskSize;
                 nightVision.Color.r = nvgItemConfig.R;
                 nightVision.Color.g = nvgItemConfig.G;

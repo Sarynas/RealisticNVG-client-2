@@ -68,19 +68,17 @@ namespace BorkelRNVG.Patches
                 Camera camera = cameraClass.Camera;
 
                 Vector3 cameraPos = camera.transform.position;
-                Vector3 cameraForward = camera.transform.forward;
-                Vector3 directionToShot = (shotPosition - cameraPos).normalized;
+                Vector3 dir = shotPosition - cameraPos;
 
                 float maxShotDistance = 5f;
-                float shotDistance = (cameraClass.Camera.transform.position - shotPosition).magnitude;
+                float shotDistance = dir.magnitude;
                 float shotDistanceMult = Mathf.Clamp01(1 - (shotDistance / maxShotDistance));
-                float shotDirectionMult = EaseOut(Mathf.Max(0, Vector3.Dot(cameraForward, directionToShot * -1)));
+                bool isVisible = Util.VisibilityCheckBetweenPoints(cameraPos, shotPosition, LayerMaskClass.HighPolyWithTerrainMask);
+                bool isOnScreen = Util.VisibilityCheckOnScreen(shotPosition);
 
-                bool isObstructed = Physics.Raycast(cameraPos, directionToShot, maxShotDistance, LayerMaskClass.HighPolyWithTerrainNoGrassMask);
-
-                if (!isObstructed)
+                if (isVisible && isOnScreen)
                 {
-                    float finalGatingMult = Mathf.Lerp(0, 1 * shotDistanceMult * shotDirectionMult, gatingLerp);
+                    float finalGatingMult = Mathf.Lerp(0, 1 * shotDistanceMult, gatingLerp);
                     AutoGatingController.Instance?.StartCoroutine(AdjustAutoGating(0.05f, finalGatingMult, gatingInst, nvgConfig));
                 }
             }

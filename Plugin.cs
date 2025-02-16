@@ -99,7 +99,6 @@ namespace BorkelRNVG
                 new NightVisionMethod_1().Enable(); //reshade
                 new MenuPatch().Enable(); //reshade
                 new InitiateShotPatch().Enable();
-                //new LaserBeamAwakePatch().Enable();
 
                 Logger.LogInfo("Patches enabled successfully!");
             }
