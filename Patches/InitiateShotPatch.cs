@@ -16,9 +16,22 @@ namespace BorkelRNVG.Patches
             return typeof(Player.FirearmController).GetMethod(nameof(Player.FirearmController.InitiateShot));
         }
 
-        [PatchPostfix]
-        private static void PatchPostfix(Player.FirearmController __instance)
+        private static float EaseOut(float val)
         {
+            return 1 - Mathf.Pow(1 - val, 3);
+        }
+
+        private static float ClampDot90Deg(float dot)
+        {
+            return Mathf.Max(0, dot);
+        }
+
+        [PatchPostfix]
+        private static void PatchPostfix(Player.FirearmController __instance, AmmoItemClass ammo, Vector3 shotPosition, Vector3 shotDirection)
+        {
+            CameraClass cameraClass = Util.GetCameraClass();
+            if (cameraClass == null || cameraClass.Camera == null) return;
+
             AutoGatingController gatingInst = AutoGatingController.Instance;
             if (gatingInst == null) return;
 
@@ -28,26 +41,53 @@ namespace BorkelRNVG.Patches
             NightVisionConfig nvgConfig = NightVisionItemConfig.Get(nvgId).NightVisionConfig;
             if (nvgConfig == null) return;
 
-            EMuzzleDeviceType deviceType = Util.GetSuppressedOrFlashHidden(__instance);
+            EMuzzleDeviceType deviceType = Util.GetMuzzleDeviceType(__instance);
 
-            float gatingMult;
+            Player mainPlayer = Util.GetPlayer();
+            Player firearmOwner = __instance.GetComponentInParent<Player>();
+
+            float gatingLerp;
             switch (deviceType)
             {
                 case EMuzzleDeviceType.None:
-                    gatingMult = 0.15f; 
+                    gatingLerp = 0.15f; 
                     break;
                 case EMuzzleDeviceType.Suppressor:
-                    gatingMult = 1.0f;
+                    gatingLerp = 1.0f;
                     break;
                 case EMuzzleDeviceType.FlashHider:
-                    gatingMult = 0.3f;
+                    gatingLerp = 0.3f;
                     break;
                 default:
-                    gatingMult = 1.0f;
+                    gatingLerp = 1.0f;
                     break;
             }
 
-            AutoGatingController.Instance?.StartCoroutine(AdjustAutoGating(0.05f, gatingMult, gatingInst, nvgConfig));
+            if (firearmOwner != mainPlayer)
+            {
+                Camera camera = cameraClass.Camera;
+
+                Vector3 cameraPos = camera.transform.position;
+                Vector3 cameraForward = camera.transform.forward;
+                Vector3 directionToShot = (shotPosition - cameraPos).normalized;
+
+                float maxShotDistance = 5f;
+                float shotDistance = (cameraClass.Camera.transform.position - shotPosition).magnitude;
+                float shotDistanceMult = Mathf.Clamp01(1 - (shotDistance / maxShotDistance));
+                float shotDirectionMult = EaseOut(Mathf.Max(0, Vector3.Dot(cameraForward, directionToShot * -1)));
+
+                bool isObstructed = Physics.Raycast(cameraPos, directionToShot, maxShotDistance, LayerMaskClass.HighPolyWithTerrainNoGrassMask);
+
+                if (!isObstructed)
+                {
+                    float finalGatingMult = Mathf.Lerp(0, 1 * shotDistanceMult * shotDirectionMult, gatingLerp);
+                    AutoGatingController.Instance?.StartCoroutine(AdjustAutoGating(0.05f, finalGatingMult, gatingInst, nvgConfig));
+                }
+            }
+            else
+            {
+                AutoGatingController.Instance?.StartCoroutine(AdjustAutoGating(0.05f, gatingLerp, gatingInst, nvgConfig));
+            }
         }
 
         private static IEnumerator AdjustAutoGating(float delay, float multiplier, AutoGatingController gatingController, NightVisionConfig nvgConfig)

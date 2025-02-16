@@ -17,6 +17,8 @@ namespace BorkelRNVG.Helpers
         private static NightVision _nightVision;
         private static Player _mainPlayer;
 
+        public static CameraClass GetCameraClass() => _fpsCamera;
+
         public static void InitializeVars()
         {
             PlayerCameraController.OnPlayerCameraControllerCreated += OnCameraCreated;
@@ -107,7 +109,7 @@ namespace BorkelRNVG.Helpers
             AutoGatingController.Instance?.ApplySettings(nvgConfig.NightVisionConfig);
         }
 
-        public static EMuzzleDeviceType GetSuppressedOrFlashHidden(Player.FirearmController controller)
+        public static EMuzzleDeviceType GetMuzzleDeviceType(Player.FirearmController controller)
         {
             if (controller.IsSilenced) return EMuzzleDeviceType.Suppressor;
 
