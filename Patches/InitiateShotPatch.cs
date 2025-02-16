@@ -70,7 +70,7 @@ namespace BorkelRNVG.Patches
                 Vector3 cameraPos = camera.transform.position;
                 Vector3 dir = shotPosition - cameraPos;
 
-                float maxShotDistance = 5f;
+                float maxShotDistance = 15f;
                 float shotDistance = dir.magnitude;
                 float shotDistanceMult = Mathf.Clamp01(1 - (shotDistance / maxShotDistance));
                 bool isVisible = Util.VisibilityCheckBetweenPoints(cameraPos, shotPosition, LayerMaskClass.HighPolyWithTerrainMask);

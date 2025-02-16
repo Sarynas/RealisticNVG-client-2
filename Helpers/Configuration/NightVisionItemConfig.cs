@@ -1,11 +1,9 @@
 ﻿using BepInEx.Configuration;
-using BorkelRNVG.Helpers.Configuration;
 using BorkelRNVG.Helpers.Enum;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using WindowsInput.Native;
-using static GClass1907;
 
 namespace BorkelRNVG.Helpers.Configuration
 {

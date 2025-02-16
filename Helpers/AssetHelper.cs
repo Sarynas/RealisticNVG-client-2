@@ -16,6 +16,17 @@ namespace BorkelRNVG.Helpers
 
         public static Shader pixelationShader; // Assets/Systems/Effects/Pixelation/Pixelation.shader
         public static Shader nightVisionShader; // Assets/Shaders/CustomNightVision.shader
+        public static Shader contrastShader;
+        public static Shader additiveBlendShader;
+        public static Shader blurShader;
+        public static Shader exposureShader;
+        public static Shader maskShader;
+
+        public static Material blurMaterial;
+        public static Material additiveBlendMaterial;
+        public static Material contrastMaterial;
+        public static Material exposureMaterial;
+        public static Material maskMaterial;
 
         public static Texture2D noiseTexture;
 
@@ -38,7 +49,8 @@ namespace BorkelRNVG.Helpers
             { ENVGTexture.Anvis, "LensTextures\\lens_anvis.png" },
             { ENVGTexture.Binocular, "LensTextures\\lens_binocular.png" },
             { ENVGTexture.Monocular, "LensTextures\\lens_old_monocular.png" },
-            { ENVGTexture.Pnv, "LensTextures\\lens_pnv.png" }
+            { ENVGTexture.Pnv, "LensTextures\\lens_pnv.png" },
+            { ENVGTexture.Thermal, "LensTextures\\lens_pnv.png" }
         };
 
         public static Dictionary<ENVGTexture, Texture2D> MaskTextures = new Dictionary<ENVGTexture, Texture2D>();
@@ -84,6 +96,11 @@ namespace BorkelRNVG.Helpers
 
             pixelationShader = LoadShader("Assets/Systems/Effects/Pixelation/Pixelation.shader", eftShaderPath); // T-7 pixelation
             nightVisionShader = LoadShader("Assets/Shaders/CustomNightVision.shader", nightVisionShaderPath);
+            contrastShader = LoadShader("assets/shaders/pein/shaders/contrastshader.shader", $"{assetsDirectory}\\Shaders\\pein_shaders");
+            additiveBlendShader = LoadShader("assets/shaders/pein/shaders/additiveblendshader.shader", $"{assetsDirectory}\\Shaders\\pein_shaders");
+            blurShader = LoadShader("assets/shaders/pein/shaders/blurshader.shader", $"{assetsDirectory}\\Shaders\\pein_shaders");
+            exposureShader = LoadShader("assets/shaders/pein/shaders/exposureshader.shader", $"{assetsDirectory}\\Shaders\\pein_shaders");
+            maskShader = LoadShader("assets/shaders/pein/shaders/maskshader.shader", $"{assetsDirectory}\\Shaders\\pein_shaders");
         }
 
         public static Texture2D LoadPNG(string filePath)

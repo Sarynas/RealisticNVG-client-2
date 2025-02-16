@@ -38,13 +38,6 @@ namespace BorkelRNVG
         private int textureWidth = Screen.width / 8;
         private int textureHeight = Screen.height / 8;
 
-        // shader nonsense.....
-        public Shader contrastShader = AssetHelper.LoadShader("assets/shaders/pein/shaders/contrastshader.shader", $"{AssetHelper.assetsDirectory}\\Shaders\\pein_shaders");
-        public Shader additiveBlendShader = AssetHelper.LoadShader("assets/shaders/pein/shaders/additiveblendshader.shader", $"{AssetHelper.assetsDirectory}\\Shaders\\pein_shaders");
-        public Shader blurShader = AssetHelper.LoadShader("assets/shaders/pein/shaders/blurshader.shader", $"{AssetHelper.assetsDirectory}\\Shaders\\pein_shaders");
-        public Shader exposureShader = AssetHelper.LoadShader("assets/shaders/pein/shaders/exposureshader.shader", $"{AssetHelper.assetsDirectory}\\Shaders\\pein_shaders");
-        public Shader maskShader = AssetHelper.LoadShader("assets/shaders/pein/shaders/maskshader.shader", $"{AssetHelper.assetsDirectory}\\Shaders\\pein_shaders");
-
         public Material blurMaterial;
         public Material additiveBlendMaterial;
         public Material contrastMaterial;
@@ -109,11 +102,11 @@ namespace BorkelRNVG
             exposureTexture = new RenderTexture(Screen.width, Screen.height, 0, RenderTextureFormat.ARGB32);
             maskTexture = new RenderTexture(Screen.width, Screen.height, 0, RenderTextureFormat.ARGB32);
 
-            contrastMaterial = new Material(contrastShader) { name = "ContrastMaterial" }; 
-            blurMaterial = new Material(blurShader) { name = "BlurMaterial" };
-            additiveBlendMaterial = new Material(additiveBlendShader) { name = "AdditiveBlendMaterial" };
-            exposureMaterial = new Material(exposureShader) { name = "ExposureMaterial" };
-            maskMaterial = new Material(maskShader) { name = "MaskShader" };
+            contrastMaterial = new Material(AssetHelper.contrastShader) { name = "ContrastMaterial" }; 
+            blurMaterial = new Material(AssetHelper.blurShader) { name = "BlurMaterial" };
+            additiveBlendMaterial = new Material(AssetHelper.additiveBlendShader) { name = "AdditiveBlendMaterial" };
+            exposureMaterial = new Material(AssetHelper.exposureShader) { name = "ExposureMaterial" };
+            maskMaterial = new Material(AssetHelper.maskShader) { name = "MaskShader" };
 
             SetupCommandBuffer();
 
@@ -124,6 +117,7 @@ namespace BorkelRNVG
             computeShader.SetInt("_Height", textureHeight);
 
             // rendertexture debug
+            /*
             var canvas = new GameObject("Canvas", typeof(Canvas)).GetComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
 
@@ -133,7 +127,7 @@ namespace BorkelRNVG
             rawImage.rectTransform.sizeDelta = new Vector2(500, 500);
             rawImage.rectTransform.anchoredPosition = new Vector2(700, 0);
 
-            rawImage.texture = renderTexture;
+            rawImage.texture = renderTexture;*/
         }
 
         private void SetupCommandBuffer()
@@ -153,6 +147,7 @@ namespace BorkelRNVG
             commandBuffer.Blit(contrastTexture, renderTexture, additiveBlendMaterial);
 
             maskMaterial.SetTexture("_BaseTex", renderTexture);
+            maskMaterial.SetTexture("_MaskTex", maskTexture);
 
             commandBuffer.Blit(renderTexture, renderTexture, maskMaterial);
 

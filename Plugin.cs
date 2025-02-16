@@ -12,7 +12,7 @@ using BorkelRNVG.Helpers;
 
 namespace BorkelRNVG
 {
-    [BepInPlugin("com.borkel.nvgmasks", "Borkel's Realistic NVGs", "1.6.0")]
+    [BepInPlugin("com.borkel.nvgmasks", "Borkel's Realistic NVGs", "1.7.0")]
     public class Plugin : BaseUnityPlugin
     {
         public static ManualLogSource Log;

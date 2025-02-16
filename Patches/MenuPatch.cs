@@ -5,14 +5,12 @@ using HarmonyLib;
 using System.Reflection;
 using System.Threading.Tasks;
 using WindowsInput.Native;
-using Comfort.Common;
 using WindowsInput;
-using EFT;
 using BorkelRNVG.Helpers;
 
 namespace BorkelRNVG.Patches
 {
-    internal class MenuPatch : ModulePatch //if Awake is prevented from running, the exaggerated bloom goes away
+    internal class MenuPatch : ModulePatch
     {
         private static async Task ToggleReshadeAsync(InputSimulator inputSimulator, VirtualKeyCode key)
         {
@@ -47,7 +45,6 @@ namespace BorkelRNVG.Patches
                     if (Plugin.nvgOn)
                     {
                         Task.Run(() => ToggleReshadeAsync(inputSimulator, VirtualKeyCode.NUMPAD5));
-                        
                     }
                     break;
             }
