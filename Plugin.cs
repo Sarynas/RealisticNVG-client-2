@@ -49,6 +49,8 @@ namespace BorkelRNVG
         public static VirtualKeyCode nvgKey = VirtualKeyCode.NUMPAD0;
         public static ConfigEntry<bool> enableReshade;
         public static ConfigEntry<bool> disableReshadeInMenus;
+        public static ConfigEntry<float> irFlashlightBrightnessMult;
+        public static ConfigEntry<float> irFlashlightRangeMult;
         //public static bool disabledInMenu = false;
 
         // Gating
@@ -68,6 +70,10 @@ namespace BorkelRNVG
             enableSprintPatch = Config.Bind(miscCategory, "Sprint toggles tactical devices. DO NOT USE WITH FIKA.", false, "Sprinting will toggle tactical devices until you stop sprinting, this mitigates the IR lights being visible outside of the NVGs. I recommend enabling this feature.");
             enableReshade = Config.Bind(miscCategory, "Enable ReShade input simulation", false, "Will enable the input simulation to enable the ReShade, will use numpad keys. GPNVG-18 -> numpad 9. PVS-14 -> numpad 8. N-15 -> numpad 7. PNV-10T -> numpad 6. Off -> numpad 5. Only enable if you've installed the ReShade.");
             disableReshadeInMenus = Config.Bind(miscCategory, "Disable ReShade when in menus", true, "Is a bit wonky in the hideout, but works well in-raid.");
+            irFlashlightBrightnessMult = Config.Bind(miscCategory, "IR flashlight brightness multiplier", 1.5f, new ConfigDescription("Brightness multiplier for IR flashlights", new AcceptableValueRange<float>(0f, 5f)));
+            irFlashlightRangeMult = Config.Bind(miscCategory, "IR flashlight range multiplier", 2f, new ConfigDescription("Range multiplier for IR flashlights", new AcceptableValueRange<float>(0f, 10f)));
+            irFlashlightBrightnessMult.SettingChanged += (sender, e) => IkLightAwakePatch.UpdateIntensityAll();
+            irFlashlightRangeMult.SettingChanged += (sender, e) => IkLightAwakePatch.UpdateIntensityAll();
             
             // Gating
             gatingInc = Config.Bind(gatingCategory, "1. Manual gating increase", KeyCode.None, "Increases the gain by 1 step. There's 5 levels (-2...2), default level is the third level (0).");
@@ -99,6 +105,7 @@ namespace BorkelRNVG
                 new NightVisionMethod_1().Enable(); //reshade
                 new MenuPatch().Enable(); //reshade
                 new InitiateShotPatch().Enable();
+                new IkLightAwakePatch().Enable();
 
                 Logger.LogInfo("Patches enabled successfully!");
             }
@@ -113,6 +120,11 @@ namespace BorkelRNVG
             //new WeaponSwapPatch().Enable(); //not working
             //new UltimateBloomPatch().Enable(); //works if Awake is prevented from running
             //new LevelSettingsPatch().Enable();
+        }
+
+        private void IrFlashlightBrightnessMult_SettingChanged(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         void Update()

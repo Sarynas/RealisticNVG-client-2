@@ -125,7 +125,7 @@ namespace BorkelRNVG
             computeShader.SetInt("_Height", textureHeight);
 
             // rendertexture debug
-            /*
+            
             var canvas = new GameObject("Canvas", typeof(Canvas)).GetComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
 
@@ -135,7 +135,7 @@ namespace BorkelRNVG
             rawImage.rectTransform.sizeDelta = new Vector2(500, 500);
             rawImage.rectTransform.anchoredPosition = new Vector2(700, 0);
 
-            rawImage.texture = renderTexture;*/
+            rawImage.texture = renderTexture;
         }
 
         private void SetupCommandBuffer()
