@@ -65,11 +65,19 @@ namespace BorkelRNVG
 
         public void ApplySettings(NightVisionConfig config)
         {
-            gateSpeed = config.GatingSpeed.Value;
-            maxBrightnessMult = config.MaxBrightness.Value;
-            minBrightnessMult = config.MinBrightness.Value;
-            minInput = config.MinBrightnessThreshold.Value;
-            maxInput = config.MaxBrightnessThreshold.Value;
+            if (config.AutoGatingEnabled.Value == true)
+            {
+                gateSpeed = config.GatingSpeed.Value;
+                maxBrightnessMult = config.MaxBrightness.Value;
+                minBrightnessMult = config.MinBrightness.Value;
+                minInput = config.MinBrightnessThreshold.Value;
+                maxInput = config.MaxBrightnessThreshold.Value;
+            }
+            else
+            {
+                _currentBrightness = 1.0f;
+                GatingMultiplier = 1.0f;
+            }
         }
 
         public void SetBrightnessTarget(float target)
@@ -178,7 +186,21 @@ namespace BorkelRNVG
 
         private void FixedUpdate()
         {
-            if (!Plugin.nvgOn) return;
+            string nvgId = Util.GetCurrentNvgItemId();
+            if (nvgId == null) return;
+
+            NightVisionItemConfig nvgConfig = NightVisionItemConfig.Get(nvgId);
+            if (nvgConfig == null) return;
+
+            bool gatingEnabled = nvgConfig.NightVisionConfig.AutoGatingEnabled.Value;
+
+            if (!Plugin.nvgOn || gatingEnabled == false || Plugin.enableAutoGating.Value == false)
+            {
+                _currentBrightness = 1f;
+                GatingMultiplier = 1f;
+                nightVision.ApplySettings();
+                return;
+            }
 
             _frameCount++;
             if (_frameCount >= _frameInterval)
