@@ -109,7 +109,7 @@ namespace BorkelRNVG.Helpers.Configuration
             NightVisionConfig gpnvgConfig = new NightVisionConfig(
                     configFile, Plugin.gpnvgCategory,
                     2.5f, 0.2f, 0.1f, 0.96f, 152f, 214f, 252f,
-                    true, 0.3f, 1f, 0.2f, 0f, 0.15f
+                    EGatingType.AutoGating, 0.3f, 1f, 0.2f, 0f, 0.15f
                 );
             Add(gpnvg18, new NightVisionItemConfig(
                 gpnvgConfig,
@@ -134,7 +134,7 @@ namespace BorkelRNVG.Helpers.Configuration
             var pvs14Config = new NightVisionConfig(
                     configFile, Plugin.pvsCategory,
                     2.4f, 0.2f, 0.1f, 1f, 95f, 210f, 255f,
-                    true, 0.3f, 1f, 0.2f, 0f, 0.15f
+                    EGatingType.AutoGating, 0.3f, 1f, 0.2f, 0f, 0.15f
                 );
             Add(pvs14, new NightVisionItemConfig(
                 pvs14Config,
@@ -154,7 +154,7 @@ namespace BorkelRNVG.Helpers.Configuration
             NightVisionConfig n15Config = new NightVisionConfig(
                     configFile, Plugin.nCategory,
                     2.1f, 0.25f, 0.15f, 1f, 60f, 235f, 100f,
-                    true, 0.3f, 1f, 0.2f, 0f, 0.15f
+                    EGatingType.AutoGating, 0.3f, 1f, 0.2f, 0f, 0.15f
                 );
             Add(n15, new NightVisionItemConfig(
                 n15Config,
@@ -174,7 +174,7 @@ namespace BorkelRNVG.Helpers.Configuration
             NightVisionConfig pnv10Config = new NightVisionConfig(
                     configFile, Plugin.pnvCategory,
                     1.8f, 0.3f, 0.2f, 1f, 60f, 210f, 60f,
-                    true, 0.3f, 1f, 0.2f, 0f, 0.15f
+                    EGatingType.AutoGating, 0.3f, 1f, 0.2f, 0f, 0.15f
                 );
             Add(pnv10t, new NightVisionItemConfig(
                 pnv10Config,

@@ -40,7 +40,9 @@ namespace BorkelRNVG.Patches
 
             NightVisionConfig nvgConfig = NightVisionItemConfig.Get(nvgId).NightVisionConfig;
             if (nvgConfig == null) return;
-            if (nvgConfig.AutoGatingEnabled.Value == false) return;
+
+            EGatingType gatingType = nvgConfig.AutoGatingType.Value;
+            if (gatingType == EGatingType.Off || gatingType == EGatingType.AutoGain) return;
 
             EMuzzleDeviceType deviceType = Util.GetMuzzleDeviceType(__instance);
 

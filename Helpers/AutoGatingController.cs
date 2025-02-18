@@ -1,5 +1,6 @@
 ﻿using BorkelRNVG.Helpers;
 using BorkelRNVG.Helpers.Configuration;
+using BorkelRNVG.Helpers.Enum;
 using BSG.CameraEffects;
 using System.Collections;
 using UnityEngine;
@@ -65,7 +66,8 @@ namespace BorkelRNVG
 
         public void ApplySettings(NightVisionConfig config)
         {
-            if (config.AutoGatingEnabled.Value == true)
+            EGatingType gatingType = config.AutoGatingType.Value;
+            if (gatingType == EGatingType.AutoGain || gatingType == EGatingType.AutoGating)
             {
                 gateSpeed = config.GatingSpeed.Value;
                 maxBrightnessMult = config.MaxBrightness.Value;
@@ -192,7 +194,8 @@ namespace BorkelRNVG
             NightVisionItemConfig nvgConfig = NightVisionItemConfig.Get(nvgId);
             if (nvgConfig == null) return;
 
-            bool gatingEnabled = nvgConfig.NightVisionConfig.AutoGatingEnabled.Value;
+            EGatingType gatingType = nvgConfig.NightVisionConfig.AutoGatingType.Value;
+            bool gatingEnabled = gatingType == EGatingType.AutoGating || gatingType == EGatingType.AutoGain;
 
             if (!Plugin.nvgOn || gatingEnabled == false || Plugin.enableAutoGating.Value == false)
             {

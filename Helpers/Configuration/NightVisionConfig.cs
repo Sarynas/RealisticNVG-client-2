@@ -1,4 +1,5 @@
 ﻿using BepInEx.Configuration;
+using BorkelRNVG.Helpers.Enum;
 
 namespace BorkelRNVG.Helpers.Configuration
 {
@@ -14,7 +15,7 @@ namespace BorkelRNVG.Helpers.Configuration
         public ConfigEntry<float> Blue;
 
         // auto-gating
-        public ConfigEntry<bool> AutoGatingEnabled;
+        public ConfigEntry<EGatingType> AutoGatingType;
         public ConfigEntry<float> GatingSpeed;
         public ConfigEntry<float> MaxBrightness;
         public ConfigEntry<float> MinBrightness;
@@ -25,7 +26,7 @@ namespace BorkelRNVG.Helpers.Configuration
         public NightVisionConfig(ConfigFile config, string category,
             float gain, float noiseIntensity, float noiseSize, float maskSize,
             float red, float green, float blue,
-            bool autoGatingEnabled, float gatingSpeed, float maxBrightness,
+            EGatingType gatingType, float gatingSpeed, float maxBrightness,
             float minBrightness, float minBrightnessThreshold, float maxBrightnessThreshold)
         {
             // night vision
@@ -38,10 +39,10 @@ namespace BorkelRNVG.Helpers.Configuration
             Blue = config.Bind(category, "7. Blue", blue, new ConfigDescription("Adjusts the blue color component of the NVG tint.", new AcceptableValueRange<float>(0f, 255f)));
 
             // auto-gating
-            AutoGatingEnabled = config.Bind(category, "8. Enable Auto-Gating", autoGatingEnabled, new ConfigDescription("EXPERIMENTAL, WILL REDUCE FPS! Enables auto-gating, which automatically adjusts brightness to protect night vision devices from damage caused by bright lights."));
-            GatingSpeed = config.Bind(category, "9. Auto-Gating Speed", gatingSpeed, new ConfigDescription("Changes the rate at which the auto-gating multiplier changes"));
+            AutoGatingType = config.Bind(category, "8. Adjustment Type", gatingType, new ConfigDescription("EXPERIMENTAL, WILL REDUCE FPS! Enables automatic brightness adjustment for night vision devices. Off will disable any automatic brightness adjustment. AutoGain will make brightness adjust to ambient light only. AutoGating will also make brightness react to gunshots."));
+            GatingSpeed = config.Bind(category, "9. Adjustment Speed", gatingSpeed, new ConfigDescription("Changes the rate at which brightness adjusts."));
             MaxBrightness = config.Bind(category, "10. Max Brightness Multiplier", maxBrightness, new ConfigDescription("Changes the maximum brightness multiplier for auto-gating.", null, new ConfigurationManagerAttributes() { IsAdvanced = true }));
-            MinBrightness = config.Bind(category, "11. Max Brightness Multiplier", minBrightness, new ConfigDescription("Changes the minimum brightness multiplier for auto-gating.", null, new ConfigurationManagerAttributes() { IsAdvanced = true }));
+            MinBrightness = config.Bind(category, "11. Min Brightness Multiplier", minBrightness, new ConfigDescription("Changes the minimum brightness multiplier for auto-gating.", null, new ConfigurationManagerAttributes() { IsAdvanced = true }));
             MinBrightnessThreshold = config.Bind(category, "12. Min Brightness Threshold", minBrightnessThreshold, new ConfigDescription("Changes the minimum brightness level for auto-gating", null, new ConfigurationManagerAttributes() { IsAdvanced = true }));
             MaxBrightnessThreshold = config.Bind(category, "13. Max Brightness Threshold", maxBrightnessThreshold, new ConfigDescription("Changes the maximum brightness level for auto-gating.", null, new ConfigurationManagerAttributes() { IsAdvanced = true }));
 
@@ -53,7 +54,7 @@ namespace BorkelRNVG.Helpers.Configuration
             Green.SettingChanged += Util.ApplyNightVisionSettings;
             Blue.SettingChanged += Util.ApplyNightVisionSettings;
 
-            AutoGatingEnabled.SettingChanged += Util.ApplyGatingSettings;
+            AutoGatingType.SettingChanged += Util.ApplyGatingSettings;
             GatingSpeed.SettingChanged += Util.ApplyGatingSettings;
             MaxBrightness.SettingChanged += Util.ApplyGatingSettings;
             MinBrightness.SettingChanged += Util.ApplyGatingSettings;
