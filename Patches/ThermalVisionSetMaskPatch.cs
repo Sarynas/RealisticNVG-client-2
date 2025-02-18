@@ -31,12 +31,9 @@ namespace BorkelRNVG.Patches
             MaskDescription maskDescription = __instance.ThermalVisionUtilities.MaskDescription;
             PixelationUtilities pixelationUtilities = __instance.PixelationUtilities;
 
-            maskDescription.Mask = AssetHelper.MaskTextures[ENVGTexture.Thermal];
-            maskDescription.Mask.wrapMode = TextureWrapMode.Clamp;
-            maskDescription.OldMonocularMaskTexture = AssetHelper.MaskTextures[ENVGTexture.Monocular];
-            maskDescription.OldMonocularMaskTexture.wrapMode = TextureWrapMode.Clamp;
-            maskDescription.ThermalMaskTexture = AssetHelper.MaskTextures[ENVGTexture.Thermal];
-            maskDescription.ThermalMaskTexture.wrapMode = TextureWrapMode.Clamp;
+            maskDescription.Mask = AssetHelper.NightVisionTextures[ENVGTexture.Thermal].Mask;
+            maskDescription.OldMonocularMaskTexture = AssetHelper.NightVisionTextures[ENVGTexture.Monocular].Mask;
+            maskDescription.ThermalMaskTexture = AssetHelper.NightVisionTextures[ENVGTexture.Thermal].Mask;
 
             __instance.IsPixelated = true;
             __instance.IsNoisy = false;
@@ -48,7 +45,7 @@ namespace BorkelRNVG.Patches
                 //__instance.PixelationUtilities.Mode = GClass866.PixelationMode.CRT;
                 pixelationUtilities.Mode = 0;
                 pixelationUtilities.BlockCount = 320; //doesn't do anything really
-                pixelationUtilities.PixelationMask = AssetHelper.MaskTextures[ENVGTexture.Pixel];
+                pixelationUtilities.PixelationMask = AssetHelper.NightVisionTextures[ENVGTexture.Pixel].Mask;
                 pixelationUtilities.PixelationShader = AssetHelper.pixelationShader;
             }
 

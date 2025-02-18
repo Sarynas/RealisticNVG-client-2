@@ -6,12 +6,14 @@ using UnityEngine;
 using System.Collections.Generic;
 using BorkelRNVG.Helpers.Configuration;
 using BorkelRNVG.Helpers;
+using BorkelRNVG.Helpers.Enum;
 
 namespace BorkelRNVG.Patches
 {
     internal class NightVisionApplySettingsPatch : ModulePatch
     {
         public static List<NightVisionItemConfig> nightVisionConfigs = new List<NightVisionItemConfig>();
+        private static NightVision _nightVision;
 
         protected override MethodBase GetTargetMethod()
         {
@@ -21,7 +23,12 @@ namespace BorkelRNVG.Patches
         [PatchPrefix]
         private static void PatchPrefix(ref NightVision __instance, ref TextureMask ___TextureMask, ref Texture ___Mask)
         {
-            ApplyModSettings(ref __instance);
+            if (_nightVision == null)
+            {
+                _nightVision = __instance;
+            }
+
+            ApplyModSettings(__instance);
 
             if (___TextureMask == null) return;
 
@@ -32,7 +39,7 @@ namespace BorkelRNVG.Patches
 
             var material = (Material)AccessTools.Property(__instance.GetType(), "Material_0").GetValue(__instance);
 
-            var lensMask = AssetHelper.MaskToLens.TryGetValue(___Mask, out var lens);
+            Texture lens = AssetHelper.MaskToLens(___Mask);
             if (lens != null)
             {
                 material.SetTexture(maskId, lens);
@@ -52,7 +59,12 @@ namespace BorkelRNVG.Patches
             material.SetFloat(cameraAspectId, cameraAspectValue);
         }
 
-        public static void ApplyModSettings(ref NightVision nightVision)
+        public static void UpdateNoise(ENoiseTexture newTex)
+        {
+            _nightVision.Noise = AssetHelper.NoiseTextures[newTex];
+        }
+
+        public static void ApplyModSettings(NightVision nightVision)
         {
             string nvgID = Util.GetCurrentNvgItemId();
             if (nvgID == null) return;

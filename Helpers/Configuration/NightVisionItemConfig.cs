@@ -121,7 +121,7 @@ namespace BorkelRNVG.Helpers.Configuration
                 () => gpnvgConfig.Green.Value / 255,
                 () => gpnvgConfig.Blue.Value / 255,
                 VirtualKeyCode.NUMPAD9,
-                AssetHelper.MaskTextures[ENVGTexture.Anvis]
+                AssetHelper.NightVisionTextures[ENVGTexture.Anvis].Mask
             ));
 
             // artem nvgs
@@ -146,7 +146,7 @@ namespace BorkelRNVG.Helpers.Configuration
                 () => pvs14Config.Green.Value / 255,
                 () => pvs14Config.Blue.Value / 255,
                 VirtualKeyCode.NUMPAD8,
-                AssetHelper.MaskTextures[ENVGTexture.Monocular]
+                AssetHelper.NightVisionTextures[ENVGTexture.Monocular].Mask
             ));
 
             // N-15
@@ -166,7 +166,7 @@ namespace BorkelRNVG.Helpers.Configuration
                 () => n15Config.Green.Value / 255,
                 () => n15Config.Blue.Value / 255,
                 VirtualKeyCode.NUMPAD7,
-                AssetHelper.MaskTextures[ENVGTexture.Binocular]
+                AssetHelper.NightVisionTextures[ENVGTexture.Binocular].Mask
             ));
 
             // PNV-10T
@@ -186,7 +186,7 @@ namespace BorkelRNVG.Helpers.Configuration
                 () => pnv10Config.Green.Value / 255,
                 () => pnv10Config.Blue.Value / 255,
                 VirtualKeyCode.NUMPAD6,
-                AssetHelper.MaskTextures[ENVGTexture.Pnv]
+                AssetHelper.NightVisionTextures[ENVGTexture.Pnv].Mask
             ));
 
             Plugin.t7Pixelation = configFile.Bind(Plugin.t7Category, "1. Pixelation", true, "Requires restart. Pixelates the T-7, like a real digital screen");

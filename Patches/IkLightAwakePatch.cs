@@ -7,8 +7,9 @@ using UnityEngine;
 
 namespace BorkelRNVG.Patches
 {
-    public class LightConfig
+    public class LightInfo
     {
+        public IkLight ikLight;
         public Light light;
         public float intensity;
         public float range;
@@ -16,66 +17,47 @@ namespace BorkelRNVG.Patches
 
     public class IkLightAwakePatch : ModulePatch
     {
-        // IK light, {Light, Original Intensity}
-        private static Dictionary<IkLight, LightConfig> _ikLights = new();
+        private static FieldInfo _intensityField = AccessTools.Field(typeof(IkLight), "float_0");
+        private static List<LightInfo> _ikLights = new();
 
         protected override MethodBase GetTargetMethod()
         {
             return AccessTools.Method(typeof(IkLight), nameof(IkLight.Awake));
         }
         
-        public static void UpdateIntensityAll()
+        public static void UpdateAll()
         {
-            foreach (var kvp in _ikLights)
+            for (int i = _ikLights.Count - 1; i > 0; i--)
             {
-                IkLight ikLight = kvp.Key;
-                LightConfig light = kvp.Value;
-
-                if (ikLight == null || light == null)
+                if (_ikLights[i].ikLight == null || _ikLights[i].light == null)
                 {
-                    _ikLights.Remove(ikLight);
+                    _ikLights.RemoveAt(i);
                     continue;
                 }
 
-                UpdateIntensitySingle(ikLight);
+                UpdateSingle(_ikLights[i]);
             }
         }
 
-        public static void UpdateIntensitySingle(IkLight ikLight)
+        public static void UpdateSingle(LightInfo lightInfo)
         {
-            bool found = _ikLights.TryGetValue(ikLight, out LightConfig lightConfig);
-            FieldInfo intensityField = AccessTools.Field(typeof(IkLight), "float_0");
-
-            if (!found)
-            {
-                Light spotLight = ikLight.Light;
-                float origIntensity = (float)intensityField.GetValue(ikLight);
-
-                _ikLights.Add(ikLight, new LightConfig()
-                {
-                    light = spotLight,
-                    intensity = origIntensity,
-                    range = spotLight.range
-                });
-
-                intensityField.SetValue(ikLight, origIntensity * Plugin.irFlashlightBrightnessMult.Value);
-                spotLight.range *= Plugin.irFlashlightRangeMult.Value;
-            }
-            else
-            {
-                Light spotLight = lightConfig.light;
-                float origIntensity = lightConfig.intensity;
-                float origRange = lightConfig.range;
-
-                intensityField.SetValue(ikLight, origIntensity * Plugin.irFlashlightBrightnessMult.Value);
-                spotLight.range = origRange * Plugin.irFlashlightRangeMult.Value;
-            }   
+            _intensityField.SetValue(lightInfo.ikLight, lightInfo.intensity * Plugin.irFlashlightBrightnessMult.Value);
+            lightInfo.light.range = lightInfo.range * Plugin.irFlashlightRangeMult.Value;
         }
 
         [PatchPostfix]
         private static void PatchPostfix(IkLight __instance)
         {
-            UpdateIntensitySingle(__instance);
+            Light spotLight = __instance.Light;
+            float intensity = (float)_intensityField.GetValue(__instance);
+            float range = spotLight.range;
+
+            _ikLights.Add(new LightInfo {
+                ikLight = __instance,
+                light = spotLight,
+                intensity = intensity,
+                range = range
+            });
         }
     }
 }

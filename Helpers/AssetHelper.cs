@@ -9,6 +9,27 @@ using BorkelRNVG.Helpers.Enum;
 
 namespace BorkelRNVG.Helpers
 {
+    public class NVGTextureData
+    {
+        public string MaskPath;
+        public string LensPath;
+        public Texture2D Mask;
+        public Texture2D Lens;
+
+        public NVGTextureData(string maskPath, string lensPath)
+        {
+            if (maskPath != null)
+            {
+                Mask = AssetHelper.LoadPNG(maskPath, TextureWrapMode.Clamp);
+            }
+            
+            if (lensPath != null)
+            {
+                Lens = AssetHelper.LoadPNG(lensPath, TextureWrapMode.Clamp);
+            }
+        }
+    }
+
     public class AssetHelper
     {
         public static readonly string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -32,61 +53,33 @@ namespace BorkelRNVG.Helpers
 
         public static Dictionary<string, AudioClip> LoadedAudioClips = new Dictionary<string, AudioClip>();
 
-        // could probably use some changes still ill keep it like that because whatever lol :^)
-        public static Dictionary<ENVGTexture, string> MaskTexturePaths = new Dictionary<ENVGTexture, string>()
+        // better! :)
+        public static Dictionary<ENVGTexture, NVGTextureData> NightVisionTextures = new Dictionary<ENVGTexture, NVGTextureData>()
         {
-            { ENVGTexture.Anvis, "MaskTextures\\mask_anvis.png" },
-            { ENVGTexture.Binocular, "MaskTextures\\mask_binocular.png" },
-            { ENVGTexture.Monocular, "MaskTextures\\mask_old_monocular.png" },
-            { ENVGTexture.Pnv, "MaskTextures\\mask_pnv.png" },
-            { ENVGTexture.Thermal, "MaskTextures\\mask_thermal.png" },
-            { ENVGTexture.Pixel, "MaskTextures\\pixel_mask1.png" },
-            { ENVGTexture.Noise, "MaskTextures\\Noise.png" }
+            { ENVGTexture.Anvis, new NVGTextureData( $"{assetsDirectory}\\MaskTextures\\mask_anvis.png", $"{assetsDirectory}\\LensTextures\\lens_anvis.png") },
+            { ENVGTexture.Binocular, new NVGTextureData( $"{assetsDirectory}\\MaskTextures\\mask_binocular.png", $"{assetsDirectory}\\LensTextures\\lens_binocular.png") },
+            { ENVGTexture.Monocular, new NVGTextureData( $"{assetsDirectory}\\MaskTextures\\mask_old_monocular.png", $"{assetsDirectory}\\LensTextures\\lens_old_monocular.png") },
+            { ENVGTexture.Pnv, new NVGTextureData( $"{assetsDirectory}\\MaskTextures\\mask_pnv.png", $"{assetsDirectory}\\LensTextures\\lens_pnv.png") },
+            { ENVGTexture.Thermal, new NVGTextureData( $"{assetsDirectory}\\MaskTextures\\mask_thermal.png", $"{assetsDirectory}\\LensTextures\\lens_pnv.png") },
+            { ENVGTexture.Pixel, new NVGTextureData( $"{assetsDirectory}\\MaskTextures\\pixel_mask1.png", $"{assetsDirectory}\\LensTextures\\lens_old_monocular.png") }
         };
 
-        public static Dictionary<ENVGTexture, string> LensTexturePaths = new Dictionary<ENVGTexture, string>
+        public static Dictionary<ENoiseTexture, Texture2D> NoiseTextures = new Dictionary<ENoiseTexture, Texture2D>
         {
-            { ENVGTexture.Anvis, "LensTextures\\lens_anvis.png" },
-            { ENVGTexture.Binocular, "LensTextures\\lens_binocular.png" },
-            { ENVGTexture.Monocular, "LensTextures\\lens_old_monocular.png" },
-            { ENVGTexture.Pnv, "LensTextures\\lens_pnv.png" },
-            { ENVGTexture.Thermal, "LensTextures\\lens_pnv.png" }
+            { ENoiseTexture.Old, LoadPNG($"{assetsDirectory}\\MaskTextures\\Noise_old.png", TextureWrapMode.Repeat) },
+            { ENoiseTexture.New, LoadPNG($"{assetsDirectory}\\MaskTextures\\Noise_new.png", TextureWrapMode.Repeat) }
         };
 
-        public static Dictionary<ENVGTexture, Texture2D> MaskTextures = new Dictionary<ENVGTexture, Texture2D>();
-        public static Dictionary<ENVGTexture, Texture2D> LensTextures = new Dictionary<ENVGTexture, Texture2D>();
-        public static Dictionary<Texture, Texture> MaskToLens = new Dictionary<Texture, Texture>();
-
-        public static void LoadTextures()
+        public static Texture MaskToLens(Texture maskTex)
         {
-            foreach (KeyValuePair<ENVGTexture, string> lens in LensTexturePaths)
+            foreach (var data in NightVisionTextures)
             {
-                string pngPath = $"{assetsDirectory}\\{lens.Value}";
-                Texture2D texture = LoadPNG(pngPath);
-                if (texture == null) continue;
-
-                LensTextures[lens.Key] = texture;
-            }
-
-            foreach (KeyValuePair<ENVGTexture, string> mask in MaskTexturePaths)
-            {
-                string pngPath = $"{assetsDirectory}\\{mask.Value}";
-                Texture2D texture = LoadPNG(pngPath);
-                if (texture == null) continue;
-
-                MaskTextures[mask.Key] = texture;
-
-                if (mask.Key == ENVGTexture.Noise) // umm.... weird.
+                if (data.Value.Mask == maskTex) // sigh..
                 {
-                    noiseTexture = texture;
-                    noiseTexture.wrapMode = TextureWrapMode.Repeat;
-                }
-
-                if (LensTextures.TryGetValue(mask.Key, out var lensTexture))
-                {
-                    MaskToLens[texture] = lensTexture;
+                    return data.Value.Lens;
                 }
             }
+            return null;
         }
 
         public static void LoadShaders()
@@ -103,7 +96,7 @@ namespace BorkelRNVG.Helpers
             maskShader = LoadShader("assets/shaders/pein/shaders/maskshader.shader", $"{assetsDirectory}\\Shaders\\pein_shaders");
         }
 
-        public static Texture2D LoadPNG(string filePath)
+        public static Texture2D LoadPNG(string filePath, TextureWrapMode wrapMode)
         {
             Texture2D tex = null;
             byte[] fileData;
@@ -111,12 +104,17 @@ namespace BorkelRNVG.Helpers
             if (File.Exists(filePath))
             {
                 fileData = File.ReadAllBytes(filePath);
-                tex = new Texture2D(2, 2);
+                tex = new Texture2D(2, 2, TextureFormat.ARGB32, false);
                 tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
-                tex.wrapMode = TextureWrapMode.Clamp; //otherwise the mask will repeat itself around screen borders
+                tex.wrapMode = wrapMode; //otherwise the mask will repeat itself around screen borders
             }
 
             return tex;
+        }
+
+        public static Texture2D LoadPNG(string filePath)
+        {
+            return LoadPNG(filePath, TextureWrapMode.Clamp);
         }
 
         public static Shader LoadShader(string shaderName, string bundlePath)
