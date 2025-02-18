@@ -16,11 +16,12 @@ namespace BorkelRNVG.Patches
 
     public class LaserBeamAwakePatch : ModulePatch
     {
+        private static FieldInfo intensityField = AccessTools.Field(typeof(LaserBeam), "IntensityFactor");
         private static List<LaserInfo> _ikLasers = new();
 
         protected override MethodBase GetTargetMethod()
         {
-            return AccessTools.Method(typeof(LaserBeam), nameof(LaserBeam.Awake));
+            return AccessTools.Method(typeof(LaserBeam), nameof(LaserBeam.method_0));
         }
 
         public static void UpdateAll()
@@ -39,7 +40,7 @@ namespace BorkelRNVG.Patches
 
         public static void UpdateSingle(LaserInfo laserInfo)
         {
-            laserInfo.laserBeam.LightIntensity = laserInfo.intensityFactor * Plugin.irLaserBrightnessMult.Value;
+            intensityField.SetValue(laserInfo.laserBeam, laserInfo.intensityFactor * Plugin.irLaserBrightnessMult.Value);
             laserInfo.laserBeam.MaxDistance = laserInfo.maxDistance * Plugin.irLaserRangeMult.Value;
             laserInfo.laserBeam.PointSizeClose = laserInfo.pointSizeClose * Plugin.irLaserPointClose.Value;
             laserInfo.laserBeam.PointSizeFar = laserInfo.pointSizeFar * Plugin.irLaserPointFar.Value;
@@ -50,14 +51,17 @@ namespace BorkelRNVG.Patches
         {
             if (__instance.BeamMaterial.name != "LaserBeamIk") return;
 
-            _ikLasers.Add(new LaserInfo()
+            LaserInfo laserInfo = new LaserInfo()
             {
                 laserBeam = __instance,
                 intensityFactor = __instance.LightIntensity,
                 maxDistance = __instance.MaxDistance,
                 pointSizeClose = __instance.PointSizeClose,
                 pointSizeFar = __instance.PointSizeFar
-            });
+            };
+
+            _ikLasers.Add(laserInfo);
+            UpdateSingle(laserInfo);
         }
     }
 }
