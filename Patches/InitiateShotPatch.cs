@@ -81,7 +81,7 @@ namespace BorkelRNVG.Patches
 
                 if (isVisible && isOnScreen)
                 {
-                    float finalGatingMult = Mathf.Lerp(0, 1 * shotDistanceMult, gatingLerp);
+                    float finalGatingMult = Mathf.Lerp(0, shotDistanceMult, gatingLerp);
                     AutoGatingController.Instance?.StartCoroutine(AdjustAutoGating(0.05f, finalGatingMult, gatingInst, nvgConfig));
                 }
             }
@@ -91,7 +91,7 @@ namespace BorkelRNVG.Patches
             }
         }
 
-        private static IEnumerator AdjustAutoGating(float delay, float multiplier, AutoGatingController gatingController, NightVisionConfig nvgConfig)
+        public static IEnumerator AdjustAutoGating(float delay, float multiplier, AutoGatingController gatingController, NightVisionConfig nvgConfig)
         {
             yield return new WaitForSeconds(delay);
 

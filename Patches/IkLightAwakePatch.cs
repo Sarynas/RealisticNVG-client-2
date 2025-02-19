@@ -52,6 +52,8 @@ namespace BorkelRNVG.Patches
             float intensity = (float)_intensityField.GetValue(__instance);
             float range = spotLight.range;
 
+            if (__instance == null || spotLight == null) return;
+
             LightInfo lightInfo = new LightInfo
             {
                 ikLight = __instance,

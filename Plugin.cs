@@ -130,6 +130,7 @@ namespace BorkelRNVG
                 new InitiateShotPatch().Enable();
                 new IkLightAwakePatch().Enable();
                 new LaserBeamAwakePatch().Enable();
+                new EmitGrenadePatch().Enable();
 
                 Logger.LogInfo("Patches enabled successfully!");
             }
