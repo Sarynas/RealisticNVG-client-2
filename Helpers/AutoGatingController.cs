@@ -128,16 +128,19 @@ namespace BorkelRNVG
 
             // rendertexture debug
             
-            var canvas = new GameObject("Canvas", typeof(Canvas)).GetComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            if (Plugin.gatingDebug.Value == true)
+            {
+                var canvas = new GameObject("Canvas", typeof(Canvas)).GetComponent<Canvas>();
+                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
 
-            var rawImage = new GameObject("RawImage", typeof(RawImage)).GetComponent<RawImage>();
-            rawImage.transform.SetParent(canvas.transform);
+                var rawImage = new GameObject("RawImage", typeof(RawImage)).GetComponent<RawImage>();
+                rawImage.transform.SetParent(canvas.transform);
 
-            rawImage.rectTransform.sizeDelta = new Vector2(500, 500);
-            rawImage.rectTransform.anchoredPosition = new Vector2(700, 0);
+                rawImage.rectTransform.sizeDelta = new Vector2(500, 500);
+                rawImage.rectTransform.anchoredPosition = new Vector2(700, 0);
 
-            rawImage.texture = renderTexture;
+                rawImage.texture = renderTexture;
+            }
         }
 
         private void SetupCommandBuffer()
