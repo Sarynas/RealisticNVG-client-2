@@ -20,6 +20,7 @@ namespace BorkelRNVG.Helpers.Configuration
         public float B { get; set; }
         public VirtualKeyCode Key { get; set; }
         public Texture2D MaskTexture { get; set; }
+        public Texture2D LensTexture { get; set; }
         public Action Update { get; set; }
 
         // am i abusing delegates too hard? probably not.. just feels weird
@@ -33,8 +34,9 @@ namespace BorkelRNVG.Helpers.Configuration
             Func<float> r,
             Func<float> g,
             Func<float> b,
-            VirtualKeyCode key,
-            Texture2D maskTexture)
+            Texture2D maskTexture,
+            Texture2D lensTexture,
+            VirtualKeyCode key)
         {
             // define the update action
             Update = () =>
@@ -50,12 +52,48 @@ namespace BorkelRNVG.Helpers.Configuration
                 B = b();
                 Key = key;
                 MaskTexture = maskTexture;
+                LensTexture = lensTexture;
                 NightVisionConfig = nvgConfig;
             };
 
             // initial calculation
             Update();
         }
+
+        public NightVisionItemConfig(
+            NightVisionConfig nvgConfig,
+            Func<float> intensityCalc,
+            Func<float> noiseIntensityCalc,
+            Func<float> noiseScaleCalc,
+            Func<float> maskSizeCalc,
+            Func<float> r,
+            Func<float> g,
+            Func<float> b,
+            Texture2D maskTexture,
+            Texture2D lensTexture) : this(nvgConfig, intensityCalc, noiseIntensityCalc, noiseScaleCalc, maskSizeCalc, r, g, b, maskTexture, lensTexture, VirtualKeyCode.NONAME) { }
+
+        public NightVisionItemConfig(
+            NightVisionConfig nvgConfig,
+            Func<float> intensityCalc,
+            Func<float> noiseIntensityCalc,
+            Func<float> noiseScaleCalc,
+            Func<float> maskSizeCalc,
+            Func<float> r,
+            Func<float> g,
+            Func<float> b,
+            NVGTextureData textureData) : this(nvgConfig, intensityCalc, noiseIntensityCalc, noiseScaleCalc, maskSizeCalc, r, g, b, textureData.Mask, textureData.Lens, VirtualKeyCode.NONAME) { }
+
+        public NightVisionItemConfig(
+            NightVisionConfig nvgConfig,
+            Func<float> intensityCalc,
+            Func<float> noiseIntensityCalc,
+            Func<float> noiseScaleCalc,
+            Func<float> maskSizeCalc,
+            Func<float> r,
+            Func<float> g,
+            Func<float> b,
+            NVGTextureData textureData,
+            VirtualKeyCode key) : this(nvgConfig, intensityCalc, noiseIntensityCalc, noiseScaleCalc, maskSizeCalc, r, g, b, textureData.Mask, textureData.Lens, key) { }
 
         public static Dictionary<string, NightVisionItemConfig> Configs = new();
 
@@ -84,6 +122,8 @@ namespace BorkelRNVG.Helpers.Configuration
 
         public static void InitializeNVGs(ConfigFile configFile)
         {
+            string assetsDirectory = AssetHelper.assetsDirectory;
+
             /* 
             NightVisionConfig values:
             configFile, itemId, 
@@ -120,8 +160,8 @@ namespace BorkelRNVG.Helpers.Configuration
                 () => gpnvgConfig.Red.Value / 255,
                 () => gpnvgConfig.Green.Value / 255,
                 () => gpnvgConfig.Blue.Value / 255,
-                VirtualKeyCode.NUMPAD9,
-                AssetHelper.NightVisionTextures[ENVGTexture.Anvis].Mask
+                new NVGTextureData($"{assetsDirectory}\\MaskTextures\\mask_anvis.png", $"{assetsDirectory}\\LensTextures\\lens_anvis.png"),
+                VirtualKeyCode.NUMPAD9
             ));
 
             // artem nvgs
@@ -145,8 +185,8 @@ namespace BorkelRNVG.Helpers.Configuration
                 () => pvs14Config.Red.Value / 255,
                 () => pvs14Config.Green.Value / 255,
                 () => pvs14Config.Blue.Value / 255,
-                VirtualKeyCode.NUMPAD8,
-                AssetHelper.NightVisionTextures[ENVGTexture.Monocular].Mask
+                AssetHelper.NightVisionTextures[ENVGTexture.Monocular],
+                VirtualKeyCode.NUMPAD8
             ));
 
             // N-15
@@ -165,8 +205,8 @@ namespace BorkelRNVG.Helpers.Configuration
                 () => n15Config.Red.Value / 255,
                 () => n15Config.Green.Value / 255,
                 () => n15Config.Blue.Value / 255,
-                VirtualKeyCode.NUMPAD7,
-                AssetHelper.NightVisionTextures[ENVGTexture.Binocular].Mask
+                AssetHelper.NightVisionTextures[ENVGTexture.Binocular],
+                VirtualKeyCode.NUMPAD7
             ));
 
             // PNV-10T
@@ -185,8 +225,8 @@ namespace BorkelRNVG.Helpers.Configuration
                 () => pnv10Config.Red.Value / 255,
                 () => pnv10Config.Green.Value / 255,
                 () => pnv10Config.Blue.Value / 255,
-                VirtualKeyCode.NUMPAD6,
-                AssetHelper.NightVisionTextures[ENVGTexture.Pnv].Mask
+                AssetHelper.NightVisionTextures[ENVGTexture.Pnv],
+                VirtualKeyCode.NUMPAD6
             ));
 
             Plugin.t7Pixelation = configFile.Bind(Plugin.t7Category, "1. Pixelation", true, "Requires restart. Pixelates the T-7, like a real digital screen");

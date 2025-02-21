@@ -101,7 +101,7 @@ namespace BorkelRNVG
             gatingDec = Config.Bind(gatingCategory, "2. Manual gating decrease", KeyCode.None, "Decreases the gain by 1 step. There's 5 levels (-2...2), default level is the third level (0).");
             gatingLevel = Config.Bind(gatingCategory, "3. Gating level", 0, "Will reset when the game opens. You are supposed to use the gating increase/decrease keys to change the gating level, but you are free to change it manually if you want to make sure you are at a specific gating level.");
             enableAutoGating = Config.Bind(gatingCategory, "4. Enable Auto-Gating", false, "EXPERIMENTAL! WILL REDUCE FPS! Enables auto-gating (automatic brightness adjustment) for certain night vision devices. Auto-gating WILL NOT work without this enabled.");
-            gatingDebug = Config.Bind(gatingCategory, "5. Enable Auto-Gating Debug Overlay", false, "Enables the debug overlay for auto-gating and whatnot..");
+            gatingDebug = Config.Bind(gatingCategory, "5. Enable Auto-Gating Debug Overlay", false, new ConfigDescription("Enables the debug overlay for auto-gating and whatnot..", null, new ConfigurationManagerAttributes() { IsAdvanced = true }));
 
             // Global
             globalMaskSize = Config.Bind(globalCategory, "1. Mask size multiplier", 1.07f, new ConfigDescription("Applies size multiplier to all masks", new AcceptableValueRange<float>(0f, 2f)));
@@ -131,6 +131,7 @@ namespace BorkelRNVG
                 new InitiateShotPatch().Enable();
                 new IkLightAwakePatch().Enable();
                 new LaserBeamAwakePatch().Enable();
+                new LaserBeamLateUpdatePatch().Enable();
                 new EmitGrenadePatch().Enable();
 
                 Logger.LogInfo("Patches enabled successfully!");

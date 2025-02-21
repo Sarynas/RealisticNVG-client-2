@@ -27,11 +27,11 @@ namespace BorkelRNVG.Patches
         
         public static void UpdateAll()
         {
-            for (int i = _ikLights.Count - 1; i > 0; i--)
+            for (int i = _ikLights.Count - 1; i >= 0; i--)
             {
                 if (_ikLights[i].ikLight == null || _ikLights[i].light == null)
                 {
-                    _ikLights.RemoveAt(i);
+                    //_ikLights.RemoveAt(i);
                     continue;
                 }
 
@@ -41,6 +41,12 @@ namespace BorkelRNVG.Patches
 
         public static void UpdateSingle(LightInfo lightInfo)
         {
+            if (lightInfo.light == null)
+            {
+                //_ikLights.RemoveAt(_ikLights.IndexOf(lightInfo));
+                return;
+            }
+
             _intensityField.SetValue(lightInfo.ikLight, lightInfo.intensity * Plugin.irFlashlightBrightnessMult.Value);
             lightInfo.light.range = lightInfo.range * Plugin.irFlashlightRangeMult.Value;
         }
@@ -50,9 +56,10 @@ namespace BorkelRNVG.Patches
         {
             Light spotLight = __instance.Light;
             float intensity = (float)_intensityField.GetValue(__instance);
-            float range = spotLight.range;
 
             if (__instance == null || spotLight == null) return;
+
+            float range = spotLight.range;
 
             LightInfo lightInfo = new LightInfo
             {

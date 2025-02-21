@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using EFT;
+using HarmonyLib;
 using SPT.Reflection.Patching;
 using System.Collections.Generic;
 using System.Reflection;
@@ -17,7 +18,7 @@ namespace BorkelRNVG.Patches
     public class LaserBeamAwakePatch : ModulePatch
     {
         private static FieldInfo intensityField = AccessTools.Field(typeof(LaserBeam), "IntensityFactor");
-        private static List<LaserInfo> _ikLasers = new();
+        public static List<LaserInfo> ikLasers = new();
 
         protected override MethodBase GetTargetMethod()
         {
@@ -26,21 +27,20 @@ namespace BorkelRNVG.Patches
 
         public static void UpdateAll()
         {
-            for (int i = _ikLasers.Count - 1; i > 0; i--)
+            for (int i = ikLasers.Count - 1; i >= 0; i--)
             {
-                if (_ikLasers[i] == null || _ikLasers[i].laserBeam == null)
+                if (ikLasers[i] == null || ikLasers[i].laserBeam == null)
                 {
-                    _ikLasers.RemoveAt(i);
+                    //ikLasers.RemoveAt(i);
                     continue;
                 }
 
-                UpdateSingle(_ikLasers[i]);
+                UpdateSingle(ikLasers[i]);
             }
         }
 
         public static void UpdateSingle(LaserInfo laserInfo)
         {
-            intensityField.SetValue(laserInfo.laserBeam, laserInfo.intensityFactor * Plugin.irLaserBrightnessMult.Value);
             laserInfo.laserBeam.MaxDistance = laserInfo.maxDistance * Plugin.irLaserRangeMult.Value;
             laserInfo.laserBeam.PointSizeClose = laserInfo.pointSizeClose * Plugin.irLaserPointClose.Value;
             laserInfo.laserBeam.PointSizeFar = laserInfo.pointSizeFar * Plugin.irLaserPointFar.Value;
@@ -60,7 +60,7 @@ namespace BorkelRNVG.Patches
                 pointSizeFar = __instance.PointSizeFar
             };
 
-            _ikLasers.Add(laserInfo);
+            ikLasers.Add(laserInfo);
             UpdateSingle(laserInfo);
         }
     }

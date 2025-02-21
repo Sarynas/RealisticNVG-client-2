@@ -39,11 +39,25 @@ namespace BorkelRNVG.Patches
 
             var material = (Material)AccessTools.Property(__instance.GetType(), "Material_0").GetValue(__instance);
 
-            Texture lens = AssetHelper.MaskToLens(___Mask);
-            if (lens != null)
+            string nvgID = Util.GetCurrentNvgItemId();
+
+            if (nvgID != null)
             {
+                NightVisionItemConfig nvgItemConfig = NightVisionItemConfig.Get(nvgID);
+                Texture lens = nvgItemConfig.LensTexture;
+
                 material.SetTexture(maskId, lens);
             }
+            else
+            {
+                Texture lens = AssetHelper.MaskToLens(___Mask);
+                if (lens != null)
+                {
+                    material.SetTexture(maskId, lens);
+                }
+            }
+            
+            
 
             material.SetFloat(invMaskSizeId, 1f / __instance.MaskSize);
 

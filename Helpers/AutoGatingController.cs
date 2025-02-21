@@ -127,7 +127,6 @@ namespace BorkelRNVG
             computeShader.SetInt("_Height", textureHeight);
 
             // rendertexture debug
-            
             if (Plugin.gatingDebug.Value == true)
             {
                 var canvas = new GameObject("Canvas", typeof(Canvas)).GetComponent<Canvas>();
