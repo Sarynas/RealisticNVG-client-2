@@ -49,7 +49,7 @@ namespace BorkelRNVG.Helpers
         public static Material exposureMaterial;
         public static Material maskMaterial;
 
-        public static Texture2D noiseTexture;
+        public static Texture2D noiseTexture = LoadPNG($"{assetsDirectory}\\MaskTextures\\Noise.png", TextureWrapMode.Repeat);
 
         public static Dictionary<string, AudioClip> LoadedAudioClips = new Dictionary<string, AudioClip>();
 
@@ -62,12 +62,6 @@ namespace BorkelRNVG.Helpers
             { ENVGTexture.Pnv, new NVGTextureData( $"{assetsDirectory}\\MaskTextures\\mask_pnv.png", $"{assetsDirectory}\\LensTextures\\lens_pnv.png") },
             { ENVGTexture.Thermal, new NVGTextureData( $"{assetsDirectory}\\MaskTextures\\mask_thermal.png", $"{assetsDirectory}\\LensTextures\\lens_pnv.png") },
             { ENVGTexture.Pixel, new NVGTextureData( $"{assetsDirectory}\\MaskTextures\\pixel_mask1.png", $"{assetsDirectory}\\LensTextures\\lens_old_monocular.png") }
-        };
-
-        public static Dictionary<ENoiseTexture, Texture2D> NoiseTextures = new Dictionary<ENoiseTexture, Texture2D>
-        {
-            { ENoiseTexture.Old, LoadPNG($"{assetsDirectory}\\MaskTextures\\Noise_old.png", TextureWrapMode.Repeat) },
-            { ENoiseTexture.New, LoadPNG($"{assetsDirectory}\\MaskTextures\\Noise_new.png", TextureWrapMode.Repeat) }
         };
 
         public static Texture MaskToLens(Texture maskTex)
@@ -107,6 +101,11 @@ namespace BorkelRNVG.Helpers
                 tex = new Texture2D(2, 2, TextureFormat.ARGB32, false);
                 tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
                 tex.wrapMode = wrapMode; //otherwise the mask will repeat itself around screen borders
+            }
+            else
+            {
+                Plugin.Log.LogError($"BRNVG Mod: Failed to load PNG.");
+                return null;
             }
 
             return tex;

@@ -22,13 +22,11 @@ namespace BorkelRNVG.Patches
             //Plugin.UltimateBloomInstance = __instance.GetComponent<UltimateBloom>(); //to disable it when NVG turns ON
             //Plugin.BloomAndFlaresInstance = __instance.GetComponent<BloomAndFlares>(); //to disable it when NVG turns ON
 
-            ENoiseTexture noiseTex = Plugin.nvgNoiseTexture.Value;
-
             __instance.AnvisMaskTexture = AssetHelper.NightVisionTextures[ENVGTexture.Anvis].Mask;
             __instance.BinocularMaskTexture = AssetHelper.NightVisionTextures[ENVGTexture.Binocular].Mask;
             __instance.OldMonocularMaskTexture = AssetHelper.NightVisionTextures[ENVGTexture.Monocular].Mask;
             __instance.ThermalMaskTexture = AssetHelper.NightVisionTextures[ENVGTexture.Thermal].Mask;
-            __instance.Noise = AssetHelper.NoiseTextures[noiseTex];
+            __instance.Noise = AssetHelper.noiseTexture;
 
             // :^)
             if (__instance.Color.g > 0.9f)

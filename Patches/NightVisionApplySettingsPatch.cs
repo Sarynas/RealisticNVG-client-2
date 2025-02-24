@@ -56,8 +56,6 @@ namespace BorkelRNVG.Patches
                     material.SetTexture(maskId, lens);
                 }
             }
-            
-            
 
             material.SetFloat(invMaskSizeId, 1f / __instance.MaskSize);
 
@@ -71,11 +69,6 @@ namespace BorkelRNVG.Patches
                 ? textureMaskCamera.aspect
                 : Screen.width / (float)Screen.height;
             material.SetFloat(cameraAspectId, cameraAspectValue);
-        }
-
-        public static void UpdateNoise(ENoiseTexture newTex)
-        {
-            _nightVision.Noise = AssetHelper.NoiseTextures[newTex];
         }
 
         public static void ApplyModSettings(NightVision nightVision)
