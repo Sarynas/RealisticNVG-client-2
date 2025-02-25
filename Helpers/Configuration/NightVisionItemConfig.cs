@@ -132,7 +132,7 @@ namespace BorkelRNVG.Helpers.Configuration
 
             // 1.configfile, 2.category, 3.itemId
             // 1.gain, 2.noiseIntensity, 3.noiseSize, 4.maskSize, 5.red, 6.green, 7.blue  
-            // 1.gatingEnabled, 2.gatingSpeed, 3.maxBrightness, 4.minBrightness, 5.maxThreshold, 6.minThreshold
+            // 1.gatingType, 2.gatingSpeed, 3.maxBrightness, 4.minBrightness, 5.maxThreshold, 6.minThreshold
                 
             NightVisionItemConfig delegates
             Func<float> intensityCalc,

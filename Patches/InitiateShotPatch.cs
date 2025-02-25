@@ -3,7 +3,6 @@ using BorkelRNVG.Helpers.Configuration;
 using BorkelRNVG.Helpers.Enum;
 using EFT;
 using SPT.Reflection.Patching;
-using System.Collections;
 using System.Reflection;
 using UnityEngine;
 
@@ -82,21 +81,13 @@ namespace BorkelRNVG.Patches
                 if (isVisible && isOnScreen)
                 {
                     float finalGatingMult = Mathf.Lerp(0, shotDistanceMult, gatingLerp);
-                    AutoGatingController.Instance?.StartCoroutine(AdjustAutoGating(0.05f, finalGatingMult, gatingInst, nvgConfig));
+                    AutoGatingController.Instance?.StartCoroutine(AutoGatingController.Instance.AdjustAutoGating(0.05f, finalGatingMult, gatingInst, nvgConfig));
                 }
             }
             else
             {
-                AutoGatingController.Instance?.StartCoroutine(AdjustAutoGating(0.05f, gatingLerp, gatingInst, nvgConfig));
+                AutoGatingController.Instance?.StartCoroutine(AutoGatingController.Instance.AdjustAutoGating(0.05f, gatingLerp, gatingInst, nvgConfig));
             }
-        }
-
-        public static IEnumerator AdjustAutoGating(float delay, float multiplier, AutoGatingController gatingController, NightVisionConfig nvgConfig)
-        {
-            yield return new WaitForSeconds(delay);
-
-            float newBrightness = Mathf.Clamp(gatingController.GatingMultiplier * multiplier, nvgConfig.MinBrightness.Value, nvgConfig.MaxBrightness.Value);
-            gatingController.GatingMultiplier = newBrightness;
         }
     }
 }

@@ -104,7 +104,8 @@ namespace BorkelRNVG.Helpers
             }
             else
             {
-                Plugin.Log.LogError($"BRNVG Mod: Failed to load PNG.");
+                string relativePath = filePath.Replace(assetsDirectory + "\\", "");
+                Plugin.Log.LogError($"BRNVG Mod: Failed to load PNG: {relativePath}");
                 return null;
             }
 

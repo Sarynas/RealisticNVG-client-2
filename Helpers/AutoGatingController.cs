@@ -64,6 +64,22 @@ namespace BorkelRNVG
             return autoGatingController;
         }
 
+        public IEnumerator AdjustAutoGating(float delay, float multiplier, AutoGatingController gatingController, NightVisionConfig nvgConfig)
+        {
+            yield return new WaitForSeconds(delay);
+
+            if (Plugin.clampMinGating.Value == true)
+            {
+                float newBrightness = Mathf.Clamp(gatingController.GatingMultiplier * multiplier, nvgConfig.MinBrightness.Value, nvgConfig.MaxBrightness.Value);
+                gatingController.GatingMultiplier = newBrightness;
+            }
+            else
+            {
+                float newBrightness = Mathf.Clamp(gatingController.GatingMultiplier * multiplier, 0f, nvgConfig.MaxBrightness.Value);
+                gatingController.GatingMultiplier = newBrightness;
+            }
+        }
+
         public void ApplySettings(NightVisionConfig config)
         {
             EGatingType gatingType = config.AutoGatingType.Value;

@@ -6,7 +6,6 @@ using UnityEngine;
 using System.Collections.Generic;
 using BorkelRNVG.Helpers.Configuration;
 using BorkelRNVG.Helpers;
-using BorkelRNVG.Helpers.Enum;
 
 namespace BorkelRNVG.Patches
 {

@@ -52,7 +52,7 @@ namespace BorkelRNVG.Patches
                 float finalGatingMult = Mathf.Lerp(0, grenadeDistanceMult, grenadeDistanceMult);
 
                 // should probably move this into Util?
-                AutoGatingController.Instance?.StartCoroutine(InitiateShotPatch.AdjustAutoGating(0.05f, finalGatingMult, gatingInst, nvgConfig));
+                AutoGatingController.Instance?.StartCoroutine(AutoGatingController.Instance.AdjustAutoGating(0.05f, finalGatingMult, gatingInst, nvgConfig));
             }
         }
     }
