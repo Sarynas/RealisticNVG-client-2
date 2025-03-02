@@ -194,7 +194,7 @@ namespace BorkelRNVG.Helpers.Configuration
             NightVisionConfig n15Config = new NightVisionConfig(
                     configFile, Plugin.nCategory,
                     2.1f, 0.25f, 0.15f, 1f, 60f, 235f, 100f,
-                    EGatingType.AutoGating, 0.3f, 1f, 0.2f, 0f, 0.15f
+                    EGatingType.AutoGain, 0.3f, 1f, 0.2f, 0f, 0.15f
                 );
             Add(n15, new NightVisionItemConfig(
                 n15Config,
@@ -209,12 +209,16 @@ namespace BorkelRNVG.Helpers.Configuration
                 VirtualKeyCode.NUMPAD7
             ));
 
+            // artem nvgs
+            Add("6754946b62f4db9c0404bd2b", Get(n15));
+            Add("67548853f1ba8ca2b34fa4d0", Get(n15));
+
             // PNV-10T
             string pnv10t = "5c0696830db834001d23f5da";
             NightVisionConfig pnv10Config = new NightVisionConfig(
                     configFile, Plugin.pnvCategory,
                     1.8f, 0.3f, 0.2f, 1f, 60f, 210f, 60f,
-                    EGatingType.AutoGating, 0.3f, 1f, 0.2f, 0f, 0.15f
+                    EGatingType.Off, 0.3f, 1f, 0.2f, 0f, 0.15f
                 );
             Add(pnv10t, new NightVisionItemConfig(
                 pnv10Config,
