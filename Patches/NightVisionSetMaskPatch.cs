@@ -1,10 +1,10 @@
 ﻿using SPT.Reflection.Patching;
 using BSG.CameraEffects;
-using Comfort.Common;
-using EFT;
 using HarmonyLib;
 using System.Reflection;
 using UnityEngine;
+using BorkelRNVG.Helpers.Configuration;
+using BorkelRNVG.Helpers;
 
 
 namespace BorkelRNVG.Patches
@@ -22,19 +22,10 @@ namespace BorkelRNVG.Patches
         [PatchPrefix]
         private static void PatchPrefix(ref NightVision __instance)
         {
-            var gameWorld = Singleton<GameWorld>.Instance;
-            if (gameWorld == null) return;
+            string nvgID = Util.GetCurrentNvgItemId();
+            if (nvgID == null) return;
 
-            var player = gameWorld.MainPlayer;
-            if (player == null) return;
-
-            if (player.NightVisionObserver.Component == null
-                || player.NightVisionObserver.Component.Item == null
-                || player.NightVisionObserver.Component.Item.StringTemplateId == null)
-                return;
-
-            string nvgID = player.NightVisionObserver.Component.Item.StringTemplateId;
-            Texture2D nvgMask = NightVisionItemConfig.Get(nvgID)?.BinocularMaskTexture;
+            Texture2D nvgMask = NightVisionItemConfig.Get(nvgID).MaskTexture;
             if (nvgMask == null) return;
 
             __instance.Mask = nvgMask;

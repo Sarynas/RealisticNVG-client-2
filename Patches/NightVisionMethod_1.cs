@@ -5,8 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using WindowsInput;
 using WindowsInput.Native;
-using Comfort.Common;
-using EFT;
+using BorkelRNVG.Helpers;
 
 namespace BorkelRNVG.Patches
 {
@@ -29,16 +28,7 @@ namespace BorkelRNVG.Patches
             Plugin.nvgOn = __0;
             if (!Plugin.enableReshade.Value) return;
 
-            var gameWorld = Singleton<GameWorld>.Instance;
-            if (gameWorld == null) return;
-
-            var player = gameWorld.MainPlayer;
-            if (player == null) return;
-
-            if (player.NightVisionObserver.Component == null
-                || player.NightVisionObserver.Component.Item == null
-                || player.NightVisionObserver.Component.Item.StringTemplateId == null)
-                return;
+            if (!Util.IsNvgValid()) return;
 
             InputSimulator inputSimulator = new InputSimulator(); // poop
             VirtualKeyCode key = Plugin.nvgKey;

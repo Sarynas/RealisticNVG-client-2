@@ -5,13 +5,12 @@ using HarmonyLib;
 using System.Reflection;
 using System.Threading.Tasks;
 using WindowsInput.Native;
-using Comfort.Common;
 using WindowsInput;
-using EFT;
+using BorkelRNVG.Helpers;
 
 namespace BorkelRNVG.Patches
 {
-    internal class MenuPatch : ModulePatch //if Awake is prevented from running, the exaggerated bloom goes away
+    internal class MenuPatch : ModulePatch
     {
         private static async Task ToggleReshadeAsync(InputSimulator inputSimulator, VirtualKeyCode key)
         {
@@ -29,28 +28,24 @@ namespace BorkelRNVG.Patches
         {
             if (!Plugin.enableReshade.Value || !Plugin.disableReshadeInMenus.Value) return;
 
-            var gameWorld = Singleton<GameWorld>.Instance;
-            if (gameWorld == null) return;
-
-            var player = gameWorld.MainPlayer;
-            if (player == null) return;
-
-            if (player.NightVisionObserver.Component == null
-                || player.NightVisionObserver.Component.Item == null
-                || player.NightVisionObserver.Component.Item.StringTemplateId == null)
-                return;
+            if (!Util.IsNvgValid()) return;
 
             InputSimulator inputSimulator = new InputSimulator(); // poop
             switch (eftScreenType)
             {
                 case EEftScreenType.None:
+                    break;
                 case EEftScreenType.BattleUI:
-                    if(Plugin.nvgOn)
-                            Task.Run(() => ToggleReshadeAsync(inputSimulator, Plugin.nvgKey));
+                    if (Plugin.nvgOn)
+                    {
+                        Task.Run(() => ToggleReshadeAsync(inputSimulator, Plugin.nvgKey));
+                    }
                     break;
                 default:
-                    if(Plugin.nvgOn)
+                    if (Plugin.nvgOn)
+                    {
                         Task.Run(() => ToggleReshadeAsync(inputSimulator, VirtualKeyCode.NUMPAD5));
+                    }
                     break;
             }
         }

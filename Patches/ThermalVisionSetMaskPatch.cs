@@ -2,6 +2,8 @@
 using HarmonyLib;
 using System.Reflection;
 using UnityEngine;
+using BorkelRNVG.Helpers;
+using BorkelRNVG.Helpers.Enum;
 
 namespace BorkelRNVG.Patches
 {
@@ -29,12 +31,9 @@ namespace BorkelRNVG.Patches
             MaskDescription maskDescription = __instance.ThermalVisionUtilities.MaskDescription;
             PixelationUtilities pixelationUtilities = __instance.PixelationUtilities;
 
-            maskDescription.Mask = Plugin.maskThermal;
-            maskDescription.Mask.wrapMode = TextureWrapMode.Clamp;
-            maskDescription.OldMonocularMaskTexture = Plugin.maskThermal;
-            maskDescription.OldMonocularMaskTexture.wrapMode = TextureWrapMode.Clamp;
-            maskDescription.ThermalMaskTexture = Plugin.maskThermal;
-            maskDescription.ThermalMaskTexture.wrapMode = TextureWrapMode.Clamp;
+            maskDescription.Mask = AssetHelper.NightVisionTextures[ENVGTexture.Thermal].Mask;
+            maskDescription.OldMonocularMaskTexture = AssetHelper.NightVisionTextures[ENVGTexture.Monocular].Mask;
+            maskDescription.ThermalMaskTexture = AssetHelper.NightVisionTextures[ENVGTexture.Thermal].Mask;
 
             __instance.IsPixelated = true;
             __instance.IsNoisy = false;
@@ -46,8 +45,8 @@ namespace BorkelRNVG.Patches
                 //__instance.PixelationUtilities.Mode = GClass866.PixelationMode.CRT;
                 pixelationUtilities.Mode = 0;
                 pixelationUtilities.BlockCount = 320; //doesn't do anything really
-                pixelationUtilities.PixelationMask = Plugin.maskPixel;
-                pixelationUtilities.PixelationShader = Plugin.pixelationShader;
+                pixelationUtilities.PixelationMask = AssetHelper.NightVisionTextures[ENVGTexture.Pixel].Mask;
+                pixelationUtilities.PixelationShader = AssetHelper.pixelationShader;
             }
 
             if(Plugin.t7HzLock.Value)
