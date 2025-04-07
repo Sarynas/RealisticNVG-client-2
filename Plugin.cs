@@ -13,7 +13,7 @@ using BorkelRNVG.Helpers.Enum;
 
 namespace BorkelRNVG
 {
-    [BepInPlugin("com.borkel.nvgmasks", "Borkel's Realistic NVGs", "1.7.0")]
+    [BepInPlugin("com.borkel.nvgmasks", "Borkel's Realistic NVGs", "1.7.1")]
     public class Plugin : BaseUnityPlugin
     {
         public static ManualLogSource Log;
@@ -27,7 +27,8 @@ namespace BorkelRNVG
         public static string pvsCategory = "5. PVS-14";
         public static string nCategory = "6. N-15";
         public static string pnvCategory = "7. PNV-10T";
-        public static string t7Category = "8. T-7";
+        public static string pnv57Category = "8. PNV-57E";
+        public static string t7Category = "9. T-7";
 
         // global
         public static ConfigEntry<float> globalMaskSize;

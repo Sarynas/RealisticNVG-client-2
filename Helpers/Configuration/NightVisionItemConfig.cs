@@ -233,6 +233,26 @@ namespace BorkelRNVG.Helpers.Configuration
                 VirtualKeyCode.NUMPAD6
             ));
 
+            // PNV-57E
+            string pnv57 = "67506ca81f18589016006aa6";
+            NightVisionConfig pnv57Config = new NightVisionConfig(
+                    configFile, Plugin.pnv57Category,
+                    1.2f, 0.35f, 0.2f, 1f, 60f, 215f, 80f,
+                    EGatingType.Off, 0.3f, 1f, 0.2f, 0f, 0.15f
+                );
+            Add(pnv57, new NightVisionItemConfig(
+                pnv57Config,
+                () => pnv57Config.Gain.Value * Plugin.globalGain.Value + pnv57Config.Gain.Value * Plugin.globalGain.Value * 0.3f * Plugin.gatingLevel.Value / 2,
+                () => 2 * pnv57Config.NoiseIntensity.Value,
+                () => 2f - 2 * pnv57Config.NoiseSize.Value,
+                () => pnv57Config.MaskSize.Value * Plugin.globalMaskSize.Value,
+                () => pnv57Config.Red.Value / 255,
+                () => pnv57Config.Green.Value / 255,
+                () => pnv57Config.Blue.Value / 255,
+                AssetHelper.NightVisionTextures[ENVGTexture.Binocular],
+                VirtualKeyCode.NUMPAD7
+            ));
+
             Plugin.t7Pixelation = configFile.Bind(Plugin.t7Category, "1. Pixelation", true, "Requires restart. Pixelates the T-7, like a real digital screen");
             Plugin.t7HzLock = configFile.Bind(Plugin.t7Category, "2. Hz lock", true, "Requires restart. Locks the Hz of the T-7 to 60Hz, like a real digital screen");
         }
