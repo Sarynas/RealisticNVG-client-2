@@ -28,6 +28,7 @@ namespace BorkelRNVG.Patches
             //__instance.TextureMask.Size = 1f;
             //__instance.ThermalVisionUtilities.MaskDescription.MaskSize = 1f; //for some reason changing mask size does not work
             
+
             __instance.ThermalVisionUtilities.MaskDescription.MaskSize = 0.1f;
             __instance.TextureMask.Size = __instance.ThermalVisionUtilities.MaskDescription.MaskSize;
             __instance.TextureMask.ApplySettings();
