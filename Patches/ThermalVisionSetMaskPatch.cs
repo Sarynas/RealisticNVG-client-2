@@ -27,6 +27,10 @@ namespace BorkelRNVG.Patches
             //this is all for the T7
             //__instance.TextureMask.Size = 1f;
             //__instance.ThermalVisionUtilities.MaskDescription.MaskSize = 1f; //for some reason changing mask size does not work
+            
+            __instance.ThermalVisionUtilities.MaskDescription.MaskSize = 0.1f;
+            __instance.TextureMask.Size = __instance.ThermalVisionUtilities.MaskDescription.MaskSize;
+            __instance.TextureMask.ApplySettings();
 
             MaskDescription maskDescription = __instance.ThermalVisionUtilities.MaskDescription;
             PixelationUtilities pixelationUtilities = __instance.PixelationUtilities;
